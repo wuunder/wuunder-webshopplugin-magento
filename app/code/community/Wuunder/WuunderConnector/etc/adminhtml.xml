@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <wuunderconnector translate="title" module="wuunderconnector">
+                                        <title>Wuunder Connector</title>
+                                        <sort_order>100</sort_order>
+                                    </wuunderconnector>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

@@ -1,0 +1,277 @@
+<?php
+
+    $orderId  = Mage::registry('wuuder_order_id');
+    Mage::unregister('wuuder_order_id');
+
+    $order          = Mage::getModel('sales/order')->load($orderId);
+    $incrementId    = $order->getIncrementId();
+    $shipmentInfo  = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
+    $infoOrder      = Mage::helper('wuunderconnector')->getInfoFromOrder($orderId);
+    $webshopAddress = Mage::helper('wuunderconnector')->getWebshopAddress();
+    $shippingAdr    = $order->getShippingAddress();
+
+    // Some limits and default values
+    $maxPackage     = 50000;
+
+    // Default values if no weight and/or dimensions are specified in the webshop
+    // 20 kg and 80 (l)x 50 (b)x 35 (h)im
+    $defLength      = 80;
+    $defWidth       = 50;
+    $defHeight      = 35;
+    $defWeight      = 20000;
+
+    $formLength = ($shipmentInfo['wuunder_length'] > 0) ? $shipmentInfo['wuunder_length'] : $infoOrder['wuunder_length'];
+    $formWidth = ($shipmentInfo['wuunder_width'] > 0) ? $shipmentInfo['wuunder_width'] : $infoOrder['wuunder_width'];
+    $formHeight = ($shipmentInfo['wuunder_height'] > 0) ? $shipmentInfo['wuunder_height'] : $infoOrder['wuunder_height'];
+    $formWeight = ($shipmentInfo['wuunder_weight'] > 0) ? $shipmentInfo['wuunder_weight'] : $infoOrder['total_weight'];
+    $formReference = ($shipmentInfo['reference'] != '') ? $shipmentInfo['reference'] : $infoOrder['product_names'];
+    $formPhonenumber = ($shipmentInfo['phone_number'] != '') ? trim($shipmentInfo['phone_number']) : trim($shippingAdr->telephone);
+
+    $selectPackage = ($shipmentInfo['package_type'] == 'package') ? ' selected' : '';
+    $selectDocument = ($shipmentInfo['package_type'] == 'document') ? ' selected' : '';
+    $selectPallet = ($formWeight >= $maxPackage || $shipmentInfo['package_type'] == 'pallet') ? ' selected' : '';
+
+    $customerEmail = (isset($shippingAdr->email)) ? $shippingAdr->email : $order->getCustomerEmail();
+
+    $webshopownerAddress = $customerAddress = $shippingAddress = $returnAddress = '';
+
+    // Fetch webshop owner address
+    if (isset($webshopAddress['company'])) {
+        $webshopownerAddress.= $webshopAddress['company'].'<br />t.n.v. ';
+        $addressExtraline = '';
+    } else {
+        $addressExtraline = '<br />';
+    }
+
+    $webshopownerAddress.= $webshopAddress['firstname'].' '.$webshopAddress['lastname'].'<br />';
+    $webshopownerAddress.= $webshopAddress['streetname'].' '.$webshopAddress['housenumber'].'<br />';
+    $webshopownerAddress.= $webshopAddress['postcode'].' '.$webshopAddress['city'].' ('.$webshopAddress['country'].')<br />';
+    $webshopownerAddress.= $webshopAddress['email'].'<br />';
+    $webshopownerAddress.= $webshopAddress['phone'].'<br />'.$addressExtraline;
+
+    // Fetch customer address from order
+    if ($shippingAdr->company !='') {
+        $customerAddress.= $shippingAdr->company.'<br />t.n.v. ';
+        $addressExtraline = '';
+    } else {
+        $addressExtraline = '<br />';
+    }
+
+    $customerAddress.= $shippingAdr->firstname.' '.$shippingAdr->lastname.'<br />';
+    $customerAddress.= $shippingAdr->street.'<br />';
+    $customerAddress.= $shippingAdr->postcode.' '.$shippingAdr->city.' ('.$shippingAdr->country_id.')<br />';
+    $customerAddress.= $customerEmail.'<br />';
+    $customerAddress.= $shippingAdr->telephone.'<br />'.$addressExtraline;
+
+
+    // If return, webshop address becomes shippingaddress
+    if ($shipmentInfo['label_type'] == 'retour') {
+        $shippingAddress = $webshopownerAddress;
+        $returnAddress = $customerAddress;
+        $labelTypeTitle = 'Retourlabel aanmaken voor #'.$incrementId;
+        $labelButtonText = 'Vraag retourlabel aan';
+        $pmPlaceholder = 'Stuur een persoonlijk bericht naar de verzender';
+        $formPersonalMessage = ($shipmentInfo['retour_message'] != '') ? $shipmentInfo['retour_message'] : '';
+    } else {
+        $shippingAddress = $customerAddress;
+        $returnAddress = $webshopownerAddress;
+        $labelTypeTitle = 'Verzendlabel aanmaken voor #'.$incrementId;
+        $labelButtonText = 'Vraag verzendlabel aan';
+        $pmPlaceholder = 'Stuur een persoonlijk bericht naar de ontvanger';
+        $formPersonalMessage = ($shipmentInfo['personal_message'] != '') ? $shipmentInfo['personal_message'] : '';
+    }
+
+    // Set default values
+    if ($formPhonenumber == '') {
+        $formPhonenumber = '+31';
+    } else if ((substr($formPhonenumber,0,2) == '06') && ($shippingAdr->country_id == 'NL')) {
+        // If NL and phonenumber starting with 06, replace it with +316
+        $formPhonenumber = '+316'.substr($formPhonenumber,2);
+    }
+
+    $formLength = (trim($formLength) == '') ? $defLength : $formLength;
+    $formWidth = (trim($formWidth) == '') ? $defWidth : $formWidth;
+    $formHeight = (trim($formHeight) == '') ? $defHeight : $formHeight;
+    $formWeight = (trim($formWeight) == '' || $formWeight == 0) ? $defWeight : $formWeight;
+
+    if (preg_match("/^\+\d{11}$/", $formPhonenumber)) {
+        $errorMsafsas = $formPhonenumber . "<br/>" . preg_match("/^\+\d{11}$/", $formPhonenumber) . "<br/>";
+        $phoneError = ' has-success';
+    } else {
+        $phoneError = ' has-error';
+    }
+
+?>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+
+            <form id="createLabel" method="post" action="<?php echo $this->getUrl('*/*/processLabel')?>" method="POST">
+                <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>" />
+                <input type="hidden" name="order_id" value="<?php echo $orderId; ?>" />
+                <input type="hidden" name="shipment_id" value="<?php echo $shipmentInfo['shipment_id']; ?>" />
+                <input type="hidden" name="label_id" value="<?php echo $shipmentInfo['label_id']; ?>" />
+                <input type="hidden" name="label_type" value="<?php echo $shipmentInfo['label_type']; ?>" />
+                <input type="hidden" name="retour_id" value="<?php echo $shipmentInfo['retour_id']; ?>" />
+                <fieldset>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Ontvanger</div>
+                                <div class="panel-body">
+                                    <?php echo $shippingAddress; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Verzender</div>
+                                <div class="panel-body">
+                                    <?php echo $returnAddress; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Controle mobiele nummer klant</div>
+                        <div class="panel-body">
+                            <div class="form-group<?php echo $phoneError; ?>">
+                                <label class="control-label" for="wuunderPhonenumber">Mobiele nummer <span class="text-primary">*</span> (Gebruik de opmaak: +31612345678) </label>
+                                Hello:<br/><pre>
+                                <?php
+//                                    var_dump($shipmentInfo);
+//                                    var_dump($shippingAdr);
+                                echo $shipmentInfo['phone_number'];
+                                echo "<br/>";
+                                echo $shippingAdr->telephone;
+                                ?>
+                                    </pre>
+                                <br/>End Hello
+                                <input type="text" class="form-control input-sm" name="phone_number" id="wuunderPhonenumber" value="<?php echo $formPhonenumber; ?>" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Bestelling</div>
+                        <div class="panel-body">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th width="30">#</th>
+                                    <th>Product</th>
+                                    <th width="100">Gewicht</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach($infoOrder['order_lines'] as $orderLine): ?>
+                                    <tr>
+                                        <td><?php echo $orderLine['qty']; ?></td>
+                                        <td><?php echo $orderLine['name']; ?></td>
+                                        <td><?php echo $orderLine['weight']; ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td>Totaal gewicht</td>
+                                    <td><?php echo $infoOrder['total_weight'] ?></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><?php echo $labelTypeTitle; ?></div>
+                        <div class="panel-body">
+
+                            <div class="form-group">
+                                <label for="inputType" class="control-label">Soort verpakking <span class="text-primary">*</span></label>
+                                <select class="form-control input-sm" id="inputType" name="type">
+                                    <option value="package"<?php echo $selectPackage ?>>Pakket</option>
+                                    <option value="document" <?php echo $selectDocument ?>>Document</option>
+                                    <option value="pallet" <?php echo $selectPallet; ?>>Pallet</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label" for="wuunderLength">Afmetingen (l x b x h) <span class="text-primary">*</span></label>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="input-group">
+                                            <input class="form-control input-sm" name="length" id="wuunderLength" type="number" min="1" value="<?php echo $formLength ?>" required />
+                                            <div class="input-group-addon input-sm">cm</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="input-group">
+                                            <input class="form-control input-sm" name="width" id="wuunderWidth" type="number" min="1" value="<?php echo $formWidth ?>" required />
+                                            <div class="input-group-addon input-sm">cm</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="input-group">
+                                            <input class="form-control input-sm" name="height" id="wuunderHeight" type="number" min="1" value="<?php echo $formHeight ?>" required />
+                                            <div class="input-group-addon input-sm">cm</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label" for="wuunderWeight">Gewicht <span class="text-primary">*</span></label>
+                                <div class="input-group">
+                                    <input class="form-control input-sm" name="weight" id="wuunderWeight" type="number" value="<?php echo $formWeight ?>" required />
+                                    <div class="input-group-addon input-sm">gram</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label" for="wuunderReference">Inhoud zending <span class="text-primary">*</span></label>
+                                <input class="form-control input-sm" name="reference" id="wuunderReference" type="text" placeholder="Wat is de inhoud van de zending die je gaat versturen?" value="<?php echo $formReference ?>" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label" for="wuunderMessage">Chat bericht</label>
+                                <textarea class="form-control input-sm" name="personal_message" id="wuunderMessage" placeholder="<?php echo $pmPlaceholder ?>"><?php echo $formPersonalMessage ?></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" name="createLabel" id="btnCreateLabel" class="btn btn-primary"><?php echo $labelButtonText; ?></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="error-message" class="alert alert-dismissible alert-danger" style="display: none"></div>
+
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery('#wuunderPhonenumber').keyup(function () {
+        var phonenumber = jQuery('#wuunderPhonenumber').val();
+        var pattern = new RegExp(/^\+[1-9]{1}[0-9]{10}$/);
+        if (pattern.test(phonenumber)) {
+            jQuery('#wuunderPhonenumber').parent().removeClass('has-error').addClass('has-success');
+        } else {
+            jQuery('#wuunderPhonenumber').parent().removeClass('has-success').addClass('has-error');
+        }
+    });
+
+    // Validate form before submitting
+    jQuery('#createLabel').submit(function () {
+
+        // Disable submit button
+        jQuery("#btnCreateLabel").attr("disabled", true);
+    });
+
+
+</script>

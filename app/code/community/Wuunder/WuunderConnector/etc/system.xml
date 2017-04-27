@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<config>
+    <tabs>
+        <wuunder translate="label" module="wuunderconnector">
+            <label>Wuunder</label>
+            <sort_order>500</sort_order>
+        </wuunder>
+    </tabs>
+    <sections>
+        <wuunderconnector translate="label" module="wuunderconnector">
+            <label>Wuunder Connector</label>
+            <tab>wuunder</tab>
+            <sort_order>100</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <info>
+                    <label>General Information</label>
+                    <frontend_model>wuunderconnector/adminhtml_info</frontend_model>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                </info>
+                <connect translate="label" module="wuunderconnector">
+                    <label>Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>3</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                    <fields>
+                        <version translate="label">
+                            <label>Version Information</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>wuunderconnector/adminhtml_version</frontend_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </version>
+                        <enabled translate="label">
+                            <label>Enable Connector</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+                        <testmode translate="label">
+                            <label>Testmode</label>
+                            <comment>If Yes, staging API is used. Set to No, for live mode.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>25</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </testmode>
+                        <api_key_live translate="label">
+                            <label>Live API Key</label>
+                            <comment>Used when Testmode = No</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </api_key_live>
+                        <api_key_test translate="label">
+                            <label>Test API Key</label>
+                            <comment>Used when Testmode = Yes</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>31</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </api_key_test>
+                        <company translate="label">
+                            <label>Company Name</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </company>
+                        <firstname translate="label">
+                            <label>Firstname</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </firstname>
+                        <lastname translate="label">
+                            <label>Lastname</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>51</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </lastname>
+                        <email translate="label">
+                            <label>E-mail</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </email>
+                        <phone translate="label">
+                            <label>Phonenumber</label>
+                            <comment>Phonenumber with country code prefix e.g. +31612345678</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </phone>
+                        <streetname translate="label">
+                            <label>Street Name</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </streetname>
+                        <housenumber translate="label">
+                            <label>Housenumber</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>81</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </housenumber>
+                        <zipcode translate="label">
+                            <label>Zipcode</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </zipcode>
+                        <city translate="label">
+                            <label>City</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </city>
+                        <country translate="label">
+                            <label>Country Code</label>
+                            <comment>Country code, use ISO 3166-1 alpha-2 format e.g. NL</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </country>
+                        <debug_mode translate="label">
+                            <label>Enable Debugging</label>
+                            <comment>If Enabled, see /var/log/wuunder.log for debug info</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </debug_mode>
+                    </fields>
+                </connect>
+                <magentoconfig translate="label" module="wuunderconnector">
+                    <label>Magento settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                    <fields>
+                        <weight_units translate="label">
+                            <label>Weight Unit</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>wuunderconnector/adminhtml_system_config_source_weight</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </weight_units>
+                    </fields>
+                    <fields>
+                        <separate_housenumber translate="label">
+                            <label>Separate Field for Housenumber</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </separate_housenumber>
+                    </fields>
+                </magentoconfig>
+            </groups>
+        </wuunderconnector>
+    </sections>
+</config>

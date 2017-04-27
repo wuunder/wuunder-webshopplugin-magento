@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<layout>
+
+    <adminhtml_wuunder_create>
+        <remove name="global_notices"/>
+        <remove name="header"/>
+        <remove name="calendar"/>
+        <remove name="menu"/>
+        <remove name="notifications"/>
+        <remove name="footer"/>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <file>wuunder/css/bootstrap-simplex.min.css</file>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="wuunderconnector/adminhtml_createlabel" name="createlabel" />
+        </reference>
+    </adminhtml_wuunder_create>
+
+    <default>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <file>wuunder/css/styles.css</file>
+            </action>
+        </reference>
+    </default>
+
+    <sales_order_grid_update_handle>
+        <reference name="sales_order.grid">
+            <action method="addColumnAfter">
+                <columnId>wuunder_icons</columnId>
+                <arguments helper="wuunderconnector/getWuunderOptions" />
+                <after>status</after>
+            </action>
+        </reference>
+    </sales_order_grid_update_handle>
+    <adminhtml_sales_order_grid>
+
+        <!-- apply layout handle defined above -->
+        <update handle="sales_order_grid_update_handle" />
+
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <file>wuunder/js/jquery-1.10.2.min.js</file>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <file>wuunder/js/jquery.fancybox.pack.js</file>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <file>wuunder/js/wuunder.js</file>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <file>wuunder/css/jquery.fancybox.css</file>
+            </action>
+        </reference>
+    </adminhtml_sales_order_grid>
+
+    <adminhtml_sales_order_index>
+
+        <!-- apply layout handle defined above -->
+        <update handle="sales_order_grid_update_handle" />
+
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <file>wuunder/js/jquery-1.10.2.min.js</file>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <file>wuunder/js/jquery.fancybox.pack.js</file>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <file>wuunder/js/wuunder.js</file>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <file>wuunder/css/jquery.fancybox.css</file>
+            </action>
+        </reference>
+
+    </adminhtml_sales_order_index>
+
+</layout>

@@ -1,0 +1,19 @@
+.fancybox-skin { background: #fff; }
+.fancybox-skin .middle { background-image: none; padding: 20px 0; }
+.fancybox-skin .footer { display: none; }
+div.autocomplete { border: 0; }
+
+.btn-primary { background-image: none!important; background-color: #94D600!important; border-color: #94D600!important; }
+.btn-primary:hover { background-image: none!important; background-color: #999999!important; border-color: #999999!important; }
+
+.wuunder-icons {}
+.wuunder-icons ul li { float: left; margin-right: 5px; }
+.wuunder-icons ul li a { display: block; width: 20px; height: 20px; background-color: #94D600; background-size: 80%; background-repeat: no-repeat; background-position: center center; }
+.wuunder-icons ul li.wuunder-label-create a { background-image: url('../images/create-label.png'); }
+.wuunder-icons ul li.wuunder-label-download a { background-image: url('../images/print-label.png'); }
+.wuunder-icons ul li.wuunder-label-tracktrace a { background-image: url('../images/in-transit.png'); }
+.wuunder-icons ul li.wuunder-retour-create a { background-image: url('../images/retour-create-icon.png'); }
+.wuunder-icons ul li.wuunder-retour-download a { background-image: url('../images/retour-download-icon.png'); }
+.wuunder-icons ul li.wuunder-retour-tracktrace a { background-image: url('../images/retour-in-transit.png'); }
+.wuunder-icons ul li a:hover { background-color: #999; }
+
