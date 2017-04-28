@@ -10,11 +10,6 @@
             <wuunderconnector>
                 <class>Wuunder_WuunderConnector_Block</class>
             </wuunderconnector>
-            <adminhtml>
-                <rewrite>
-                    <sales_order_view>Wuunder_WuunderConnector_Block_Adminhtml_Sales_Order_View</sales_order_view>
-                </rewrite>
-            </adminhtml>
         </blocks>
         <helpers>
             <wuunderconnector>
@@ -95,7 +90,8 @@
             <adminhtml>
                 <args>
                     <modules>
-                        <wuunder_wuunderconnector before="Mage_Adminhtml">Wuunder_WuunderConnector_Adminhtml
+                        <wuunder_wuunderconnector before="Mage_Adminhtml">
+                            Wuunder_WuunderConnector_Adminhtml
                         </wuunder_wuunderconnector>
                     </modules>
                 </args>
