@@ -140,16 +140,6 @@
                         <div class="panel-body">
                             <div class="form-group<?php echo $phoneError; ?>">
                                 <label class="control-label" for="wuunderPhonenumber">Mobiele nummer <span class="text-primary">*</span> (Gebruik de opmaak: +31612345678) </label>
-                                Hello:<br/><pre>
-                                <?php
-//                                    var_dump($shipmentInfo);
-//                                    var_dump($shippingAdr);
-                                echo $shipmentInfo['phone_number'];
-                                echo "<br/>";
-                                echo $shippingAdr->telephone;
-                                ?>
-                                    </pre>
-                                <br/>End Hello
                                 <input type="text" class="form-control input-sm" name="phone_number" id="wuunderPhonenumber" value="<?php echo $formPhonenumber; ?>" required />
                             </div>
                         </div>

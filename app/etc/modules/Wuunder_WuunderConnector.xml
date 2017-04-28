@@ -6,6 +6,7 @@
 			<codePool>community</codePool>
 			<depends>
 				<Mage_Sales />
+				<Mage_Shipping />
 			</depends>
 		</Wuunder_WuunderConnector>
 	</modules>

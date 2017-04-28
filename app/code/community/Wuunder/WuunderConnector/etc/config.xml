@@ -29,6 +29,9 @@
                     </shipments>
                 </entities>
             </wuunderconnector_mysql4>
+            <wuundercarrier>
+                <class>Wuunder_WuunderConnector_Model</class>
+            </wuundercarrier>
         </models>
         <events>
             <sales_order_grid_collection_load_before>
@@ -122,6 +125,16 @@
             <magentoconfig>
             </magentoconfig>
         </wuunderconnector>
+        <carriers>
+            <wuunder>
+                <active>0</active>
+                <model>wuundercarrier/carrier_wuunder</model>
+                <title>Wuunder</title>
+                <name>Wuunder</name>
+                <sort_order>10</sort_order>
+                <sallowspecific>0</sallowspecific>
+            </wuunder>
+        </carriers>
     </default>
 
 </config>

@@ -35,66 +35,96 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
         }
     }
 
+    /*
+     * Ship order items if order->canShip() is true, otherwise only add extra tracking info to existing shipment
+     *
+     */
     public function ship($orderId, $trackAndTraceURL)
     {
         $email = true;
-        $trackingNum = '';
-        $carrier = 'custom';
+        $carrier = 'wuunder';
         $includeComment = false;
         $comment = "Order Completed And Shipped";
 
         $order = Mage::getModel('sales/order')->load($orderId);
 
+        if ($order->canShip()) {
 
-        $convertor = Mage::getModel('sales/convert_order');
-        $shipment = $convertor->toShipment($order);
+            $convertor = Mage::getModel('sales/convert_order');
+            $shipment = $convertor->toShipment($order);
+            foreach ($order->getAllItems() as $orderItem) {
 
-        foreach ($order->getAllItems() as $orderItem) {
-
-            if (!$orderItem->getQtyToShip()) {
-                continue;
+                if (!$orderItem->getQtyToShip()) {
+                    continue;
+                }
+                if ($orderItem->getIsVirtual()) {
+                    continue;
+                }
+                $item = $convertor->itemToShipmentItem($orderItem);
+                $qty = $orderItem->getQtyToShip();
+                $item->setQty($qty);
+                $shipment->addItem($item);
             }
-            if ($orderItem->getIsVirtual()) {
-                continue;
+
+            $data = array();
+            $data['carrier_code'] = $carrier;
+            $data['title'] = 'Wuunder';
+            $data['number'] = $trackAndTraceURL;
+
+            $track = Mage::getModel('sales/order_shipment_track')->addData($data);
+            $shipment->addTrack($track);
+
+            $shipment->register();
+            $shipment->addComment($comment, $email && $includeComment);
+            $shipment->setEmailSent(true);
+            $shipment->getOrder()->setIsInProcess(true);
+
+            try {
+                $transactionSave = Mage::getModel('core/resource_transaction')
+                    ->addObject($shipment)
+                    ->addObject($shipment->getOrder())
+                    ->save();
+            } catch (Mage_Core_Exception $e) {
+                Mage::log($e->getMessage(), Zend_Log::ERR);
             }
-            $item = $convertor->itemToShipmentItem($orderItem);
-            $qty = $orderItem->getQtyToShip();
-            $item->setQty($qty);
-            $shipment->addItem($item);
+
+            $shipment->sendEmail($email, ($includeComment ? $comment : ''));
+            $order->setStatus('Complete');
+            $order->addStatusToHistory($order->getStatus(), $comment, false);
+
+            $shipment->save();
+        } else {
+            foreach ($order->getShipmentsCollection() as $shipment) {
+                $shipmentId = $shipment->getId();
+                $shipment = Mage::getModel('sales/order_shipment')->load($shipmentId);
+
+                $data = array();
+                $data['carrier_code'] = $carrier;
+                $data['title'] = 'Wuunder return shipment';
+                $data['number'] = $trackAndTraceURL;
+
+                $track = Mage::getModel('sales/order_shipment_track')->addData($data);
+                $shipment->addTrack($track);
+
+                $shipment->addComment($comment, $email && $includeComment);
+                $shipment->setEmailSent(true);
+
+                try {
+                    $transactionSave = Mage::getModel('core/resource_transaction')
+                        ->addObject($shipment)
+                        ->addObject($shipment->getOrder())
+                        ->save();
+                } catch (Mage_Core_Exception $e) {
+                    Mage::log($e->getMessage(), Zend_Log::ERR);
+                }
+
+                $shipment->sendEmail($email, ($includeComment ? $comment : ''));
+                $order->setStatus('Complete');
+                $order->addStatusToHistory($order->getStatus(), $comment, false);
+
+                $shipment->save();
+            }
         }
-
-        $carrierTitle = NULL;
-
-        if ($carrier == 'custom') {
-            $carrierTitle = 'courier Service name';
-        }
-        $data = array();
-        $data['carrier_code'] = $carrier;
-        $data['title'] = $trackAndTraceURL;
-        $data['number'] = $trackingNum;
-
-        $track = Mage::getModel('sales/order_shipment_track')->addData($data);
-        $shipment->addTrack($track);
-
-        $shipment->register();
-        $shipment->addComment($comment, $email && $includeComment);
-        $shipment->setEmailSent(true);
-        $shipment->getOrder()->setIsInProcess(true);
-
-        try {
-            $transactionSave = Mage::getModel('core/resource_transaction')
-                ->addObject($shipment)
-                ->addObject($shipment->getOrder())
-                ->save();
-        } catch (Mage_Core_Exception $e) {
-            Mage::log($e->getMessage(), Zend_Log::ERR);
-        }
-
-        $shipment->sendEmail($email, ($includeComment ? $comment : ''));
-        $order->setStatus('Complete');
-        $order->addStatusToHistory($order->getStatus(), $comment, false);
-
-        $shipment->save();
     }
 
     public function processLabelAction()
@@ -134,10 +164,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 } else {
                     Mage::getSingleton('adminhtml/session')->addSuccess($result['message']);
                 }
-
-                Mage::log($result);
-                Mage::log($result['original_result']);
-                Mage::log($result['original_result']->track_and_trace_url);
 
                 $this->_redirect('*/sales_order/index');
 
