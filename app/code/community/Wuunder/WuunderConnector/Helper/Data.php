@@ -1,4 +1,5 @@
 <?php
+
 class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
@@ -54,7 +55,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             return Mage::registry('wuunderconnector_debug_mode');
         }
 
-        $debugMode = (int) Mage::getStoreConfig(self::XPATH_DEBUG_MODE, Mage_Core_Model_App::ADMIN_STORE_ID);
+        $debugMode = (int)Mage::getStoreConfig(self::XPATH_DEBUG_MODE, Mage_Core_Model_App::ADMIN_STORE_ID);
         Mage::register('wuunderconnector_debug_mode', $debugMode);
         return $debugMode;
     }
@@ -68,7 +69,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'type' => 'text',
             'width' => '120px',
             'renderer' => 'Wuunder_WuunderConnector_Block_Adminhtml_Order_Renderer_WuunderIcons',
-            'filter'    => false,
+            'filter' => false,
         );
     }
 
@@ -81,10 +82,10 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     public function getShipmentInfo($orderId)
     {
 
-        $mageDb     = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $sql        = "SELECT * FROM ".$this->tblPrfx."wuunder_shipments WHERE order_id = ?";
-        $results    = $mageDb->query($sql, $orderId);
-        $entity     = $results->fetch();
+        $mageDb = Mage::getSingleton('core/resource')->getConnection('core_read');
+        $sql = "SELECT * FROM " . $this->tblPrfx . "wuunder_shipments WHERE order_id = ?";
+        $results = $mageDb->query($sql, $orderId);
+        $entity = $results->fetch();
 
         $returnArray = array();
 
@@ -134,12 +135,12 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getInfoFromOrder($orderId)
     {
-        $weightUnit     = Mage::getStoreConfig('wuunderconnector/magentoconfig/weight_units');
+        $weightUnit = Mage::getStoreConfig('wuunderconnector/magentoconfig/weight_units');
         // Get Magento order
-        $orderInfo      = Mage::getModel('sales/order')->load($orderId);
-        $totalWeight    = 0;
-        $orderLines     = array();
-        $prodNames      = '';
+        $orderInfo = Mage::getModel('sales/order')->load($orderId);
+        $totalWeight = 0;
+        $orderLines = array();
+        $prodNames = '';
         // Get total weight from ordered items
         foreach ($orderInfo->getAllItems() AS $orderedItem) {
             // Calculate weight
@@ -152,10 +153,10 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
                 $totalWeight += $productWeight;
             }
-            $prodNames .= $orderedItem->getName().',';
+            $prodNames .= $orderedItem->getName() . ',';
             array_push($orderLines, array('name' => $orderedItem->getName(), 'weight' => $orderedItem->getWeight(), 'qty' => $orderedItem->getQtyOrdered()));
         }
-        if(strlen($prodNames) > 0) {
+        if (strlen($prodNames) > 0) {
             $productNames = substr($prodNames, 0, -1); // haalt de laatste komma er af
         } else {
             $productNames = '';
@@ -167,16 +168,16 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     {
 
         return array(
-            'company'       => Mage::getStoreConfig('wuunderconnector/connect/company'),
-            'firstname'     => Mage::getStoreConfig('wuunderconnector/connect/firstname'),
-            'lastname'      => Mage::getStoreConfig('wuunderconnector/connect/lastname'),
-            'streetname'    => Mage::getStoreConfig('wuunderconnector/connect/streetname'),
-            'housenumber'   => Mage::getStoreConfig('wuunderconnector/connect/housenumber'),
-            'postcode'      => Mage::getStoreConfig('wuunderconnector/connect/zipcode'),
-            'city'          => Mage::getStoreConfig('wuunderconnector/connect/city'),
-            'email'         => Mage::getStoreConfig('wuunderconnector/connect/email'),
-            'phone'         => Mage::getStoreConfig('wuunderconnector/connect/phone'),
-            'country'       => Mage::getStoreConfig('wuunderconnector/connect/country'));
+            'company' => Mage::getStoreConfig('wuunderconnector/connect/company'),
+            'firstname' => Mage::getStoreConfig('wuunderconnector/connect/firstname'),
+            'lastname' => Mage::getStoreConfig('wuunderconnector/connect/lastname'),
+            'streetname' => Mage::getStoreConfig('wuunderconnector/connect/streetname'),
+            'housenumber' => Mage::getStoreConfig('wuunderconnector/connect/housenumber'),
+            'postcode' => Mage::getStoreConfig('wuunderconnector/connect/zipcode'),
+            'city' => Mage::getStoreConfig('wuunderconnector/connect/city'),
+            'email' => Mage::getStoreConfig('wuunderconnector/connect/email'),
+            'phone' => Mage::getStoreConfig('wuunderconnector/connect/phone'),
+            'country' => Mage::getStoreConfig('wuunderconnector/connect/country'));
     }
 
     /**
@@ -199,15 +200,15 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         // Create or update wuunder_shipment
         $wuunderShipmentSaved = $this->saveWuunderShipment($infoArray);
         if (!$wuunderShipmentSaved) {
-            return array('error' => true, 'message' => 'Unable to create / update wuunder_shipment for order '.$infoArray['order_id']);
+            return array('error' => true, 'message' => 'Unable to create / update wuunder_shipment for order ' . $infoArray['order_id']);
         }
 
         // Fetch order
-        $order      = Mage::getModel('sales/order')->load($infoArray['order_id']);
-        $storeId    = $order->getStoreId();
+        $order = Mage::getModel('sales/order')->load($infoArray['order_id']);
+        $storeId = $order->getStoreId();
 
         // Get configuration
-        $testMode   = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
+        $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
 
         if ($testMode == 1) {
             $apiUrl = 'https://api-staging.wuunder.co/api/shipments';
@@ -234,7 +235,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         // Don't log base64 image string
         $wuunderData['picture'] = 'base64 string removed';
-        Mage::helper('wuunderconnector')->log('API request string: '.json_encode($wuunderData));
+        Mage::helper('wuunderconnector')->log('API request string: ' . json_encode($wuunderData));
 
         // Execute the cURL, fetch the XML
         $result = curl_exec($cc);
@@ -242,7 +243,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         // Close connection
         curl_close($cc);
 
-        Mage::helper('wuunderconnector')->log('API response string: '.$result);
+        Mage::helper('wuunderconnector')->log('API response string: ' . $result);
 
         // Decode API result
         $result = json_decode($result);
@@ -271,17 +272,17 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     public function processDataFromApi($wuunderApiResult, $labelType, $orderId)
     {
         // we slaan iets op dus we hebben core_write nodig
-        $mageDbW    = Mage::getSingleton('core/resource')->getConnection('core_write');
+        $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
         if ($labelType == 'retour') {
-            $sqlUpdate = "UPDATE ".$this->tblPrfx."wuunder_shipments SET retour_id = ?, retour_date = now(), retour_url = ?, retour_tt_url = ? WHERE order_id = ?";
+            $sqlUpdate = "UPDATE " . $this->tblPrfx . "wuunder_shipments SET retour_id = ?, retour_date = now(), retour_url = ?, retour_tt_url = ? WHERE order_id = ?";
         } else {
-            $sqlUpdate = "UPDATE ".$this->tblPrfx."wuunder_shipments SET label_id = ?, label_date = now(), label_url = ?, label_tt_url = ? WHERE order_id = ?";
+            $sqlUpdate = "UPDATE " . $this->tblPrfx . "wuunder_shipments SET label_id = ?, label_date = now(), label_url = ?, label_tt_url = ? WHERE order_id = ?";
         }
         try {
             $mageDbW->query($sqlUpdate, array($wuunderApiResult->id, $wuunderApiResult->label_url, $wuunderApiResult->track_and_trace_url, $orderId));
             return true;
-        }  catch (Mage_Core_Exception $e) {
-            $this->log('ERROR saveWuunderShipment : '.$e);
+        } catch (Mage_Core_Exception $e) {
+            $this->log('ERROR saveWuunderShipment : ' . $e);
             return false;
         }
     }
@@ -292,7 +293,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $shippingAddress = $order->getShippingAddress();
 
         if ($shippingAddress->middlename != '') {
-            $shippingLastname = $shippingAddress->middlename.' '.$shippingAddress->lastname;
+            $shippingLastname = $shippingAddress->middlename . ' ' . $shippingAddress->lastname;
         } else {
             $shippingLastname = $shippingAddress->lastname;
         }
@@ -303,41 +304,41 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         // Splitt addres in 3 parts
         $addressParts = $this->addressSplitter($addressLine);
         $streetName = $addressParts['streetName'];
-        $houseNumber = $addressParts['houseNumber'].$addressParts['houseNumberSuffix'];
+        $houseNumber = $addressParts['houseNumber'] . $addressParts['houseNumberSuffix'];
 
         $customerAdr = array(
-            'business'      => $shippingAddress->company,
+            'business' => $shippingAddress->company,
             'email_address' => $shippingAddress->email,
-            'family_name'   => $shippingLastname,
-            'given_name'    => $shippingAddress->firstname,
-            'locality'      => $shippingAddress->city,
-            'phone_number'  => $infoArray['phone_number'],
+            'family_name' => $shippingLastname,
+            'given_name' => $shippingAddress->firstname,
+            'locality' => $shippingAddress->city,
+            'phone_number' => $infoArray['phone_number'],
             'street_address' => $streetName,
-            'house_number'  => $houseNumber,
-            'zip_code'      => $shippingAddress->postcode,
-            'country'       => $shippingAddress->country_id
+            'house_number' => $houseNumber,
+            'zip_code' => $shippingAddress->postcode,
+            'country' => $shippingAddress->country_id
         );
 
         $webshopAdr = array(
-            'business'      => Mage::getStoreConfig('wuunderconnector/connect/company'),
+            'business' => Mage::getStoreConfig('wuunderconnector/connect/company'),
             'email_address' => Mage::getStoreConfig('wuunderconnector/connect/email'),
-            'family_name'   => Mage::getStoreConfig('wuunderconnector/connect/lastname'),
-            'given_name'    => Mage::getStoreConfig('wuunderconnector/connect/firstname'),
-            'locality'      => Mage::getStoreConfig('wuunderconnector/connect/city'),
-            'phone_number'  => Mage::getStoreConfig('wuunderconnector/connect/phone'),
+            'family_name' => Mage::getStoreConfig('wuunderconnector/connect/lastname'),
+            'given_name' => Mage::getStoreConfig('wuunderconnector/connect/firstname'),
+            'locality' => Mage::getStoreConfig('wuunderconnector/connect/city'),
+            'phone_number' => Mage::getStoreConfig('wuunderconnector/connect/phone'),
             'street_address' => Mage::getStoreConfig('wuunderconnector/connect/streetname'),
-            'house_number'  => Mage::getStoreConfig('wuunderconnector/connect/housenumber'),
-            'zip_code'      => Mage::getStoreConfig('wuunderconnector/connect/zipcode'),
-            'country'       => Mage::getStoreConfig('wuunderconnector/connect/country')
+            'house_number' => Mage::getStoreConfig('wuunderconnector/connect/housenumber'),
+            'zip_code' => Mage::getStoreConfig('wuunderconnector/connect/zipcode'),
+            'country' => Mage::getStoreConfig('wuunderconnector/connect/country')
         );
 
         // als retour dan wordt het eerste adres die van de klant en anders andersom
         if ($infoArray['label_type'] == 'retour') {
-            $senderAddress   = $webshopAdr;
-            $receiverAddress  = $customerAdr;
+            $senderAddress = $webshopAdr;
+            $receiverAddress = $customerAdr;
         } else {
-            $senderAddress   = $customerAdr;
-            $receiverAddress  = $webshopAdr;
+            $senderAddress = $customerAdr;
+            $receiverAddress = $webshopAdr;
         }
 
         $orderAmountExclVat = ($order->getGrandTotal() - $order->getTaxAmount());
@@ -348,7 +349,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         if (count($orderedItems) > 0) {
             foreach ($orderedItems AS $orderedItem) {
                 $_product = Mage::getModel('catalog/product')->load($orderedItem->getProductId());
-                $base64Image = base64_encode(file_get_contents(Mage::helper('catalog/image')->init($_product,'image')));
+                $base64Image = base64_encode(file_get_contents(Mage::helper('catalog/image')->init($_product, 'image')));
                 if ($base64Image != '') {
                     // Break after first image
                     $image = $base64Image;
@@ -358,18 +359,18 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return array(
-            'description'           => $infoArray['reference'],
-            'personal_message'      => $infoArray['personal_message'],
-            'picture'               => $image,
-            'customer_reference'    => $order->getIncrementId(),
-            'value'                 => $orderAmountExclVat,
-            'kind'                  => $infoArray['packing_type'],
-            'length'                => $infoArray['length'],
-            'width'                 => $infoArray['width'],
-            'height'                => $infoArray['height'],
-            'weight'                => $infoArray['weight'],
-            'delivery_address'      => $senderAddress,
-            'pickup_address'        => $receiverAddress
+            'description' => $infoArray['reference'],
+            'personal_message' => $infoArray['personal_message'],
+            'picture' => $image,
+            'customer_reference' => $order->getIncrementId(),
+            'value' => $orderAmountExclVat,
+            'kind' => $infoArray['packing_type'],
+            'length' => $infoArray['length'],
+            'width' => $infoArray['width'],
+            'height' => $infoArray['height'],
+            'weight' => $infoArray['weight'],
+            'delivery_address' => $senderAddress,
+            'pickup_address' => $receiverAddress
         );
     }
 
@@ -379,14 +380,14 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
 
         // Check if wuunder_shipment already exists
-        $sqlQuery = "SELECT `shipment_id` FROM `".$this->tblPrfx."wuunder_shipments` WHERE `order_id` = ".intval($infoArray['order_id']).' LIMIT 1';
+        $sqlQuery = "SELECT `shipment_id` FROM `" . $this->tblPrfx . "wuunder_shipments` WHERE `order_id` = " . intval($infoArray['order_id']) . ' LIMIT 1';
         $shipmentId = $mageDbW->fetchOne($sqlQuery);
 
         if ($shipmentId > 0) {
 
             $messageField = ($infoArray['label_type'] == 'retour') ? 'retour_message' : 'personal_message';
 
-            $sqlQuery = "UPDATE `".$this->tblPrfx."wuunder_shipments` SET
+            $sqlQuery = "UPDATE `" . $this->tblPrfx . "wuunder_shipments` SET
                         `order_id`          = ?,
                         `description`       = ?,
                         `type`              = ?,
@@ -395,7 +396,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                         `height`            = ?,
                         `weight`            = ?,
                         `phone_number`      = ?,
-                        `".$messageField."`  = ?
+                        `" . $messageField . "`  = ?
                     WHERE
                         `shipment_id`  = ?";
 
@@ -403,7 +404,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         } else {
 
-            $sqlQuery  = "INSERT INTO `".$this->tblPrfx."wuunder_shipments` SET
+            $sqlQuery = "INSERT INTO `" . $this->tblPrfx . "wuunder_shipments` SET
                         `order_id`          = ?,
                         `description`       = ?,
                         `type`              = ?,
@@ -422,14 +423,42 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $results = $mageDbW->query($sqlQuery, $sqlValues);
             return true;
 
-        }  catch (Mage_Core_Exception $e) {
+        } catch (Mage_Core_Exception $e) {
 
-            $this->log('ERROR saveWuunderShipment : '.$e);
+            $this->log('ERROR saveWuunderShipment : ' . $e);
             return false;
         }
     }
 
-    public function addressSplitter($address, $address2 = null, $address3 = null) {
+    public function getWuunderShipment($id)
+    {
+        try {
+            $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
+
+            //check for a label id
+            $sqlQuery = "SELECT `label_tt_url`, `retour_tt_url` FROM `" . $this->tblPrfx . "wuunder_shipments` WHERE `label_id` = '" . $id . "' LIMIT 1";
+            $wuunderShipment = $mageDbW->fetchOne($sqlQuery);
+
+            if ($wuunderShipment) {
+                return $wuunderShipment;
+            } else {
+                //Normal shipment label does not exitst, check for a retour id
+                $sqlQuery = "SELECT `retour_tt_url` FROM `" . $this->tblPrfx . "wuunder_shipments` WHERE `retour_id` = '" . $id . "' LIMIT 1";
+                $wuunderShipment = $mageDbW->fetchOne($sqlQuery);
+                if ($wuunderShipment) {
+                    return $wuunderShipment;
+                } else {
+                    return false;
+                }
+            }
+        } catch (Exception $e) {
+            $this->log('ERROR getWuunderShipment : ' . $e);
+            return false;
+        }
+    }
+
+    public function addressSplitter($address, $address2 = null, $address3 = null)
+    {
 
         if (!isset($address)) {
             return false;
@@ -482,9 +511,9 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             if (count($errors) > 0) {
                 foreach ($errors AS $error) {
 
-                    $errorMessage.= 'API response error on field(s): '.$error->field;
+                    $errorMessage .= 'API response error on field(s): ' . $error->field;
                     foreach ($error->messages AS $message) {
-                        $errorMessage.= ' - '.$message.'<br />';
+                        $errorMessage .= ' - ' . $message . '<br />';
                     }
                 }
 
@@ -494,7 +523,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
             // Show first 1000 characters
             //return array('error' => true, 'message' => 'API response error: '.substr($errors,0,1000));
-            return array('error' => true, 'message' => 'API response error: '.$errors);
+            return array('error' => true, 'message' => 'API response error: ' . $errors);
         }
 
         return array('error' => true, 'message' => 'Unknown error! Enable Wuunder logging and please check /var/log/wuunder.log for more information');

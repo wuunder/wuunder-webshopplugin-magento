@@ -51,8 +51,10 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
 
     public function getTrackingInfo($tracking)
     {
+        $result = Mage::helper('wuunderconnector')->getWuunderShipment($tracking);
+        Mage::log($result);
         $track = Mage::getModel('shipping/tracking_result_status');
-        $track->setUrl($tracking)
+        $track->setUrl($result)
             ->setTracking($tracking)
             ->setCarrierTitle($this->getConfigData('name'));
         return $track;

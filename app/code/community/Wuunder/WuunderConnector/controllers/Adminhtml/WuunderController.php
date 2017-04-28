@@ -37,7 +37,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
     /*
      * Ship order items if order->canShip() is true, otherwise only add extra tracking info to existing shipment
-     *
      */
     public function ship($orderId, $trackAndTraceURL)
     {
@@ -167,7 +166,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
                 $this->_redirect('*/sales_order/index');
 
-                $this->ship($data['order_id'], $result['original_result']->track_and_trace_url);
+                $this->ship($data['order_id'], $result['original_result']->id);
             } catch (Exception $e) {
 
                 $this->_getSession()->addError(Mage::helper('wuunderconnector')->__('An error occurred while saving the data'));
