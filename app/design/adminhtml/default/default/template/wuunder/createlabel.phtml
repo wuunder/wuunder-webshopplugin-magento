@@ -84,9 +84,9 @@
     // Set default values
     if ($formPhonenumber == '') {
         $formPhonenumber = '+31';
-    } else if ((substr($formPhonenumber,0,2) == '06') && ($shippingAdr->country_id == 'NL')) {
+    } else if ((substr($formPhonenumber,0,1) == '0') && ($shippingAdr->country_id == 'NL')) {
         // If NL and phonenumber starting with 06, replace it with +316
-        $formPhonenumber = '+316'.substr($formPhonenumber,2);
+        $formPhonenumber = '+31'.substr($formPhonenumber,1);
     }
 
     $formLength = (trim($formLength) == '') ? $defLength : $formLength;
