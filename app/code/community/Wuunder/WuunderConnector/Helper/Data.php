@@ -211,7 +211,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
 
         if ($testMode == 1) {
-            $apiUrl = 'https://api-staging.wuunder.co/api/shipments';
+//            $apiUrl = 'https://api-staging.wuunder.co/api/shipments';
+            $apiUrl = 'https://api-staging.wuunder.co/api/bookings?redirect_url=www.google.nl&webhook_url=www.google.com';
             $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_test', $storeId);
         } else {
             $apiUrl = 'https://api.wuunder.co/api/shipments';
@@ -232,6 +233,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         curl_setopt($cc, CURLOPT_POST, 1);
         curl_setopt($cc, CURLOPT_POSTFIELDS, $json);
         curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($cc, CURLOPT_VERBOSE, 1);
+        curl_setopt($cc, CURLOPT_HEADER, 1);
 
         // Don't log base64 image string
         $wuunderData['picture'] = 'base64 string removed';
@@ -239,9 +242,18 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         // Execute the cURL, fetch the XML
         $result = curl_exec($cc);
+        $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
+        $header = substr($result, 0, $header_size);
+        preg_match("!\r\n(?:location|URI): *(.*?) *\r\n!", $header, $matches);
+        $url = $matches[1];
+//        Mage::log($header);
+//        Mage::log($url);
 
         // Close connection
         curl_close($cc);
+
+        header('Location: https://api-staging.wuunder.co'.$url);
+        die();
 
         Mage::helper('wuunderconnector')->log('API response string: ' . $result);
 
