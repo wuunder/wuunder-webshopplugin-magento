@@ -14,6 +14,16 @@ class Wuunder_WuunderConnector_Block_Adminhtml_Order_Renderer_WuunderIcons exten
         $retourUrl = $row->getData('retour_url');
         $retourTTUrl = $row->getData('retour_tt_url');
 
+        $shipmentInfo  = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
+        $order = Mage::getModel('sales/order')->load($orderId);
+        $storeId = $order->getStoreId();
+        $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
+        if ($testMode == 1) {
+            $booking_Url = 'https://api-staging.wuunder.co' . $shipmentInfo['booking_url'];
+        } else {
+            $booking_Url = 'https://api.wuunder.co' . $shipmentInfo['booking_url'];
+        }
+
         if (isset($retourId)) {
 
             // Retour ID found -> Retour label was generated
@@ -33,14 +43,8 @@ class Wuunder_WuunderConnector_Block_Adminhtml_Order_Renderer_WuunderIcons exten
         } else {
 
             // Retour ID found -> Shipping label was generated
-//            $linkurl  = Mage::helper('adminhtml')->getUrl('adminhtml/wuunder/create/', array('id' => $orderId));
-            $linkurl = $this->getUrl('adminhtml/wuunder/processLabel', array('id' => $orderId));
-            $icons = '<li class="wuunder-label-create"><a href="'.$linkurl.'" target="blank" class="" title="Verzendlabel aanmaken"></a></li>';
-//            $icons = '<li class="wuunder-label-create">
-//                           <form action="'.$linkurl.'" method="POST">
-//                           <button type="submit">d</button>
-//</form>
-//                     </li>';
+            $linkurl = (!is_null($booking_Url) && !empty($booking_Url) ? $booking_Url : $this->getUrl('adminhtml/wuunder/processLabel', array('id' => $orderId)));
+            $icons = '<li class="wuunder-label-create"><a href="'.$linkurl.'" title="Verzendlabel aanmaken"></a></li>';
         }
 
         if ($icons != '') {

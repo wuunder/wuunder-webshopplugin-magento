@@ -35,97 +35,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
         }
     }
 
-    /*
-     * Ship order items if order->canShip() is true, otherwise only add extra tracking info to existing shipment
-     */
-    public function ship($orderId, $trackAndTraceURL)
-    {
-        $email = true;
-        $carrier = 'wuunder';
-        $includeComment = false;
-        $comment = "Order Completed And Shipped";
-
-        $order = Mage::getModel('sales/order')->load($orderId);
-
-        if ($order->canShip()) {
-
-            $convertor = Mage::getModel('sales/convert_order');
-            $shipment = $convertor->toShipment($order);
-            foreach ($order->getAllItems() as $orderItem) {
-
-                if (!$orderItem->getQtyToShip()) {
-                    continue;
-                }
-                if ($orderItem->getIsVirtual()) {
-                    continue;
-                }
-                $item = $convertor->itemToShipmentItem($orderItem);
-                $qty = $orderItem->getQtyToShip();
-                $item->setQty($qty);
-                $shipment->addItem($item);
-            }
-
-            $data = array();
-            $data['carrier_code'] = $carrier;
-            $data['title'] = 'Wuunder';
-            $data['number'] = $trackAndTraceURL;
-
-            $track = Mage::getModel('sales/order_shipment_track')->addData($data);
-            $shipment->addTrack($track);
-
-            $shipment->register();
-            $shipment->addComment($comment, $email && $includeComment);
-            $shipment->setEmailSent(true);
-            $shipment->getOrder()->setIsInProcess(true);
-
-            try {
-                $transactionSave = Mage::getModel('core/resource_transaction')
-                    ->addObject($shipment)
-                    ->addObject($shipment->getOrder())
-                    ->save();
-            } catch (Mage_Core_Exception $e) {
-                Mage::log($e->getMessage(), Zend_Log::ERR);
-            }
-
-            $shipment->sendEmail($email, ($includeComment ? $comment : ''));
-            $order->setStatus('Complete');
-            $order->addStatusToHistory($order->getStatus(), $comment, false);
-
-            $shipment->save();
-        } else {
-            foreach ($order->getShipmentsCollection() as $shipment) {
-                $shipmentId = $shipment->getId();
-                $shipment = Mage::getModel('sales/order_shipment')->load($shipmentId);
-
-                $data = array();
-                $data['carrier_code'] = $carrier;
-                $data['title'] = 'Wuunder return shipment';
-                $data['number'] = $trackAndTraceURL;
-
-                $track = Mage::getModel('sales/order_shipment_track')->addData($data);
-                $shipment->addTrack($track);
-
-                $shipment->addComment($comment, $email && $includeComment);
-                $shipment->setEmailSent(true);
-
-                try {
-                    $transactionSave = Mage::getModel('core/resource_transaction')
-                        ->addObject($shipment)
-                        ->addObject($shipment->getOrder())
-                        ->save();
-                } catch (Mage_Core_Exception $e) {
-                    Mage::log($e->getMessage(), Zend_Log::ERR);
-                }
-
-                $shipment->sendEmail($email, ($includeComment ? $comment : ''));
-                $order->setStatus('Complete');
-                $order->addStatusToHistory($order->getStatus(), $comment, false);
-
-                $shipment->save();
-            }
-        }
-    }
-
     public function processLabelAction()
     {
 
@@ -145,13 +54,28 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 $infoOrder      = Mage::helper('wuunderconnector')->getInfoFromOrder($orderId);
                 $shippingAdr    = $order->getShippingAddress();
 
-                $phoneNumber = ($shipmentInfo['phone_number'] != '') ? trim($shipmentInfo['phone_number']) : trim($shippingAdr->telephone);
+                $defLength      = 80;
+                $defWidth       = 50;
+                $defHeight      = 35;
+                $defWeight      = 20000;
+
+                $length = ($shipmentInfo['wuunder_length'] > 0) ? $shipmentInfo['wuunder_length'] : $infoOrder['wuunder_length'];
+                $width = ($shipmentInfo['wuunder_width'] > 0) ? $shipmentInfo['wuunder_width'] : $infoOrder['wuunder_width'];
+                $height = ($shipmentInfo['wuunder_height'] > 0) ? $shipmentInfo['wuunder_height'] : $infoOrder['wuunder_height'];
+                $weight = ($shipmentInfo['wuunder_weight'] > 0) ? $shipmentInfo['wuunder_weight'] : $infoOrder['total_weight'];
+                $reference = ($shipmentInfo['reference'] != '') ? $shipmentInfo['reference'] : $infoOrder['product_names'];
+                $phonenumber = ($shipmentInfo['phone_number'] != '') ? trim($shipmentInfo['phone_number']) : trim($shippingAdr->telephone);
+                $length = (trim($length) == '') ? $defLength : $length;
+                $width = (trim($width) == '') ? $defWidth : $width;
+                $height = (trim($height) == '') ? $defHeight : $height;
+                $weight = (trim($weight) == '' || $weight == 0) ? $defWeight : $weight;
+
                 // Set default values
-                if ($phoneNumber == '') {
-                    $phoneNumber = '+31';
-                } else if ((substr($phoneNumber,0,1) == '0') && ($shippingAdr->country_id == 'NL')) {
+                if ($phonenumber == '') {
+                    $phonenumber = '+31';
+                } else if ((substr($phonenumber,0,1) == '0') && ($shippingAdr->country_id == 'NL')) {
                     // If NL and phonenumber starting with 06, replace it with +316
-                    $phoneNumber = '+31'.substr($phoneNumber,1);
+                    $phonenumber = '+31'.substr($phonenumber,1);
                 }
 
                 $infoArray = array(
@@ -159,13 +83,13 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                     'label_id' => $shipmentInfo['label_id'],
                     'label_type' => $shipmentInfo['label_type'],
                     'packing_type' => $shipmentInfo['package_type'],
-                    'length' => ($shipmentInfo['wuunder_length'] > 0) ? $shipmentInfo['wuunder_length'] : $infoOrder['wuunder_length'],
-                    'width' => ($shipmentInfo['wuunder_width'] > 0) ? $shipmentInfo['wuunder_width'] : $infoOrder['wuunder_width'],
-                    'height' => ($shipmentInfo['wuunder_height'] > 0) ? $shipmentInfo['wuunder_height'] : $infoOrder['wuunder_height'],
-                    'weight' => ($shipmentInfo['wuunder_weight'] > 0) ? $shipmentInfo['wuunder_weight'] : $infoOrder['total_weight'],
-                    'reference' => ($shipmentInfo['reference'] != '') ? $shipmentInfo['reference'] : $infoOrder['product_names'],
+                    'length' => $length,
+                    'width' => $width,
+                    'height' => $height,
+                    'weight' => $weight,
+                    'reference' => $reference,
                     $messageField => ($shipmentInfo['retour_message'] != '') ? $shipmentInfo['retour_message'] : '',
-                    'phone_number' => $phoneNumber,
+                    'phone_number' => $phonenumber,
                 );
 
                 Mage::helper('wuunderconnector')->log($infoArray);
@@ -189,10 +113,5 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 return $this;
             }
         }
-    }
-
-    public function wuunderWebhookAction()
-    {
-        echo "hi";
     }
 }

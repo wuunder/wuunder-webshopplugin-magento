@@ -104,7 +104,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 'wuunder_weight' => $entity['weight'],
                 'phone_number' => $entity['phone_number'],
                 'personal_message' => $entity['personal_message'],
-                'retour_message' => $entity['retour_message']
+                'retour_message' => $entity['retour_message'],
+                'booking_url' => $entity['booking_url']
             );
         } else {
             $returnArray = array(
@@ -197,25 +198,20 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
-        // Create or update wuunder_shipment
-        $wuunderShipmentSaved = $this->saveWuunderShipment($infoArray);
-        if (!$wuunderShipmentSaved) {
-            return array('error' => true, 'message' => 'Unable to create / update wuunder_shipment for order ' . $infoArray['order_id']);
-        }
-
         // Fetch order
         $order = Mage::getModel('sales/order')->load($infoArray['order_id']);
         $storeId = $order->getStoreId();
 
         // Get configuration
         $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
+        $redirectUrl = urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'index.php/admin/sales_order');
+        $webhookUrl = urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/' . $infoArray['order_id']);
 
         if ($testMode == 1) {
-//            $apiUrl = 'https://api-staging.wuunder.co/api/shipments';
-            $apiUrl = 'https://api-staging.wuunder.co/api/bookings?redirect_url=www.google.nl&webhook_url=www.google.com';
+            $apiUrl = 'https://api-staging.wuunder.co/api/bookings?redirect_url=' . $redirectUrl . '&webhook_url=' . $webhookUrl;
             $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_test', $storeId);
         } else {
-            $apiUrl = 'https://api.wuunder.co/api/shipments';
+            $apiUrl = 'https://api.wuunder.co/api/bookings?redirect_url=' . $redirectUrl . '&webhook_url=' . $webhookUrl;
             $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_live', $storeId);
         }
 
@@ -246,14 +242,16 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $header = substr($result, 0, $header_size);
         preg_match("!\r\n(?:location|URI): *(.*?) *\r\n!", $header, $matches);
         $url = $matches[1];
-//        Mage::log($header);
-//        Mage::log($url);
 
         // Close connection
         curl_close($cc);
 
-        header('Location: https://api-staging.wuunder.co'.$url);
-        die();
+        $infoArray['booking_url'] = $url;
+        // Create or update wuunder_shipment
+        $wuunderShipmentSaved = $this->saveWuunderShipment($infoArray);
+        if (!$wuunderShipmentSaved) {
+            return array('error' => true, 'message' => 'Unable to create / update wuunder_shipment for order ' . $infoArray['order_id']);
+        }
 
         Mage::helper('wuunderconnector')->log('API response string: ' . $result);
 
@@ -396,7 +394,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $shipmentId = $mageDbW->fetchOne($sqlQuery);
 
         if ($shipmentId > 0) {
-
             $messageField = ($infoArray['label_type'] == 'retour') ? 'retour_message' : 'personal_message';
 
             $sqlQuery = "UPDATE `" . $this->tblPrfx . "wuunder_shipments` SET
@@ -408,14 +405,14 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                         `height`            = ?,
                         `weight`            = ?,
                         `phone_number`      = ?,
+                        `booking_url`       = ?,
                         `" . $messageField . "`  = ?
                     WHERE
                         `shipment_id`  = ?";
 
-            $sqlValues = array($infoArray['order_id'], $infoArray['reference'], $infoArray['packing_type'], $infoArray['length'], $infoArray['width'], $infoArray['height'], $infoArray['weight'], $infoArray['phone_number'], $infoArray['personal_message'], $shipmentId);
+            $sqlValues = array($infoArray['order_id'], $infoArray['reference'], $infoArray['packing_type'], $infoArray['length'], $infoArray['width'], $infoArray['height'], $infoArray['weight'], $infoArray['phone_number'], $infoArray['booking_url'], $infoArray['personal_message'], $shipmentId);
 
         } else {
-
             $sqlQuery = "INSERT INTO `" . $this->tblPrfx . "wuunder_shipments` SET
                         `order_id`          = ?,
                         `description`       = ?,
@@ -425,18 +422,17 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                         `height`            = ?,
                         `weight`            = ?,
                         `phone_number`      = ?,
+                        `booking_url`       = ?,
                         `personal_message`  = ?";
 
-            $sqlValues = array($infoArray['order_id'], $infoArray['reference'], $infoArray['packing_type'], $infoArray['length'], $infoArray['width'], $infoArray['height'], $infoArray['weight'], $infoArray['phone_number'], $infoArray['personal_message']);
+            $sqlValues = array($infoArray['order_id'], $infoArray['reference'], $infoArray['packing_type'], $infoArray['length'], $infoArray['width'], $infoArray['height'], $infoArray['weight'], $infoArray['phone_number'], $infoArray['booking_url'], $infoArray['personal_message']);
         }
 
         try {
-
             $results = $mageDbW->query($sqlQuery, $sqlValues);
             return true;
 
         } catch (Mage_Core_Exception $e) {
-
             $this->log('ERROR saveWuunderShipment : ' . $e);
             return false;
         }
