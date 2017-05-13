@@ -12,13 +12,9 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
 
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
-        Mage::log($request);
-
         if (!Mage::getStoreConfig('carriers/'.$this->_code.'/active')) {
             return false;
         }
-
-
 
         $handling = Mage::getStoreConfig('carriers/'.$this->_code.'/handling');
         $result = Mage::getModel('shipping/rate_result');
@@ -33,7 +29,6 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
             $method->setPrice($this->getConfigData('price'));
             $method->setCost($this->getConfigData('price'));
             $result->append($method);
-
         }else{
             $error = Mage::getModel('shipping/rate_result_error');
             $error->setCarrier($this->_code);
@@ -52,7 +47,6 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
     public function getTrackingInfo($tracking)
     {
         $result = Mage::helper('wuunderconnector')->getWuunderShipment($tracking);
-        Mage::log($result);
         $track = Mage::getModel('shipping/tracking_result_status');
         $track->setUrl($result)
             ->setTracking($tracking)
