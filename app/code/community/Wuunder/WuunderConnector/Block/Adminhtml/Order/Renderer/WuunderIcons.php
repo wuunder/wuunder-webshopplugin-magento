@@ -4,15 +4,7 @@ class Wuunder_WuunderConnector_Block_Adminhtml_Order_Renderer_WuunderIcons exten
 {
     public function render(Varien_Object $row)
     {
-
-        $icons = '';
         $orderId = $row->getData('entity_id');
-        $labelId = $row->getData('label_id');
-        $labelUrl = $row->getData('label_url');
-        $labelTTUrl = $row->getData('label_tt_url');
-        $retourId = $row->getData('retour_id');
-        $retourUrl = $row->getData('retour_url');
-        $retourTTUrl = $row->getData('retour_tt_url');
 
         $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
         $order = Mage::getModel('sales/order')->load($orderId);
