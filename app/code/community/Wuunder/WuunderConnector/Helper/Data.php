@@ -234,7 +234,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         // Don't log base64 image string
         $wuunderData['picture'] = 'base64 string removed';
-        Mage::helper('wuunderconnector')->log('API request string: ' . json_encode($wuunderData));
 
         // Execute the cURL, fetch the XML
         $result = curl_exec($cc);
