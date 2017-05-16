@@ -1,12 +1,17 @@
 <?php
+
 class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Front_Action
 {
     public function callAction()
     {
-        echo "hi";
-        Mage::log("BEGIN webhook");
-        Mage::log($this->getRequest());
-        Mage::log("END webhook");
+        Mage::log($this->getRequest()->getParam('order_id'));
+        Mage::log($this->getRequest()->getPost());
+        Mage::log(json_decode(file_get_contents('php://input'), true));
+        if (!is_null($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('order_id'))) {
+            $this->ship($this->getRequest()->getParam('order_id'), json_decode(file_get_contents('php://input'), true)['shipment']['track_and_trace_url']);
+        } else {
+            Mage::helper('wuunderconnector')->log("Invalid order_id for webhook");
+        }
     }
 
     /*

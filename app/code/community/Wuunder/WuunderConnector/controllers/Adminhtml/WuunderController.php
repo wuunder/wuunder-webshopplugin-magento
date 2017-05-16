@@ -11,30 +11,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
     {
     }
 
-    public function createAction()
-    {
-        try {
-
-            $wuunderEnabled = Mage::getStoreConfig('wuunderconnector/connect/enabled');
-
-            if ($wuunderEnabled == 0) {
-
-                Mage::getSingleton('adminhtml/session')->addError('Error: WuunderConnector disabled');
-
-            } else {
-
-                $orderId = $this->getRequest()->getParam('id', null);
-                Mage::register('wuuder_order_id', $orderId);
-                Mage::helper('wuunderconnector')->log('Controller: createAction - Order ID = ' . $orderId);
-
-                $this->loadLayout();
-                $this->renderLayout();
-            }
-        } catch (Exception $e) {
-            Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-        }
-    }
-
     public function processLabelAction()
     {
 
@@ -101,10 +77,17 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 } else {
                     Mage::getSingleton('adminhtml/session')->addSuccess($result['message']);
                 }
+                $booking_Url = "";
+                $order = Mage::getModel('sales/order')->load($orderId);
+                $storeId = $order->getStoreId();
+                $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
+                if ($testMode == 1) {
+                    $booking_Url = 'https://api-staging.wuunder.co' . $result['booking_url'];
+                } else {
+                    $booking_Url = 'https://api.wuunder.co' . $result['booking_url'];
+                }
 
-                $this->_redirect('*/sales_order/index');
-
-//                $this->ship($orderId, $result['original_result']->id);
+                !empty($booking_Url) ? $this->_redirectUrl( $booking_Url) : $this->_redirect('*/sales_order/index');
             } catch (Exception $e) {
 
                 $this->_getSession()->addError(Mage::helper('wuunderconnector')->__('An error occurred while saving the data'));

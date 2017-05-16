@@ -26,23 +26,20 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
                 && !$order->getForcedDoShipmentWithInvoice()
             ) {
                 $orderId = $block->getOrderId();
-                $linkurl = Mage::helper('adminhtml')->getUrl('adminhtml/wuunder/create/', array('id' => $orderId));
                 $block->removeButton('order_ship');
+                $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
+                $storeId = $order->getStoreId();
+                $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
+                if ($testMode == 1) {
+                    $booking_url = 'https://api-staging.wuunder.co' . $shipmentInfo['booking_url'];
+                } else {
+                    $booking_url = 'https://api.wuunder.co' . $shipmentInfo['booking_url'];
+                }
+                $linkurl = (!is_null($shipmentInfo['booking_url']) && !empty($shipmentInfo['booking_url']) ? $booking_url : Mage::helper('adminhtml')->getUrl('adminhtml/wuunder/processLabel', array('id' => $orderId)));
+
                 $block->addButton('order_ship', array(
                     'label' => Mage::helper('sales')->__('Ship'),
-                    'onclick' => '(function(e) {
-                    var $j = jQuery.noConflict();
-                    $j.fancybox(
-                        {
-                            href : \'' . $linkurl . '\',
-                            type: \'ajax\',
-                            width: \'600\',
-                            openEffect: \'elastic\',
-                            afterClose: function () {
-                                parent.location.reload(true);
-                            }
-                        });
-                })(event)',
+                    'onclick' => 'setLocation(\''. $linkurl . '\')',
                     'class' => 'go'
                 ), 0, 40);
             }

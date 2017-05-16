@@ -205,7 +205,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         // Get configuration
         $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
         $redirectUrl = urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'index.php/admin/sales_order');
-        $webhookUrl = urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/' . $infoArray['order_id']);
+        $webhookUrl = urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id']);
 
         if ($testMode == 1) {
             $apiUrl = 'https://api-staging.wuunder.co/api/bookings?redirect_url=' . $redirectUrl . '&webhook_url=' . $webhookUrl;
@@ -217,6 +217,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         // Combine wuunder info and order data
         $wuunderData = $this->buildWuunderData($infoArray, $order);
+
+        Mage::log($wuunderData);
 
         // Encode variables
         $json = json_encode($wuunderData);
@@ -271,11 +273,11 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             return array(
                 'error' => true,
                 'message' => 'Er ging iets fout bij het updaten van tabel wuunder_shipments',
-                'original_result' => $result);
+                'booking_url' => $url);
         } else {
             return array('error' => false,
                 'message' => 'Label met succes aangemaakt',
-                'original_result' => $result);
+                'booking_url' => $url);
         }
     }
 
