@@ -325,7 +325,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'given_name' => $shippingAddress->firstname,
             'locality' => $shippingAddress->city,
             'phone_number' => $infoArray['phone_number'],
-            'street_address' => $streetName,
+            'street_name' => $streetName,
             'house_number' => $houseNumber,
             'zip_code' => $shippingAddress->postcode,
             'country' => $shippingAddress->country_id
@@ -338,7 +338,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'given_name' => Mage::getStoreConfig('wuunderconnector/connect/firstname'),
             'locality' => Mage::getStoreConfig('wuunderconnector/connect/city'),
             'phone_number' => Mage::getStoreConfig('wuunderconnector/connect/phone'),
-            'street_address' => Mage::getStoreConfig('wuunderconnector/connect/streetname'),
+            'street_name' => Mage::getStoreConfig('wuunderconnector/connect/streetname'),
             'house_number' => Mage::getStoreConfig('wuunderconnector/connect/housenumber'),
             'zip_code' => Mage::getStoreConfig('wuunderconnector/connect/zipcode'),
             'country' => Mage::getStoreConfig('wuunderconnector/connect/country')
@@ -353,7 +353,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $receiverAddress = $webshopAdr;
         }
 
-        $orderAmountExclVat = ($order->getGrandTotal() - $order->getTaxAmount());
+        $orderAmountExclVat = ($order->getGrandTotal() - $order->getTaxAmount()) * 100;
 
         // Load product image for first ordered item
         $image = '';
@@ -375,6 +375,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'personal_message' => $infoArray['personal_message'],
             'picture' => $image,
             'customer_reference' => $order->getIncrementId(),
+            'packing_type' => $infoArray['packing_type'],
             'value' => $orderAmountExclVat,
             'kind' => $infoArray['packing_type'],
             'length' => $infoArray['length'],
