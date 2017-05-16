@@ -218,8 +218,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         // Combine wuunder info and order data
         $wuunderData = $this->buildWuunderData($infoArray, $order);
 
-        Mage::log($wuunderData);
-
         // Encode variables
         $json = json_encode($wuunderData);
 
@@ -268,8 +266,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             return $this->showWuunderAPIError($result->errors);
         }
 
-        $processDataSuccess = $this->processDataFromApi($result, $infoArray['label_type'], $infoArray['order_id']);
-        if (!$processDataSuccess) {
+
+        if (empty($url) || is_null($url)) {
             return array(
                 'error' => true,
                 'message' => 'Er ging iets fout bij het updaten van tabel wuunder_shipments',
@@ -291,7 +289,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $sqlUpdate = "UPDATE " . $this->tblPrfx . "wuunder_shipments SET label_id = ?, label_date = now(), label_url = ?, label_tt_url = ? WHERE order_id = ?";
         }
         try {
-            $mageDbW->query($sqlUpdate, array($wuunderApiResult->id, $wuunderApiResult->label_url, $wuunderApiResult->track_and_trace_url, $orderId));
+            $mageDbW->query($sqlUpdate, array($wuunderApiResult['id'], $wuunderApiResult['label_url'], $wuunderApiResult['track_and_trace_url'], $orderId));
             return true;
         } catch (Mage_Core_Exception $e) {
             $this->log('ERROR saveWuunderShipment : ' . $e);

@@ -4,20 +4,24 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
 {
     public function callAction()
     {
-        Mage::log($this->getRequest()->getParam('order_id'));
-        Mage::log($this->getRequest()->getPost());
-        Mage::log(json_decode(file_get_contents('php://input'), true));
         if (!is_null($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('order_id'))) {
-            $this->ship($this->getRequest()->getParam('order_id'), json_decode(file_get_contents('php://input'), true)['shipment']['track_and_trace_url']);
+            $result = json_decode(file_get_contents('php://input'), true);
+            $this->ship($this->getRequest()->getParam('order_id'), $result['shipment']['id']);
+
+            $processDataSuccess = Mage::helper('wuunderconnector')->processDataFromApi($result['shipment'], "no_retour", $this->getRequest()->getParam('order_id'));
+            if (!$processDataSuccess) {
+                Mage::helper('wuunderconnector')->log("Cannot update wuunder_shipment data");
+            }
         } else {
             Mage::helper('wuunderconnector')->log("Invalid order_id for webhook");
         }
+
     }
 
     /*
      * Ship order items if order->canShip() is true, otherwise only add extra tracking info to existing shipment
      */
-    private function ship($orderId, $trackAndTraceURL)
+    private function ship($orderId, $label_id)
     {
         $email = true;
         $carrier = 'wuunder';
@@ -44,10 +48,11 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
                 $shipment->addItem($item);
             }
 
-            $data = array();
-            $data['carrier_code'] = $carrier;
-            $data['title'] = 'Wuunder';
-            $data['number'] = $trackAndTraceURL;
+            $data = array(
+                'carrier_code' => $carrier,
+                'title' => 'Wuunder',
+                'number' => $label_id
+            );
 
             $track = Mage::getModel('sales/order_shipment_track')->addData($data);
             $shipment->addTrack($track);
@@ -76,10 +81,11 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
                 $shipmentId = $shipment->getId();
                 $shipment = Mage::getModel('sales/order_shipment')->load($shipmentId);
 
-                $data = array();
-                $data['carrier_code'] = $carrier;
-                $data['title'] = 'Wuunder return shipment';
-                $data['number'] = $trackAndTraceURL;
+                $data = array(
+                    'carrier_code' => $carrier,
+                    'title' => 'Wuunder return shipment',
+                    'number' => $label_id
+                );
 
                 $track = Mage::getModel('sales/order_shipment_track')->addData($data);
                 $shipment->addTrack($track);
