@@ -239,7 +239,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $result = curl_exec($cc);
         $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
         $header = substr($result, 0, $header_size);
-        preg_match("!\r\n(?:location|URI): *(.*?) *\r\n!", $header, $matches);
+        preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
         $url = $matches[1];
 
         // Close connection
