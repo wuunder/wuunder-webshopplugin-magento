@@ -88,4 +88,29 @@
 
     </adminhtml_sales_order_index>
 
+    <adminhtml_sales_order_view>
+        <!-- apply layout handle defined above -->
+        <update handle="sales_order_view_update_handle" />
+
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <file>wuunder/js/jquery-1.10.2.min.js</file>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <file>wuunder/js/jquery.fancybox.pack.js</file>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <file>wuunder/js/wuunder.js</file>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <file>wuunder/css/jquery.fancybox.css</file>
+            </action>
+        </reference>
+
+    </adminhtml_sales_order_view>
+
 </layout>
