@@ -92,7 +92,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
                 $this->_getSession()->addError(Mage::helper('wuunderconnector')->__('An error occurred while saving the data'));
                 Mage::logException($e);
-                $this->_redirect('*/*/create');
+                $this->_redirect('*/sales_order/index');
                 return $this;
             }
         }
