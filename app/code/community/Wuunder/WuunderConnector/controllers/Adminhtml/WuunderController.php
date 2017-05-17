@@ -25,15 +25,15 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
                 $messageField = ($infoArray['label_type'] == 'retour') ? 'retour_message' : 'personal_message';
 
-                $order          = Mage::getModel('sales/order')->load($orderId);
-                $shipmentInfo  = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
-                $infoOrder      = Mage::helper('wuunderconnector')->getInfoFromOrder($orderId);
-                $shippingAdr    = $order->getShippingAddress();
+                $order = Mage::getModel('sales/order')->load($orderId);
+                $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
+                $infoOrder = Mage::helper('wuunderconnector')->getInfoFromOrder($orderId);
+                $shippingAdr = $order->getShippingAddress();
 
-                $defLength      = 80;
-                $defWidth       = 50;
-                $defHeight      = 35;
-                $defWeight      = 20000;
+                $defLength = 80;
+                $defWidth = 50;
+                $defHeight = 35;
+                $defWeight = 20000;
 
                 $length = ($shipmentInfo['wuunder_length'] > 0) ? $shipmentInfo['wuunder_length'] : $infoOrder['wuunder_length'];
                 $width = ($shipmentInfo['wuunder_width'] > 0) ? $shipmentInfo['wuunder_width'] : $infoOrder['wuunder_width'];
@@ -49,9 +49,9 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 // Set default values
                 if ($phonenumber == '') {
                     $phonenumber = '+31';
-                } else if ((substr($phonenumber,0,1) == '0') && ($shippingAdr->country_id == 'NL')) {
+                } else if ((substr($phonenumber, 0, 1) == '0') && ($shippingAdr->country_id == 'NL')) {
                     // If NL and phonenumber starting with 06, replace it with +316
-                    $phonenumber = '+31'.substr($phonenumber,1);
+                    $phonenumber = '+31' . substr($phonenumber, 1);
                 }
 
                 $infoArray = array(
@@ -77,17 +77,21 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 } else {
                     Mage::getSingleton('adminhtml/session')->addSuccess($result['message']);
                 }
-                $booking_Url = "";
+                $booking_url = "";
                 $order = Mage::getModel('sales/order')->load($orderId);
                 $storeId = $order->getStoreId();
-                $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
-                if ($testMode == 1) {
-                    $booking_Url = 'https://api-staging.wuunder.co' . $result['booking_url'];
+                if (strpos($result['booking_url'], 'http') === 0) {
+                    $booking_url = $result['booking_url'];
                 } else {
-                    $booking_Url = 'https://api.wuunder.co' . $result['booking_url'];
+                    $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
+                    if ($testMode == 1) {
+                        $booking_url = 'https://api-staging.wuunder.co' . $result['booking_url'];
+                    } else {
+                        $booking_url = 'https://api.wuunder.co' . $result['booking_url'];
+                    }
                 }
 
-                !empty($booking_Url) ? $this->_redirectUrl( $booking_Url) : $this->_redirect('*/sales_order/index');
+                !empty($booking_url) ? $this->_redirectUrl($booking_url) : $this->_redirect('*/sales_order/index');
             } catch (Exception $e) {
 
                 $this->_getSession()->addError(Mage::helper('wuunderconnector')->__('An error occurred while saving the data'));

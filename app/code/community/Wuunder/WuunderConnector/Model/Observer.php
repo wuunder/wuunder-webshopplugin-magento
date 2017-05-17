@@ -16,9 +16,9 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
         );
     }
 
-    public function adminhtmlWidgetContainerHtmlBefore($event)
+    public function adminhtmlWidgetContainerHtmlBefore($observer)
     {
-        $block = $event->getBlock();
+        $block = $observer->getBlock();
 
         if ($block instanceof Mage_Adminhtml_Block_Sales_Order_View) {
             $order = $block->getOrder();
@@ -43,6 +43,22 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
                     'class' => 'go'
                 ), 0, 40);
             }
+        } else if ($block instanceof Mage_Adminhtml_Block_Sales_Order_Shipment_View) {
+            $shipmentId = $block->getRequest()->getParam('shipment_id');
+            if (empty($shipmentId)) {
+                return;
+            }
+            $shipment = Mage::getModel('sales/order_shipment')->load((int)$shipmentId);
+            $orderId = $shipment->getOrder()->getId();
+
+            $block->removeButton('print');
+            $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
+
+            $block->addButton('print', array(
+                'label' => Mage::helper('sales')->__('Ship'),
+                'onclick' => 'setLocation(\''. $shipmentInfo['label_url'] . '\')',
+                'class' => 'save'
+            ), 0, 40);
         }
     }
 }

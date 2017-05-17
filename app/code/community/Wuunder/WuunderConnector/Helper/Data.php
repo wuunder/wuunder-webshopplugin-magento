@@ -95,6 +95,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 'shipment_id' => $entity['shipment_id'],
                 'label_type' => 'retour',
                 'label_id' => $entity['label_id'],
+                'label_url' => $entity['label_url'],
                 'retour_id' => $entity['retour_id'],
                 'package_type' => $entity['type'],
                 'reference' => $entity['description'],
@@ -112,6 +113,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 'shipment_id' => '',
                 'label_type' => 'shipping',
                 'label_id' => '',
+                'label_url' => '',
                 'retour_id' => '',
                 'package_type' => '',
                 'reference' => '',
@@ -285,10 +287,10 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         if ($labelType == 'retour') {
             $sqlUpdate = "UPDATE " . $this->tblPrfx . "wuunder_shipments SET retour_id = ?, retour_date = now(), retour_url = ?, retour_tt_url = ? WHERE order_id = ?";
         } else {
-            $sqlUpdate = "UPDATE " . $this->tblPrfx . "wuunder_shipments SET label_id = ?, label_date = now(), label_url = ?, label_tt_url = ? WHERE order_id = ?";
+            $sqlUpdate = "UPDATE " . $this->tblPrfx . "wuunder_shipments SET label_id = ?, label_date = now(), label_url = ?, label_tt_url = ?, label_url = ? WHERE order_id = ?";
         }
         try {
-            $mageDbW->query($sqlUpdate, array($wuunderApiResult['id'], $wuunderApiResult['label_url'], $wuunderApiResult['track_and_trace_url'], $orderId));
+            $mageDbW->query($sqlUpdate, array($wuunderApiResult['id'], $wuunderApiResult['label_url'], $wuunderApiResult['track_and_trace_url'], $wuunderApiResult['label_url'], $orderId));
             return true;
         } catch (Mage_Core_Exception $e) {
             $this->log('ERROR saveWuunderShipment : ' . $e);
