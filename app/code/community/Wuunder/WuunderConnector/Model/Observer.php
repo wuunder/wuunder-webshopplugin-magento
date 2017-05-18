@@ -55,7 +55,7 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
             $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
 
             $block->addButton('print', array(
-                'label' => Mage::helper('sales')->__('Ship'),
+                'label' => Mage::helper('sales')->__('Print'),
                 'onclick' => 'setLocation(\''. $shipmentInfo['label_url'] . '\')',
                 'class' => 'save'
             ), 0, 40);
