@@ -11,7 +11,9 @@ class Wuunder_WuunderConnector_Block_Adminhtml_Order_Renderer_WuunderIcons exten
         $storeId = $order->getStoreId();
         $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
         if (!is_null($shipmentInfo['booking_url']) && !empty($shipmentInfo['booking_url'])) {
-            if ($testMode == 1) {
+            if (strpos($shipmentInfo['booking_url'], 'http:') === 0 || strpos($shipmentInfo['booking_url'], 'https:') === 0) {
+                $booking_Url = $shipmentInfo['booking_url'];
+            } else if ($testMode == 1) {
                 $booking_Url = 'https://api-staging.wuunder.co' . $shipmentInfo['booking_url'];
             } else {
                 $booking_Url = 'https://api.wuunder.co' . $shipmentInfo['booking_url'];

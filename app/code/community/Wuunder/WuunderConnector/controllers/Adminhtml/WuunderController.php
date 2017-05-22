@@ -80,7 +80,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 $booking_url = "";
                 $order = Mage::getModel('sales/order')->load($orderId);
                 $storeId = $order->getStoreId();
-                if (strpos($result['booking_url'], 'http') === 0) {
+                if (strpos($result['booking_url'], 'http:') === 0 || strpos($result['booking_url'], 'https:') === 0) {
                     $booking_url = $result['booking_url'];
                 } else {
                     $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
