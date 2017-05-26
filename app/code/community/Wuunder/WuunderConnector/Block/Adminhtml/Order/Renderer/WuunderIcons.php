@@ -4,29 +4,15 @@ class Wuunder_WuunderConnector_Block_Adminhtml_Order_Renderer_WuunderIcons exten
 {
     public function render(Varien_Object $row)
     {
-        $orderId = $row->getData('entity_id');
-
-        $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
-        $order = Mage::getModel('sales/order')->load($orderId);
-        $storeId = $order->getStoreId();
-        $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
-        if (!is_null($shipmentInfo['booking_url']) && !empty($shipmentInfo['booking_url'])) {
-            if (strpos($shipmentInfo['booking_url'], 'http:') === 0 || strpos($shipmentInfo['booking_url'], 'https:') === 0) {
-                $booking_Url = $shipmentInfo['booking_url'];
-            } else if ($testMode == 1) {
-                $booking_Url = 'https://api-staging.wuunder.co' . $shipmentInfo['booking_url'];
-            } else {
-                $booking_Url = 'https://api.wuunder.co' . $shipmentInfo['booking_url'];
-            }
+        $orderId    = $row->getData('entity_id');
+        if (!empty($row->getData('label_id'))) {
+            $icons = '<li class="wuunder-label-download"><a href="' . $row->getData('label_url') . '"  target="_blank" title="Print verzendlabel"></a></li>';
+        } else {
+            $icons = '<li class="wuunder-label-create"><a href="' . $this->getUrl('adminhtml/wuunder/processLabel', array('id' => $orderId)) . '" title="Verzendlabel aanmaken"></a></li>';
         }
 
-        // Retour ID found -> Shipping label was generated
-        $linkurl = (!is_null($shipmentInfo['booking_url']) && !empty($shipmentInfo['booking_url']) ? $booking_Url : $this->getUrl('adminhtml/wuunder/processLabel', array('id' => $orderId)));
-        $icons = '<a href="' . $linkurl . '" title="Verzendlabel aanmaken">' . ((!is_null($shipmentInfo['booking_url']) && !empty($shipmentInfo['booking_url'])) ? "Bekijk zending" : "Boek") . '</a>';
-//        }
-
         if ($icons != '') {
-            $icons = '<div class="wuunder-icons">' . $icons . '</div>';
+            $icons = '<div class="wuunder-icons"><ul>' . $icons . '</ul></div>';
         }
 
         return $icons;
