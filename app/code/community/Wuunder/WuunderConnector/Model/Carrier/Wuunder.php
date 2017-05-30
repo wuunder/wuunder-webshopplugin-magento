@@ -12,8 +12,6 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
 
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
-        Mage::log($request);
-
         if (!Mage::getStoreConfig('carriers/'.$this->_code.'/active')) {
             return false;
         }
