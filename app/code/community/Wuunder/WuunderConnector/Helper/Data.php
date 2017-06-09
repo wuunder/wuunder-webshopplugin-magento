@@ -352,7 +352,10 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $receiverAddress = $webshopAdr;
         }
 
-        $orderAmountExclVat = ($order->getGrandTotal() - $order->getTaxAmount()) * 100;
+        $orderAmountExclVat = ($order->getGrandTotal() - $order->getTaxAmount() - $order->getShippingAmount()) * 100;
+        if ($orderAmountExclVat <= 0) {
+            $orderAmountExclVat = 2500;
+        }
 
         // Load product image for first ordered item
         $image = '';

@@ -28,6 +28,5 @@ $installer->run("
 	  `retour_tt_url` text DEFAULT NULL,
 	  PRIMARY KEY (`shipment_id`)
 	) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
 ");
 $installer->endSetup();

@@ -22,7 +22,6 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
         $result = Mage::getModel('shipping/rate_result');
         $show = true;
         if($show){ // This if condition is just to demonstrate how to return success and error in shipping methods
-
             $method = Mage::getModel('shipping/rate_result_method');
             $method->setCarrier($this->_code);
             $method->setMethod($this->_code);
@@ -31,7 +30,6 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
             $method->setPrice($this->getConfigData('price'));
             $method->setCost($this->getConfigData('price'));
             $result->append($method);
-
         }else{
             $error = Mage::getModel('shipping/rate_result_error');
             $error->setCarrier($this->_code);
