@@ -352,7 +352,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $receiverAddress = $webshopAdr;
         }
 
-        $orderAmountExclVat = ($order->getGrandTotal() - $order->getTaxAmount() - $order->getShippingAmount()) * 100;
+        $orderAmountExclVat = round(($order->getGrandTotal() - $order->getTaxAmount() - $order->getShippingAmount()) * 100);
         if ($orderAmountExclVat <= 0) {
             $orderAmountExclVat = 2500;
         }
