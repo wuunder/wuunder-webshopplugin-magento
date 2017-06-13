@@ -206,7 +206,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         // Get configuration
         $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
-        $redirectUrl = urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'index.php/admin/sales_order');
+        $redirectUrl = urlencode(Mage::getUrl('adminhtml') . 'sales_order');
         $webhookUrl = urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id']);
 
         if ($testMode == 1) {
