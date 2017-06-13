@@ -30,16 +30,20 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
                 $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
                 $storeId = $order->getStoreId();
                 $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
-                if ($testMode == 1) {
-                    $booking_url = 'https://api-staging.wuunder.co' . $shipmentInfo['booking_url'];
+                if (strpos($shipmentInfo['booking_url'], 'http:') === 0 || strpos($shipmentInfo['booking_url'], 'https:') === 0) {
+                    $booking_url = $shipmentInfo['booking_url'];
                 } else {
-                    $booking_url = 'https://api.wuunder.co' . $shipmentInfo['booking_url'];
+                    if ($testMode == 1) {
+                        $booking_url = 'https://api-staging.wuunder.co' . $shipmentInfo['booking_url'];
+                    } else {
+                        $booking_url = 'https://api.wuunder.co' . $shipmentInfo['booking_url'];
+                    }
                 }
                 $linkurl = (!is_null($shipmentInfo['booking_url']) && !empty($shipmentInfo['booking_url']) ? $booking_url : Mage::helper('adminhtml')->getUrl('adminhtml/wuunder/processLabel', array('id' => $orderId)));
 
                 $block->addButton('order_ship', array(
                     'label' => Mage::helper('sales')->__('Ship'),
-                    'onclick' => 'setLocation(\''. $linkurl . '\')',
+                    'onclick' => 'setLocation(\'' . $linkurl . '\')',
                     'class' => 'go'
                 ), 0, 40);
             }
@@ -56,7 +60,7 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
 
             $block->addButton('print', array(
                 'label' => Mage::helper('sales')->__('Print'),
-                'onclick' => 'setLocation(\''. $shipmentInfo['label_url'] . '\')',
+                'onclick' => 'setLocation(\'' . $shipmentInfo['label_url'] . '\')',
                 'class' => 'save'
             ), 0, 40);
         }
