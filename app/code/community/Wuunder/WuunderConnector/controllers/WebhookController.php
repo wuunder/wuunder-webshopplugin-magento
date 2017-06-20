@@ -4,18 +4,26 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
 {
     public function callAction()
     {
-        if (!is_null($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('order_id'))) {
+        if (!is_null($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('order_id')) && !is_null($this->getRequest()->getParam('token')) && !empty($this->getRequest()->getParam('token'))) {
             $result = json_decode(file_get_contents('php://input'), true);
-            $this->ship($this->getRequest()->getParam('order_id'), $result['shipment']['id']);
 
-            $processDataSuccess = Mage::helper('wuunderconnector')->processDataFromApi($result['shipment'], "no_retour", $this->getRequest()->getParam('order_id'));
+            $processDataSuccess = Mage::helper('wuunderconnector')->processDataFromApi($result['shipment'], "no_retour", $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'));
             if (!$processDataSuccess) {
                 Mage::helper('wuunderconnector')->log("Cannot update wuunder_shipment data");
+            }else{
+                $this->ship($this->getRequest()->getParam('order_id'), $result['shipment']['id']);
             }
         } else {
             Mage::helper('wuunderconnector')->log("Invalid order_id for webhook");
         }
 
+    }
+
+    public function testAction()
+    {
+        echo "hi";
+        echo $this->getRequest()->getParam('order_id');
+        echo $this->getRequest()->getParam('token');
     }
 
     /*

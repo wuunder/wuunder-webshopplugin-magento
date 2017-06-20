@@ -22,6 +22,7 @@ $installer->run("
 	  `label_url` text DEFAULT NULL,
 	  `label_tt_url` text DEFAULT NULL,
 	  `booking_url` text DEFAULT NULL,
+	  `booking_token` text DEFAULT NULL,
 	  `retour_id` varchar(255) DEFAULT NULL,
 	  `retour_date` int(10) NOT NULL DEFAULT '0',
 	  `retour_url` text DEFAULT NULL,

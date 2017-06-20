@@ -19,8 +19,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
             try {
 
-//                $data = $this->getRequest()->getPost();
-
                 Mage::helper('wuunderconnector')->log('Controller: processLabelAction - Data', null, 'wuunder.log');
 
                 $messageField = ($infoArray['label_type'] == 'retour') ? 'retour_message' : 'personal_message';
