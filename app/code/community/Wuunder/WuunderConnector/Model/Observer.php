@@ -12,7 +12,7 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
                 'wuunder' => $collection->getTable('wuunderconnector/shipments')
             ),
             'wuunder.order_id = main_table.entity_id',
-            array('label_id', 'label_url', 'label_tt_url', 'retour_id', 'retour_url', 'retour_tt_url')
+            array('label_id', 'label_url', 'label_tt_url', 'retour_id', 'retour_url', 'retour_tt_url', 'booking_url')
         );
     }
 
