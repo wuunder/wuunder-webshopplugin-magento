@@ -10,7 +10,7 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
             $processDataSuccess = Mage::helper('wuunderconnector')->processDataFromApi($result['shipment'], "no_retour", $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'));
             if (!$processDataSuccess) {
                 Mage::helper('wuunderconnector')->log("Cannot update wuunder_shipment data");
-            }else{
+            } else {
                 $this->ship($this->getRequest()->getParam('order_id'), $result['shipment']['id']);
             }
         } else {

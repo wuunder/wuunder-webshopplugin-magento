@@ -208,7 +208,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $test_mode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
         $booking_token = uniqid();
         $infoArray['booking_token'] = $booking_token;
-        $redirect_url = urlencode(Mage::getUrl('adminhtml') . 'sales_order');
+        $redirect_url = urlencode(Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id']);
         $webhook_url = urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $booking_token);
 
         if ($test_mode == 1) {
@@ -276,8 +276,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 'message' => 'Er ging iets fout bij het updaten van tabel wuunder_shipments',
                 'booking_url' => $url);
         } else {
-            return array('error' => false,
-                'message' => 'Label met succes aangemaakt',
+            return array(
+                'error' => false,
                 'booking_url' => $url);
         }
     }

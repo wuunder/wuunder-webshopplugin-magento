@@ -14,6 +14,17 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
             'wuunder.order_id = main_table.entity_id',
             array('label_id', 'label_url', 'label_tt_url', 'retour_id', 'retour_url', 'retour_tt_url', 'booking_url')
         );
+
+    }
+
+    public function adminhtmlBlockHtmlBefore($observer)
+    {
+        if (isset($_REQUEST['label_order'])) {
+            Mage::getSingleton('adminhtml/session')->addSuccess('Label met succes aangemaakt');
+            Mage::app()->getFrontController()->getResponse()->setRedirect((isset($_SERVER['HTTPS']) ? "https://" : "http://") . $_SERVER['HTTP_HOST'] . explode('?', $_SERVER['REQUEST_URI'], 2)[0]);
+            Mage::app()->getResponse()->sendResponse();
+            exit;
+        }
     }
 
     public function adminhtmlWidgetContainerHtmlBefore($observer)

@@ -72,8 +72,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
                 if ($result['error'] === true) {
                     Mage::getSingleton('adminhtml/session')->addError($result['message']);
-                } else {
-                    Mage::getSingleton('adminhtml/session')->addSuccess($result['message']);
                 }
                 $booking_url = "";
                 $order = Mage::getModel('sales/order')->load($orderId);

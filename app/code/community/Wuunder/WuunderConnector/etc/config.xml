@@ -50,6 +50,14 @@
                     </wuunderconnector>
                 </observers>
             </adminhtml_widget_container_html_before>
+            <adminhtml_block_html_before>
+                <observers>
+                    <wuunderconnector>
+                        <model>wuunderconnector/observer</model>
+                        <method>adminhtmlBlockHtmlBefore</method>
+                    </wuunderconnector>
+                </observers>
+            </adminhtml_block_html_before>
         </events>
         <resources>
             <wuunderconnector_setup>
