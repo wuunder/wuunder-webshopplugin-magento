@@ -22,6 +22,7 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
     public function testAction()
     {
         echo "hi";
+        echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         echo $this->getRequest()->getParam('order_id');
         echo $this->getRequest()->getParam('token');
     }

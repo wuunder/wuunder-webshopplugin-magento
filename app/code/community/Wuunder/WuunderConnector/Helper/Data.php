@@ -83,7 +83,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     {
 
         $mageDb = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $sql = "SELECT * FROM " . $this->tblPrfx . "wuunder_shipments WHERE order_id = ?";
+        $sql = "SELECT * FROM " . Mage::getSingleton('core/resource')->getTableName('wuunder_shipments') . " WHERE order_id = ?";
         $results = $mageDb->query($sql, $orderId);
         $entity = $results->fetch();
 
@@ -110,20 +110,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             );
         } else {
             $returnArray = array(
-                'shipment_id' => '',
-                'label_type' => 'shipping',
-                'label_id' => '',
-                'label_url' => '',
-                'retour_id' => '',
-                'package_type' => '',
-                'reference' => '',
-                'wuunder_length' => '',
-                'wuunder_width' => '',
-                'wuunder_height' => '',
-                'wuunder_weight' => '',
-                'phone_number' => '',
-                'personal_message' => '',
-                'retour_message' => ''
+                'label_type' => 'shipping'
             );
         }
 
@@ -505,6 +492,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $pattern = '#^([a-z0-9 [:punct:]\']*) ([0-9]{1,5})([a-z0-9 \-/]{0,})$#i';
 
             preg_match($pattern, $address, $addressParts);
+            Mage::helper('wuunderconnector')->log($address);
+            Mage::helper('wuunderconnector')->log($addressParts);
 
             $result['streetName'] = $addressParts[1];
             $result['houseNumber'] = $addressParts[2];
