@@ -333,7 +333,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         );
 
         // als retour dan wordt het eerste adres die van de klant en anders andersom
-        if ($infoArray['label_type'] == 'retour') {
+        if ($infoArray['label_type'] == 'retour' && false) {
             $senderAddress = $webshopAdr;
             $receiverAddress = $customerAdr;
         } else {
@@ -366,16 +366,22 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $shipping_method = $order->getShippingMethod();
+        Mage::helper('wuunderconnector')->log("shipping method: ".$shipping_method);
         $shipping_key = "";
-        if (in_array($shipping_method, explode(',', Mage::getStoreConfig('wuunderconnector/connect/dpdcheapest')))) {
-            $shipping_key = "dpd_cheapest";
-        } else if (in_array($shipping_method, explode(',', Mage::getStoreConfig('wuunderconnector/connect/dpdfastest')))) {
-            $shipping_key = "dpd_fastest";
-        } else if (in_array($shipping_method, explode(',', Mage::getStoreConfig('wuunderconnector/connect/onlydhl')))) {
-            $shipping_key = "only_dhl";
-        } else if (in_array($shipping_method, explode(',', Mage::getStoreConfig('wuunderconnector/connect/onlyrjp')))) {
-            $shipping_key = "only_rjp";
+        if ($shipping_method === Mage::getStoreConfig('wuunderconnector/connect/filterconnect1_value')) {
+            $shipping_key = Mage::getStoreConfig('wuunderconnector/connect/filterconnect1_name');
+        } else if ($shipping_method === Mage::getStoreConfig('wuunderconnector/connect/filterconnect2_value')) {
+            $shipping_key = Mage::getStoreConfig('wuunderconnector/connect/filterconnect2_name');
+        } else if ($shipping_method === Mage::getStoreConfig('wuunderconnector/connect/filterconnect3_value')) {
+            $shipping_key = Mage::getStoreConfig('wuunderconnector/connect/filterconnect3_name');
+        } else if ($shipping_method === Mage::getStoreConfig('wuunderconnector/connect/filterconnect4_value')) {
+            $shipping_key = Mage::getStoreConfig('wuunderconnector/connect/filterconnect4_name');
+        } else if ($shipping_method === Mage::getStoreConfig('wuunderconnector/connect/filterconnect5_value')) {
+            $shipping_key = Mage::getStoreConfig('wuunderconnector/connect/filterconnect5_name');
         }
+        Mage::helper('wuunderconnector')->log("shipping key: ".$shipping_key);
+        Mage::helper('wuunderconnector')->log("shipping key should: ".Mage::getStoreConfig('wuunderconnector/connect/filterconnect1_value'));
+        Mage::helper('wuunderconnector')->log("shipping key : ".$order->getShippingAddress()->getShippingMethod());
 
         return array(
             'description' => $infoArray['reference'],

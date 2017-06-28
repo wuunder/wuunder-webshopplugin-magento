@@ -161,52 +161,107 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </country>
-                        <dpdcheapest translate="label">
-                            <label>Use DPD cheapest for</label>
+                        <filterconnect1_name translate="label">
+                            <label>Filter name (1)</label>
                             <comment></comment>
-                            <frontend_type>multiselect</frontend_type>
-                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <frontend_type>text</frontend_type>
                             <sort_order>120</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                        </dpdcheapest>
-                        <dpdfastest translate="label">
-                            <label>Use DPD fastest for</label>
+                        </filterconnect1_name>
+                        <filterconnect1_value translate="label">
+                            <label>Shipping method (1)</label>
                             <comment></comment>
-                            <frontend_type>multiselect</frontend_type>
-                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <frontend_type>select</frontend_type>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
                             <sort_order>130</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                        </dpdfastest>
-                        <onlydhl translate="label">
-                            <label>Use DHL for</label>
+                        </filterconnect1_value>
+                        <filterconnect2_name translate="label">
+                            <label>Filter name (2)</label>
                             <comment></comment>
-                            <frontend_type>multiselect</frontend_type>
-                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <frontend_type>text</frontend_type>
                             <sort_order>140</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                        </onlydhl>
-                        <onlyrjp translate="label">
-                            <label>Use Red Je Pakketje for</label>
+                        </filterconnect2_name>
+                        <filterconnect2_value translate="label">
+                            <label>Shipping method (2)</label>
                             <comment></comment>
-                            <frontend_type>multiselect</frontend_type>
+                            <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
                             <sort_order>150</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                        </onlyrjp>
+                        </filterconnect2_value>
+                        <filterconnect3_name translate="label">
+                            <label>Filter name (3)</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>160</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect3_name>
+                        <filterconnect3_value translate="label">
+                            <label>Shipping method (3)</label>
+                            <comment></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <sort_order>170</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect3_value>
+                        <filterconnect4_name translate="label">
+                            <label>Filter name (4)</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>180</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect4_name>
+                        <filterconnect4_value translate="label">
+                            <label>Shipping method (4)</label>
+                            <comment></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <sort_order>190</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect4_value>
+                        <filterconnect5_name translate="label">
+                            <label>Filter name (5)</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>200</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect5_name>
+                        <filterconnect5_value translate="label">
+                            <label>Shipping method (5)</label>
+                            <comment></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <sort_order>210</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect5_value>
                         <debug_mode translate="label">
                             <label>Enable Debugging</label>
                             <comment>If Enabled, see /var/log/wuunder.log for debug info</comment>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>160</sort_order>
+                            <sort_order>220</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>

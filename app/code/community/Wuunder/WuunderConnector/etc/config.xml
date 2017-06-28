@@ -32,6 +32,9 @@
             <wuundercarrier>
                 <class>Wuunder_WuunderConnector_Model</class>
             </wuundercarrier>
+            <sourcemodel>
+                <class>Wuunder_WuunderConnector_Model</class>
+            </sourcemodel>
         </models>
         <events>
             <sales_order_grid_collection_load_before>
