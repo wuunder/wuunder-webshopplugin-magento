@@ -40,14 +40,14 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                     $height = ($shipmentInfo['wuunder_height'] > 0) ? $shipmentInfo['wuunder_height'] : $infoOrder['wuunder_height'];
                     $weight = ($shipmentInfo['wuunder_weight'] > 0) ? $shipmentInfo['wuunder_weight'] : $infoOrder['total_weight'];
                     $reference = ($shipmentInfo['reference'] != '') ? $shipmentInfo['reference'] : $infoOrder['product_names'];
-                    $phonenumber = ($shipmentInfo['phone_number'] != '') ? trim($shipmentInfo['phone_number']) : trim($shippingAdr->telephone);
+                    $phonenumber = (!empty($shipmentInfo['phone_number']) && strlen($shipmentInfo['phone_number']) >= 10) ? trim($shipmentInfo['phone_number']) : trim($shippingAdr->telephone);
                 } else {
                     $length = "";
                     $width = "";
                     $height = "";
                     $weight = $infoOrder['total_weight'];
                     $reference = $infoOrder['product_names'];
-                    $phonenumber = "";
+                    $phonenumber = trim($shippingAdr->telephone);
                 }
                 $length = (trim($length) == '') ? $defLength : $length;
                 $width = (trim($width) == '') ? $defWidth : $width;
@@ -74,8 +74,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                     $messageField => array_key_exists("retour_message", $shipmentInfo) ? $shipmentInfo['retour_message'] : '',
                     'phone_number' => $phonenumber,
                 );
-
-                Mage::helper('wuunderconnector')->log($infoArray);
 
                 $result = Mage::helper('wuunderconnector')->processLabelInfo($infoArray);
 

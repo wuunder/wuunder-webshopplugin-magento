@@ -70,6 +70,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'width' => '120px',
             'renderer' => 'Wuunder_WuunderConnector_Block_Adminhtml_Order_Renderer_WuunderIcons',
             'filter' => false,
+            'sortable' => false,
         );
     }
 
@@ -208,7 +209,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         // Combine wuunder info and order data
         $wuunderData = $this->buildWuunderData($infoArray, $order);
-
         // Encode variables
         $json = json_encode($wuunderData);
 
@@ -352,13 +352,29 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         if (count($orderedItems) > 0) {
             foreach ($orderedItems AS $orderedItem) {
                 $_product = Mage::getModel('catalog/product')->load($orderedItem->getProductId());
-                $base64Image = base64_encode(file_get_contents(Mage::helper('catalog/image')->init($_product, 'image')));
+                try {
+                    $base64Image = base64_encode(file_get_contents(Mage::helper('catalog/image')->init($_product, 'image')));
+                } catch (Exception $e) {
+                    $base64Image = '';
+                }
                 if ($base64Image != '') {
                     // Break after first image
                     $image = $base64Image;
                     break;
                 }
             }
+        }
+
+        $shipping_method = $order->getShippingMethod();
+        $shipping_key = "";
+        if (in_array($shipping_method, explode(',', Mage::getStoreConfig('wuunderconnector/connect/dpdcheapest')))) {
+            $shipping_key = "dpd_cheapest";
+        } else if (in_array($shipping_method, explode(',', Mage::getStoreConfig('wuunderconnector/connect/dpdfastest')))) {
+            $shipping_key = "dpd_fastest";
+        } else if (in_array($shipping_method, explode(',', Mage::getStoreConfig('wuunderconnector/connect/onlydhl')))) {
+            $shipping_key = "only_dhl";
+        } else if (in_array($shipping_method, explode(',', Mage::getStoreConfig('wuunderconnector/connect/onlyrjp')))) {
+            $shipping_key = "only_rjp";
         }
 
         return array(
@@ -374,7 +390,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'height' => $infoArray['height'],
             'weight' => $infoArray['weight'],
             'delivery_address' => $senderAddress,
-            'pickup_address' => $receiverAddress
+            'pickup_address' => $receiverAddress,
+            'preferred_service_level' => $shipping_key
         );
     }
 

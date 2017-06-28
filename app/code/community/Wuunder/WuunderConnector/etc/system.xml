@@ -161,12 +161,52 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </country>
+                        <dpdcheapest translate="label">
+                            <label>Use DPD cheapest for</label>
+                            <comment></comment>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </dpdcheapest>
+                        <dpdfastest translate="label">
+                            <label>Use DPD fastest for</label>
+                            <comment></comment>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </dpdfastest>
+                        <onlydhl translate="label">
+                            <label>Use DHL for</label>
+                            <comment></comment>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </onlydhl>
+                        <onlyrjp translate="label">
+                            <label>Use Red Je Pakketje for</label>
+                            <comment></comment>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <sort_order>150</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </onlyrjp>
                         <debug_mode translate="label">
                             <label>Enable Debugging</label>
                             <comment>If Enabled, see /var/log/wuunder.log for debug info</comment>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>120</sort_order>
+                            <sort_order>160</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>

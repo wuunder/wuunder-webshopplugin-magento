@@ -6,7 +6,6 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
     {
         if (!is_null($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('order_id')) && !is_null($this->getRequest()->getParam('token')) && !empty($this->getRequest()->getParam('token'))) {
             $result = json_decode(file_get_contents('php://input'), true);
-
             $processDataSuccess = Mage::helper('wuunderconnector')->processDataFromApi($result['shipment'], "no_retour", $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'));
             if (!$processDataSuccess) {
                 Mage::helper('wuunderconnector')->log("Cannot update wuunder_shipment data");
@@ -21,10 +20,10 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
 
     public function testAction()
     {
-        echo "hi";
-        echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
-        echo $this->getRequest()->getParam('order_id');
-        echo $this->getRequest()->getParam('token');
+        echo Mage::getStoreConfig('wuunderconnector/connect/dpdcheapest')."<br/>";
+        echo Mage::getStoreConfig('wuunderconnector/connect/dpdfastest')."<br/>";
+        echo Mage::getStoreConfig('wuunderconnector/connect/onlydhl')."<br/>";
+        echo Mage::getStoreConfig('wuunderconnector/connect/onlyrjp')."<br/>";
     }
 
     /*
