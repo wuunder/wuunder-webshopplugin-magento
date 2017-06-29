@@ -193,7 +193,7 @@
                             <label>Shipping method (2)</label>
                             <comment></comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
                             <sort_order>150</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
@@ -212,7 +212,7 @@
                             <label>Shipping method (3)</label>
                             <comment></comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
                             <sort_order>170</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
@@ -231,7 +231,7 @@
                             <label>Shipping method (4)</label>
                             <comment></comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
                             <sort_order>190</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
@@ -250,7 +250,7 @@
                             <label>Shipping method (5)</label>
                             <comment></comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_shipping_allmethods</source_model>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
                             <sort_order>210</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>

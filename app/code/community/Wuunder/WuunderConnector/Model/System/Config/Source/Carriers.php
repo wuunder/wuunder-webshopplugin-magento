@@ -12,7 +12,7 @@ class Wuunder_WuunderConnector_Model_System_Config_Source_Carriers extends Mage_
             if(!$_title = Mage::getStoreConfig("carriers/$_code/title"))
                 $_title = $_code;
 
-            $options[] = array('value' => $_code, 'label' => $_title . " ($_code)");
+            $options[] = array('value' => $_code."_".$_code, 'label' => $_title . " ($_code)");
         }
 
         if(false)
@@ -28,13 +28,14 @@ class Wuunder_WuunderConnector_Model_System_Config_Source_Carriers extends Mage_
         $methods = Mage::getSingleton('shipping/config')->getActiveCarriers();
 
         $options = array();
-
+        Mage::helper('wuunderconnector')->log("Methods");
+        Mage::helper('wuunderconnector')->log($methods);
         foreach($methods as $_code => $_method)
         {
             if(!$_title = Mage::getStoreConfig("carriers/$_code/title"))
                 $_title = $_code;
 
-            $options[] = array('value' => $_code, 'label' => $_title . " ($_code)");
+            $options[] = array('value' => $_code."_".$_code, 'label' => $_title . " ($_code)");
         }
 
         if(false)
