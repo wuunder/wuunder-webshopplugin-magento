@@ -55,9 +55,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 $weight = (trim($weight) == '' || $weight == 0) ? $defWeight : $weight;
 
                 // Set default values
-                if ($phonenumber == '') {
-                    $phonenumber = '+31';
-                } else if ((substr($phonenumber, 0, 1) == '0') && ($shippingAdr->country_id == 'NL')) {
+                if ((substr($phonenumber, 0, 1) == '0') && ($shippingAdr->country_id == 'NL')) {
                     // If NL and phonenumber starting with 06, replace it with +316
                     $phonenumber = '+31' . substr($phonenumber, 1);
                 }

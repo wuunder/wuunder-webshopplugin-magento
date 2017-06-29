@@ -332,15 +332,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'country' => Mage::getStoreConfig('wuunderconnector/connect/country')
         );
 
-        // als retour dan wordt het eerste adres die van de klant en anders andersom
-        if ($infoArray['label_type'] == 'retour' && false) {
-            $senderAddress = $webshopAdr;
-            $receiverAddress = $customerAdr;
-        } else {
-            $senderAddress = $customerAdr;
-            $receiverAddress = $webshopAdr;
-        }
-
         $orderAmountExclVat = round(($order->getGrandTotal() - $order->getTaxAmount() - $order->getShippingAmount()) * 100);
         if ($orderAmountExclVat <= 0) {
             $orderAmountExclVat = 2500;
@@ -379,9 +370,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         } else if ($shipping_method === Mage::getStoreConfig('wuunderconnector/connect/filterconnect5_value')) {
             $shipping_key = Mage::getStoreConfig('wuunderconnector/connect/filterconnect5_name');
         }
-        Mage::helper('wuunderconnector')->log("shipping key: ".$shipping_key);
-        Mage::helper('wuunderconnector')->log("shipping key should: ".Mage::getStoreConfig('wuunderconnector/connect/filterconnect1_value'));
-        Mage::helper('wuunderconnector')->log("shipping key : ".$order->getShippingAddress()->getShippingMethod());
 
         return array(
             'description' => $infoArray['reference'],
@@ -395,8 +383,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'width' => $infoArray['width'],
             'height' => $infoArray['height'],
             'weight' => $infoArray['weight'],
-            'delivery_address' => $senderAddress,
-            'pickup_address' => $receiverAddress,
+            'delivery_address' => $customerAdr,
+            'pickup_address' => $webshopAdr,
             'preferred_service_level' => $shipping_key
         );
     }
@@ -515,11 +503,9 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $pattern = '#^([a-z0-9 [:punct:]\']*) ([0-9]{1,5})([a-z0-9 \-/]{0,})$#i';
 
             preg_match($pattern, $address, $addressParts);
-            Mage::helper('wuunderconnector')->log($address);
-            Mage::helper('wuunderconnector')->log($addressParts);
 
-            $result['streetName'] = $addressParts[1];
-            $result['houseNumber'] = $addressParts[2];
+            $result['streetName'] = isset($addressParts[1]) ? $addressParts[1] : $address;
+            $result['houseNumber'] = isset($addressParts[2]) ? $addressParts[2] : "";
             $result['houseNumberSuffix'] = (isset($addressParts[3])) ? $addressParts[3] : '';
         }
 
