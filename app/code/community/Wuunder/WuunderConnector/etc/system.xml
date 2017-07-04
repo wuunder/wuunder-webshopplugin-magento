@@ -161,6 +161,40 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </country>
+                        <heading_enabled_shipping_methods translate="label">
+                            <label>Wuunder enabled shipping methods</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>111</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </heading_enabled_shipping_methods>
+                        <wuunder_enabled_shipping_methods translate="label">
+                            <label>Wuunder is enabled for the following selected shipping methods</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
+                            <sort_order>112</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </wuunder_enabled_shipping_methods>
+                        <heading1 translate="label">
+                            <label>Mapping Wuunder filter - Shipping method</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>115</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </heading1>
+                        <enable_filtermapping translate="label">
+                            <label>Enable mapping</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>116</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </enable_filtermapping>
                         <filterconnect1_name translate="label">
                             <label>Filter name (1)</label>
                             <comment></comment>
@@ -256,6 +290,14 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </filterconnect5_value>
+                        <heading2 translate="label">
+                            <label>Debugging</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>215</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </heading2>
                         <debug_mode translate="label">
                             <label>Enable Debugging</label>
                             <comment>If Enabled, see /var/log/wuunder.log for debug info</comment>

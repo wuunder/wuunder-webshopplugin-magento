@@ -15,7 +15,6 @@ $installer->run("
 	  `weight` int(10) NOT NULL DEFAULT '0',
 	  `phone_number` varchar(255) DEFAULT NULL,
 	  `personal_message` text DEFAULT NULL,
-	  `retour_message` text DEFAULT NULL,
 	  `image` blob,
 	  `label_id` varchar(255) DEFAULT NULL,
 	  `label_date` int(10) NOT NULL DEFAULT '0',
@@ -23,10 +22,6 @@ $installer->run("
 	  `label_tt_url` text DEFAULT NULL,
 	  `booking_url` text DEFAULT NULL,
 	  `booking_token` text DEFAULT NULL,
-	  `retour_id` varchar(255) DEFAULT NULL,
-	  `retour_date` int(10) NOT NULL DEFAULT '0',
-	  `retour_url` text DEFAULT NULL,
-	  `retour_tt_url` text DEFAULT NULL,
 	  PRIMARY KEY (`shipment_id`)
 	) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 ");

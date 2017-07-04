@@ -29,9 +29,10 @@
 "Weight Unit","Eenheid gewicht"
 "Yes","Ja"
 "Zipcode","Postcode"
-
-"Use DPD cheapest for","Gebruik DPD cheapest voor"
-"Use DPD fastest for","Gebruik DPD fastest voor"
-"DHL for","gebruik DHL voor"
-"Use Red Je Pakketje for","Gebruik Red Je Pakketje voor"
+"Wuunder enabled shipping methods","Wuunder geactiveerde verzendmethoden"
+"Wuunder is enabled for the following selected shipping methods","Wuunder is geactiveerd voor de volgende geselecteerde verzendmethoden"
+"Mapping Wuunder filter - Shipping method","Mapping van Wuunder filters - verzendmethoden"
+"Enable mapping","Mapping activeren"
+"Shipping method (%s)","Verzendmethode (%s)"
+"Filter name (%s)","Filternaam (%s)"
 

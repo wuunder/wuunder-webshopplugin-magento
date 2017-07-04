@@ -22,7 +22,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
                 Mage::helper('wuunderconnector')->log('Controller: processLabelAction - Data', null, 'wuunder.log');
 
-                $messageField = (isset($infoArray['label_type']) && $infoArray['label_type'] == 'retour') ? 'retour_message' : 'personal_message';
+                $messageField = 'personal_message';
 
                 $order = Mage::getModel('sales/order')->load($orderId);
                 $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
@@ -69,7 +69,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                     'height' => $height,
                     'weight' => $weight,
                     'reference' => $reference,
-                    $messageField => array_key_exists("retour_message", $shipmentInfo) ? $shipmentInfo['retour_message'] : '',
+                    $messageField => '',
                     'phone_number' => $phonenumber,
                 );
 
