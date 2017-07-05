@@ -36,15 +36,14 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
             $shipping_method = $order->getShippingMethod();
             if (in_array($shipping_method, explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods')))) {
                 if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/ship') && $order->canShip()
-                    && !$order->getForcedDoShipmentWithInvoice()
-                ) {
+                    && !$order->getForcedDoShipmentWithInvoice()) {
                     $orderId = $block->getOrderId();
                     $block->removeButton('order_ship');
                     $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
                     $storeId = $order->getStoreId();
                     $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
 
-                    if (array_key_exists("booking_url", $shipmentInfo)) {
+                    if (isset($shipmentInfo["booking_url"])) {
                         if (strpos($shipmentInfo['booking_url'], 'http:') === 0 || strpos($shipmentInfo['booking_url'], 'https:') === 0) {
                             $booking_url = $shipmentInfo['booking_url'];
                         } else {

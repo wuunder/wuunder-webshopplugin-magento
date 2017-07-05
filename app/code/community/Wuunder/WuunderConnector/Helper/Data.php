@@ -82,13 +82,10 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getShipmentInfo($orderId)
     {
-
         $mageDb = Mage::getSingleton('core/resource')->getConnection('core_read');
         $sql = "SELECT * FROM " . Mage::getSingleton('core/resource')->getTableName('wuunder_shipments') . " WHERE order_id = ?";
         $results = $mageDb->query($sql, $orderId);
         $entity = $results->fetch();
-
-        $returnArray = array();
 
         if ($entity) {
             $returnArray = array(
@@ -98,7 +95,9 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 'label_url' => $entity['label_url'],
                 'package_type' => $entity['type'],
                 'reference' => $entity['description'],
-                'personal_message' => $entity['personal_message']
+                'personal_message' => $entity['personal_message'],
+                'booking_url' => $entity['booking_url'],
+                'booking_token' => $entity['booking_token']
             );
         } else {
             $returnArray = array(
@@ -114,7 +113,9 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 'wuunder_weight' => '',
                 'phone_number' => '',
                 'personal_message' => '',
-                'retour_message' => ''
+                'retour_message' => '',
+                'booking_url' => '',
+                'booking_token' => ''
             );
         }
 
@@ -160,7 +161,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getWebshopAddress()
     {
-
         return array(
             'company' => Mage::getStoreConfig('wuunderconnector/connect/company'),
             'firstname' => Mage::getStoreConfig('wuunderconnector/connect/firstname'),
@@ -188,8 +188,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $test_mode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
         $booking_token = uniqid();
         $infoArray['booking_token'] = $booking_token;
-        $redirect_url = str_replace("https", "http", urlencode(Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id']));
-        $webhook_url = str_replace("https", "http", urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $booking_token));
+        $redirect_url = urlencode(Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id']);
+        $webhook_url = urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $booking_token);
 
         if ($test_mode == 1) {
             $apiUrl = 'https://api-staging.wuunder.co/api/bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
@@ -203,7 +203,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $wuunderData = $this->buildWuunderData($infoArray, $order);
         // Encode variables
         $json = json_encode($wuunderData);
-        Mage::helper('wuunderconnector')->log($wuunderData);
         // Setup API connection
         $cc = curl_init($apiUrl);
         $this->log('API connection established');
@@ -216,7 +215,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         curl_setopt($cc, CURLOPT_HEADER, 1);
 
         // Don't log base64 image string
-        $wuunderData['picture'] = 'base64 string removed';
+        $wuunderData['picture'] = 'base64 string removed for logging';
 
         // Execute the cURL, fetch the XML
         $result = curl_exec($cc);
@@ -230,8 +229,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         $infoArray['booking_url'] = $url;
         // Create or update wuunder_shipment
-        $wuunderShipmentSaved = $this->saveWuunderShipment($infoArray);
-        if (!$wuunderShipmentSaved) {
+        if (!$this->saveWuunderShipment($infoArray)) {
             return array('error' => true, 'message' => 'Unable to create / update wuunder_shipment for order ' . $infoArray['order_id']);
         }
 
@@ -451,79 +449,77 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $this->log('ERROR getWuunderShipment : ' . $e);
             return false;
         }
-}
-
-public
-function addressSplitter($address, $address2 = null, $address3 = null)
-{
-
-    if (!isset($address)) {
-        return false;
     }
 
-    if (isset($address2) && $address2 != '' && isset($address3) && $address3 != '') {
+    public function addressSplitter($address, $address2 = null, $address3 = null)
+    {
 
-        $result['streetName'] = $address;
-        $result['houseNumber'] = $address2;
-        $result['houseNumberSuffix'] = $address3;
-
-    } else if (isset($address2) && $address2 != '') {
-
-        $result['streetName'] = $address;
-
-        // Pregmatch pattern, dutch addresses
-        $pattern = '#^([0-9]{1,5})([a-z0-9 \-/]{0,})$#i';
-
-        preg_match($pattern, $address2, $houseNumbers);
-
-        $result['houseNumber'] = $houseNumbers[1];
-        $result['houseNumberSuffix'] = (isset($houseNumbers[2])) ? $houseNumbers[2] : '';
-
-    } else {
-
-        // Pregmatch pattern, dutch addresses
-        $pattern = '#^([a-z0-9 [:punct:]\']*) ([0-9]{1,5})([a-z0-9 \-/]{0,})$#i';
-
-        preg_match($pattern, $address, $addressParts);
-
-        $result['streetName'] = isset($addressParts[1]) ? $addressParts[1] : $address;
-        $result['houseNumber'] = isset($addressParts[2]) ? $addressParts[2] : "";
-        $result['houseNumberSuffix'] = (isset($addressParts[3])) ? $addressParts[3] : '';
-    }
-
-    //$this->log('After split => 1) '.$result['streetName'].' / 2) '.$result['houseNumber'].' / 3) '.$result['houseNumberSuffix']);
-    return $result;
-}
-
-
-public
-function showWuunderAPIError($errors)
-{
-
-    // Log error
-    $this->log($errors);
-
-    $errorMessage = '';
-
-    if (is_array($errors)) {
-        if (count($errors) > 0) {
-            foreach ($errors AS $error) {
-
-                $errorMessage .= 'API response error on field(s): ' . $error->field;
-                foreach ($error->messages AS $message) {
-                    $errorMessage .= ' - ' . $message . '<br />';
-                }
-            }
-
-            return array('error' => true, 'message' => $errorMessage);
+        if (!isset($address)) {
+            return false;
         }
-    } else if (is_string($errors)) {
 
-        // Show first 1000 characters
-        //return array('error' => true, 'message' => 'API response error: '.substr($errors,0,1000));
-        return array('error' => true, 'message' => 'API response error: ' . $errors);
+        if (isset($address2) && $address2 != '' && isset($address3) && $address3 != '') {
+
+            $result['streetName'] = $address;
+            $result['houseNumber'] = $address2;
+            $result['houseNumberSuffix'] = $address3;
+
+        } else if (isset($address2) && $address2 != '') {
+
+            $result['streetName'] = $address;
+
+            // Pregmatch pattern, dutch addresses
+            $pattern = '#^([0-9]{1,5})([a-z0-9 \-/]{0,})$#i';
+
+            preg_match($pattern, $address2, $houseNumbers);
+
+            $result['houseNumber'] = $houseNumbers[1];
+            $result['houseNumberSuffix'] = (isset($houseNumbers[2])) ? $houseNumbers[2] : '';
+
+        } else {
+
+            // Pregmatch pattern, dutch addresses
+            $pattern = '#^([a-z0-9 [:punct:]\']*) ([0-9]{1,5})([a-z0-9 \-/]{0,})$#i';
+
+            preg_match($pattern, $address, $addressParts);
+
+            $result['streetName'] = isset($addressParts[1]) ? $addressParts[1] : $address;
+            $result['houseNumber'] = isset($addressParts[2]) ? $addressParts[2] : "";
+            $result['houseNumberSuffix'] = (isset($addressParts[3])) ? $addressParts[3] : '';
+        }
+
+        //$this->log('After split => 1) '.$result['streetName'].' / 2) '.$result['houseNumber'].' / 3) '.$result['houseNumberSuffix']);
+        return $result;
     }
 
-    return array('error' => true, 'message' => 'Unknown error! Enable Wuunder logging and please check /var/log/wuunder.log for more information');
-}
+
+    public function showWuunderAPIError($errors)
+    {
+
+        // Log error
+        $this->log($errors);
+
+        $errorMessage = '';
+
+        if (is_array($errors)) {
+            if (count($errors) > 0) {
+                foreach ($errors AS $error) {
+
+                    $errorMessage .= 'API response error on field(s): ' . $error->field;
+                    foreach ($error->messages AS $message) {
+                        $errorMessage .= ' - ' . $message . '<br />';
+                    }
+                }
+
+                return array('error' => true, 'message' => $errorMessage);
+            }
+        } else if (is_string($errors)) {
+
+            // Show first 1000 characters
+            //return array('error' => true, 'message' => 'API response error: '.substr($errors,0,1000));
+            return array('error' => true, 'message' => 'API response error: ' . $errors);
+        }
+
+        return array('error' => true, 'message' => 'Unknown error! Enable Wuunder logging and please check /var/log/wuunder.log for more information');
+    }
 }
