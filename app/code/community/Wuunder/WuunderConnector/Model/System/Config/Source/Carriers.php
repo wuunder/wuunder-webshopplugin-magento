@@ -28,6 +28,7 @@ class Wuunder_WuunderConnector_Model_System_Config_Source_Carriers extends Mage_
         $methods = Mage::getSingleton('shipping/config')->getActiveCarriers();
 
         $options = array();
+        $options[] = array('value' => "wuunder_default_all_selected", 'label' => "All");
         foreach($methods as $_code => $_method)
         {
             if(!$_title = Mage::getStoreConfig("carriers/$_code/title"))

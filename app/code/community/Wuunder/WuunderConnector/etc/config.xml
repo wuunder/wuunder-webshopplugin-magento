@@ -133,13 +133,13 @@
             </modules>
         </translate>
     </adminhtml>
-
     <default>
         <wuunderconnector>
             <connect>
                 <testmode>1</testmode>
                 <country>NL</country>
                 <loggingenabled>0</loggingenabled>
+                <wuunder_enabled_shipping_methods>wuunder_default_all_selected</wuunder_enabled_shipping_methods>
             </connect>
             <magentoconfig>
             </magentoconfig>

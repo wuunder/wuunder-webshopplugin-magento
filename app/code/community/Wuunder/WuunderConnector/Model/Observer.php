@@ -34,7 +34,8 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
         if ($block instanceof Mage_Adminhtml_Block_Sales_Order_View) {
             $order = Mage::getModel('sales/order')->load($block->getOrderId());
             $shipping_method = $order->getShippingMethod();
-            if (in_array($shipping_method, explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods')))) {
+            if (in_array($shipping_method, explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods'))) ||
+                in_array("wuunder_default_all_selected", explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods')))) {
                 if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/ship') && $order->canShip()
                     && !$order->getForcedDoShipmentWithInvoice()) {
                     $orderId = $block->getOrderId();
@@ -69,7 +70,8 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
         } else if ($block instanceof Mage_Adminhtml_Block_Sales_Order_Shipment_View) {
             $shipment = Mage::registry('current_shipment');
             $shipping_method = Mage::getModel('sales/order')->load($shipment->getOrderId())->getShippingMethod();
-            if (in_array($shipping_method, explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods')))) {
+            if (in_array($shipping_method, explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods'))) ||
+                in_array("wuunder_default_all_selected", explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods')))) {
                 $shipmentId = $block->getRequest()->getParam('shipment_id');
                 if (empty($shipmentId)) {
                     return;

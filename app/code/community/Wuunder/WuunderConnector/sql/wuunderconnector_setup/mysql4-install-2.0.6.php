@@ -26,3 +26,11 @@ $installer->run("
 	) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 ");
 $installer->endSetup();
+$methods = Mage::getSingleton('shipping/config')->getActiveCarriers();
+
+$options = array();
+foreach($methods as $_code => $_method)
+{
+    $options[] = $_code;
+}
+Mage::getConfig()->saveConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods', implode(",", $options), 'default', 0);
