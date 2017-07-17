@@ -20,10 +20,14 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
 
     public function testAction()
     {
-        echo Mage::getStoreConfig('wuunderconnector/connect/dpdcheapest')."<br/>";
-        echo Mage::getStoreConfig('wuunderconnector/connect/dpdfastest')."<br/>";
-        echo Mage::getStoreConfig('wuunderconnector/connect/onlydhl')."<br/>";
-        echo Mage::getStoreConfig('wuunderconnector/connect/onlyrjp')."<br/>";
+        $order = Mage::getModel('sales/order')->load(5);
+        foreach ($order->getAllItems() as $item) {
+            $product=Mage::getModel('catalog/product')->load($item->getProductId());
+            echo $product->getShortDescription();
+        }
+//        echo "<pre>";
+//        var_dump($order->getAllItems());
+//        echo "</pre>";
     }
 
     /*

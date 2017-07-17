@@ -93,9 +93,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 'label_type' => 'shipping',
                 'label_id' => $entity['label_id'],
                 'label_url' => $entity['label_url'],
-                'package_type' => $entity['type'],
-                'reference' => $entity['description'],
-                'personal_message' => $entity['personal_message'],
                 'booking_url' => $entity['booking_url'],
                 'booking_token' => $entity['booking_token']
             );
@@ -104,16 +101,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 'shipment_id' => '',
                 'label_type' => 'shipping',
                 'label_id' => '',
-                'retour_id' => '',
-                'package_type' => '',
-                'reference' => '',
-                'wuunder_length' => '',
-                'wuunder_width' => '',
-                'wuunder_height' => '',
-                'wuunder_weight' => '',
-                'phone_number' => '',
-                'personal_message' => '',
-                'retour_message' => '',
                 'booking_url' => '',
                 'booking_token' => ''
             );
@@ -263,9 +250,9 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     {
         // we slaan iets op dus we hebben core_write nodig
         $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $sqlUpdate = "UPDATE " . $this->tblPrfx . "wuunder_shipments SET label_id = ?, label_date = now(), label_url = ?, label_tt_url = ?, label_url = ? WHERE order_id = ? AND booking_token = ?";
+        $sqlUpdate = "UPDATE " . $this->tblPrfx . "wuunder_shipments SET label_id = ?, label_url = ?, label_tt_url = ? WHERE order_id = ? AND booking_token = ?";
         try {
-            $mageDbW->query($sqlUpdate, array($wuunderApiResult['id'], $wuunderApiResult['label_url'], $wuunderApiResult['track_and_trace_url'], $wuunderApiResult['label_url'], $orderId, $booking_token));
+            $mageDbW->query($sqlUpdate, array($wuunderApiResult['id'], $wuunderApiResult['label_url'], $wuunderApiResult['track_and_trace_url'], $orderId, $booking_token));
             return true;
         } catch (Mage_Core_Exception $e) {
             $this->log('ERROR saveWuunderShipment : ' . $e);
@@ -358,7 +345,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return array(
-            'description' => $infoArray['reference'],
+            'description' => $infoArray['description'],
             'personal_message' => $infoArray['personal_message'],
             'picture' => $image,
             'customer_reference' => $order->getIncrementId(),
@@ -385,40 +372,21 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $shipmentId = $mageDbW->fetchOne($sqlQuery);
 
         if ($shipmentId > 0) {
-            $messageField = 'personal_message';
-
             $sqlQuery = "UPDATE `" . $this->tblPrfx . "wuunder_shipments` SET
                         `order_id`          = ?,
-                        `description`       = ?,
-                        `type`              = ?,
-                        `length`            = ?,
-                        `width`             = ?,
-                        `height`            = ?,
-                        `weight`            = ?,
-                        `phone_number`      = ?,
                         `booking_url`       = ?,
-                        `booking_token`       = ?,
-                        `" . $messageField . "`  = ?
+                        `booking_token`       = ?
                     WHERE
                         `shipment_id`  = ?";
 
-            $sqlValues = array($infoArray['order_id'], $infoArray['reference'], $infoArray['packing_type'], $infoArray['length'], $infoArray['width'], $infoArray['height'], $infoArray['weight'], $infoArray['phone_number'], $infoArray['booking_url'], $infoArray['booking_token'], $infoArray['personal_message'], $shipmentId);
-
+            $sqlValues = array($infoArray['order_id'], $infoArray['booking_url'], $infoArray['booking_token'], $shipmentId);
         } else {
             $sqlQuery = "INSERT INTO `" . $this->tblPrfx . "wuunder_shipments` SET
                         `order_id`          = ?,
-                        `description`       = ?,
-                        `type`              = ?,
-                        `length`            = ?,
-                        `width`             = ?,
-                        `height`            = ?,
-                        `weight`            = ?,
-                        `phone_number`      = ?,
                         `booking_url`       = ?,
-                        `booking_token`       = ?,
-                        `personal_message`  = ?";
+                        `booking_token`       = ?";
 
-            $sqlValues = array($infoArray['order_id'], $infoArray['reference'], $infoArray['packing_type'], $infoArray['length'], $infoArray['width'], $infoArray['height'], $infoArray['weight'], $infoArray['phone_number'], $infoArray['booking_url'], $infoArray['booking_token'], $infoArray['personal_message']);
+            $sqlValues = array($infoArray['order_id'], $infoArray['booking_url'], $infoArray['booking_token']);
         }
 
         try {

@@ -39,7 +39,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                     $width = ($shipmentInfo['wuunder_width'] > 0) ? $shipmentInfo['wuunder_width'] : $infoOrder['wuunder_width'];
                     $height = ($shipmentInfo['wuunder_height'] > 0) ? $shipmentInfo['wuunder_height'] : $infoOrder['wuunder_height'];
                     $weight = ($shipmentInfo['wuunder_weight'] > 0) ? $shipmentInfo['wuunder_weight'] : $infoOrder['total_weight'];
-                    $reference = ($shipmentInfo['reference'] != '') ? $shipmentInfo['reference'] : $infoOrder['product_names'];
+                    $reference = (isset($shipmentInfo['reference']) && $shipmentInfo['reference'] != '') ? $shipmentInfo['reference'] : $infoOrder['product_names'];
                     $phonenumber = (!empty($shipmentInfo['phone_number']) && strlen($shipmentInfo['phone_number']) >= 10) ? trim($shipmentInfo['phone_number']) : trim($shippingAdr->telephone);
                 } else {
                     $length = "";
@@ -49,6 +49,11 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                     $reference = $infoOrder['product_names'];
                     $phonenumber = trim($shippingAdr->telephone);
                 }
+                $shipmentDescription = "";
+                foreach ($order->getAllItems() as $item) {
+                    $product = Mage::getModel('catalog/product')->load($item->getProductId());
+                    $shipmentDescription .= $product->getShortDescription() . " ";
+                }
                 $length = (trim($length) == '') ? $defLength : $length;
                 $width = (trim($width) == '') ? $defWidth : $width;
                 $height = (trim($height) == '') ? $defHeight : $height;
@@ -56,7 +61,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
                 // Set default values
                 if ((substr($phonenumber, 0, 1) == '0') && ($shippingAdr->country_id == 'NL')) {
-                    // If NL and phonenumber starting with 06, replace it with +316
+                    // If NL and phonenumber starting with 0, replace it with +31
                     $phonenumber = '+31' . substr($phonenumber, 1);
                 }
 
@@ -69,6 +74,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                     'height' => $height,
                     'weight' => $weight,
                     'reference' => $reference,
+                    'description' => $shipmentDescription,
                     $messageField => '',
                     'phone_number' => $phonenumber,
                 );
