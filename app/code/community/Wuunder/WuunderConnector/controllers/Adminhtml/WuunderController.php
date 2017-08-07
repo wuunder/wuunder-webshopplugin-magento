@@ -35,10 +35,10 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 $defWeight = 20000;
 
                 if (array_key_exists("shipment_id", $shipmentInfo)) {
-                    $length = ($shipmentInfo['wuunder_length'] > 0) ? $shipmentInfo['wuunder_length'] : $infoOrder['wuunder_length'];
-                    $width = ($shipmentInfo['wuunder_width'] > 0) ? $shipmentInfo['wuunder_width'] : $infoOrder['wuunder_width'];
-                    $height = ($shipmentInfo['wuunder_height'] > 0) ? $shipmentInfo['wuunder_height'] : $infoOrder['wuunder_height'];
-                    $weight = ($shipmentInfo['wuunder_weight'] > 0) ? $shipmentInfo['wuunder_weight'] : $infoOrder['total_weight'];
+                    $length = "";
+                    $width = "";
+                    $height = "";
+                    $weight = $infoOrder['total_weight'];
                     $reference = (isset($shipmentInfo['reference']) && $shipmentInfo['reference'] != '') ? $shipmentInfo['reference'] : $infoOrder['product_names'];
                     $phonenumber = (!empty($shipmentInfo['phone_number']) && strlen($shipmentInfo['phone_number']) >= 10) ? trim($shipmentInfo['phone_number']) : trim($shippingAdr->telephone);
                 } else {
@@ -97,7 +97,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                         $booking_url = 'https://api.wuunder.co' . $result['booking_url'];
                     }
                 }
-
                 !empty($booking_url) ? $this->_redirectUrl($booking_url) : $this->_redirect('*/sales_order/index');
             } catch (Exception $e) {
 

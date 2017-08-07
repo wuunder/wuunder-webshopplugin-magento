@@ -188,6 +188,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         // Combine wuunder info and order data
         $wuunderData = $this->buildWuunderData($infoArray, $order);
+
         // Encode variables
         $json = json_encode($wuunderData);
         // Setup API connection
@@ -278,11 +279,24 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $streetName = $addressParts['streetName'];
         $houseNumber = $addressParts['houseNumber'] . $addressParts['houseNumberSuffix'];
 
+        // Fix DPD parcelshop first- and lastname override fix
+        $firstname = $shippingAddress->firstname;
+        $lastname = $shippingLastname;
+        $company = $shippingAddress->company;
+
+        $shipping_method = $order->getShippingMethod();
+        if ($shipping_method === Mage::getStoreConfig('wuunderconnector/connect/dpd_parcelshop_id') ) {
+            $billingAddress = $order->getBillingAddress();
+            $firstname = $billingAddress->firstname;
+            $lastname = ($billingAddress->middlename != '' ? $billingAddress->middlename." " : "").$billingAddress->lastname;
+            $company = $shippingAddress->firstname . " " . $shippingLastname;
+        }
+
         $customerAdr = array(
-            'business' => $shippingAddress->company,
-            'email_address' => $shippingAddress->email,
-            'family_name' => $shippingLastname,
-            'given_name' => $shippingAddress->firstname,
+            'business' => $company,
+            'email_address' => ($order->getCustomerEmail() !== '' ? $order->getCustomerEmail() : $shippingAddress->email),
+            'family_name' => $lastname,
+            'given_name' => $firstname,
             'locality' => $shippingAddress->city,
             'phone_number' => $infoArray['phone_number'],
             'street_name' => $streetName,
@@ -344,10 +358,22 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
+        $description = $infoArray['description'];
+        $picture = $image;
+        if(file_exists("app/code/community/Wuunder/WuunderConnector/Override/override.php")) {
+            require_once("app/code/community/Wuunder/WuunderConnector/Override/override.php");
+            if (isset($overrideShippingDescription)) {
+                $description = $overrideShippingDescription;
+            }
+            if (isset($overrideShippingImage) && file_exists("app/code/community/Wuunder/WuunderConnector/Override/" . $overrideShippingImage)) {
+                $picture = base64_encode(file_get_contents("app/code/community/Wuunder/WuunderConnector/Override/" . $overrideShippingImage));
+            }
+        }
+
         return array(
-            'description' => $infoArray['description'],
+            'description' => $description,
             'personal_message' => $infoArray['personal_message'],
-            'picture' => $image,
+            'picture' => $picture,
             'customer_reference' => $order->getIncrementId(),
             'packing_type' => $infoArray['packing_type'],
             'value' => $orderAmountExclVat,
