@@ -24,7 +24,7 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
         $password = utf8_encode('¯¿¦tF®fººGe3Ç');
 //        echo Mage::helper('core')->decrypt(Mage::getStoreConfig('shipping/dpdclassic/password'));
         echo "<pre>";
-        var_dump(Mage::getModel('wuunderconnector/dpdwebservice')->getParcelShops(6.17, 51.37));
+        var_dump(Mage::getModel('wuunderconnector/dpdwebservice')->getParcelShops(5.43, 52.13));
         echo "</pre>";
     }
 

@@ -2,10 +2,17 @@
 <config>
     <modules>
         <Wuunder_WuunderConnector>
-            <version>2.0.10</version>
+            <version>3.0.0</version>
         </Wuunder_WuunderConnector>
     </modules>
     <global>
+        <fieldsets>
+            <sales_convert_quote>
+                <dpd_parcelshop_id>
+                    <to_order>*</to_order>
+                </dpd_parcelshop_id>
+            </sales_convert_quote>
+        </fieldsets>
         <blocks>
             <wuunderconnector>
                 <class>Wuunder_WuunderConnector_Block</class>

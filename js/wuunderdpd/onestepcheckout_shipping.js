@@ -14,7 +14,6 @@ DPD.Shipping.addMethods({
         this.invalidateParcelLinkClick = this.invalidateParcel.bind(this);
         this.saveShipping = this.updateProgressBlock.bind(this);
         this.showExtraInfoHover = this.showExtraInfo.bind(this);
-        console.log(this.container);
         if (this.container.down('#map_canvas')) {
             this.initGmaps();
         }

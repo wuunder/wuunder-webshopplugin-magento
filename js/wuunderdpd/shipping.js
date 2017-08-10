@@ -113,7 +113,6 @@ DPD.Shipping = Class.create({
         $H(configForMarkers).each(function (pair) {
             if (pair.key.indexOf("shop") != -1) {
                 var content = pair.value.gmapsMarkerContent;
-                console.log(content);
                 if (pair.value.special && customImage != "") {
                     var marker = new google.maps.Marker({
                         map: map,

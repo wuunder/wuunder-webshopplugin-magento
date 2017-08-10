@@ -125,45 +125,12 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
             $address->unsetAddressId()
                 ->unsetTelephone()
                 ->setSaveInAddressBook(0)
-                ->setFirstname('DPD ParcelShop: ')
-                ->setLastname($quote->getDpdCompany())
+                ->setCompany('Via DPD ParcelShop: '.$quote->getDpdCompany())
                 ->setStreet($quote->getDpdStreet())
                 ->setCity($quote->getDpdCity())
                 ->setPostcode($quote->getDpdZipcode())
                 ->setCountryId($quote->getDpdCountry())
                 ->save();
-        }
-    }
-
-    /**
-     * Sets generate return label button on order detail view in the admin.
-     * Sets download dpdlabel button on shipment order detail.
-     *
-     * @param $observer
-     */
-    public function core_block_abstract_to_html_before($observer)
-    {
-        $block = $observer->getBlock();
-        if ($block instanceof Mage_Adminhtml_Block_Sales_Order_View && $block->getRequest()->getControllerName() == 'sales_order') {
-            $orderId = Mage::app()->getRequest()->getParam('order_id');
-            $block->addButton('print_retour_label', array(
-                'label' => Mage::helper('dpd')->__('DPD Return Label'),
-                'onclick' => 'setLocation(\'' . Mage::helper("adminhtml")->getUrl('adminhtml/dpdorder/generateRetourLabel/order_id/' . $orderId) . '\')',
-                'class' => 'go'
-            ));
-
-        }
-        if ($block instanceof Mage_Adminhtml_Block_Sales_Order_Shipment_View && $block->getRequest()->getControllerName() == "sales_order_shipment") {
-            $shipment = Mage::registry('current_shipment');
-            $shipmentId = $shipment->getId();
-            $order = Mage::getModel('sales/order')->load($shipment->getOrderId());
-            if (strpos($order->getShippingMethod(), 'dpd') !== false) {
-                $block->addButton('download_dpd_label', array(
-                    'label' => Mage::helper('dpd')->__('Download DPD Label'),
-                    'onclick' => 'setLocation(\'' . Mage::helper("adminhtml")->getUrl('adminhtml/dpdorder/downloadDpdLabel/shipment_id/' . $shipmentId) . '\')',
-                    'class' => 'scalable save'
-                ));
-            }
         }
     }
 
@@ -195,8 +162,7 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
                 $address->unsetAddressId()
                     ->unsetTelephone()
                     ->setSaveInAddressBook(0)
-                    ->setFirstname('DPD ParcelShop: ')
-                    ->setLastname($quote->getDpdCompany())
+                    ->setCompany('DPD ParcelShop: '.$quote->getDpdCompany())
                     ->setStreet($quote->getDpdStreet())
                     ->setCity($quote->getDpdCity())
                     ->setPostcode($quote->getDpdZipcode())

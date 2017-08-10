@@ -111,7 +111,7 @@ class Wuunder_Wuunderconnector_Model_Dpdwebservice extends Mage_Core_Model_Abstr
     /**
      * XML path to configuration setting for the maximum number of parcelshops that should be returned by the webservice.
      */
-    CONST XML_PATH_PARCELSHOP_MAXPOINTERS = 'wuunderconnector/connect/dpd_google_maps_max_points';
+    CONST XML_PATH_PARCELSHOP_MAXPOINTERS = 'carriers/wuunderdpd/google_maps_maxpointers';
 
     /**
      * Add trailing slash to url if not exists.

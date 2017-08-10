@@ -111,7 +111,6 @@ class Wuunder_WuunderConnector_Block_Carrier_Parcelshop extends Mage_Core_Block_
                 'Telephone' => (isset($shop->phone) && $shop->phone != "" ? $shop->phone : ''),
                 'Website' => (isset($shop->homepage) && $shop->homepage != "" ? '<a href="' . 'http://' . $shop->homepage . '" target="_blank">' . $shop->homepage . '</a>' : ''),
                 'Extra info' => (isset($shop->extraInfo) && $shop->extraInfo != "" ? $shop->extraInfo : ''))));
-            Mage::helper('wuunderconnector')->log("HERELOG1");
             $this->_configArray['shop' . $shop->parcelShopId]['gmapsMarkerContent'] = $this->_getMarkerHtml($shop, false);
             $counter++;
         }
