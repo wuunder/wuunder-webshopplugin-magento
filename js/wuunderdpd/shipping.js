@@ -145,7 +145,7 @@ DPD.Shipping = Class.create({
             this.checkInfoClick();
         }
     }, saveParcelShop: function (evt) {
-         if (this.container.id == "parcelshop") {
+        if (this.container.id == "parcelshop") {
             var shopId = evt.target.id;
             setTimeout(function () {
                 parent.Windows.close("DPD_window", evt);
@@ -164,22 +164,25 @@ DPD.Shipping = Class.create({
         var loaderurl = this.config.loaderimage;
         var parcelshop = this.container.down('#parcelshop');
 
+        if (reloadurl.endsWith('/'))
+            reloadurl = reloadurl.slice(0, -1);
+
         parcelshop.update('<div class="dpdloaderwrapper" style="margin-bottom:35px;"><span class="dpdloader"></span><span class="message"></span></div><input type="hidden" class="DPD-confirmed" value="0"/>');
         new parent.Ajax.Request(reloadurl, {
             method: "POST",
             asynchronous: false,
             evalScripts: true,
             parameters: data,
-            onSuccess: function(data) {
+            onSuccess: function (data) {
                 this.container.down('#dpd').update(data.responseText);
 
                 var price = this.container.down('#custom-shipping-amount').value;
                 var priceContainer = this.container.down('label[for="s_method_wuunderdpd_wuunderdpd"] span');
                 var oldPrice = priceContainer.innerHTML;
                 priceContainer.update(price);
-                if(price.substring(1) != oldPrice.substring(1)) {
+                if (price.substring(1) != oldPrice.substring(1)) {
                     priceContainer.addClassName('price-changed');
-                    parent.setTimeout(function(){
+                    parent.setTimeout(function () {
                         priceContainer.removeClassName('price-changed');
                     }.bind(this), 2000)
                 }

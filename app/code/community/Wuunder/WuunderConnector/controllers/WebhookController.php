@@ -20,12 +20,9 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
 
     public function testAction()
     {
-        $delisId = 'tccbergeno';
-        $password = utf8_encode('¯¿¦tF®fººGe3Ç');
-//        echo Mage::helper('core')->decrypt(Mage::getStoreConfig('shipping/dpdclassic/password'));
-        echo "<pre>";
-        var_dump(Mage::getModel('wuunderconnector/dpdwebservice')->getParcelShops(5.43, 52.13));
-        echo "</pre>";
+        var_dump($_REQUEST);
+        var_dump($_POST);
+        print_r(json_decode(file_get_contents('php://input'), true));
     }
 
     /*

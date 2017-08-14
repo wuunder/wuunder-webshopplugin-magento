@@ -43,7 +43,6 @@ DPD.Shipping.addMethods({
         var loaderurl = this.config.loaderimage;
         var parcelshop = this.container.down('#parcelshop');
         parcelshop.update('<div class="dpdloaderwrapper" style="margin-bottom:35px;"><span class="dpdloader"></span><span class="message"></span></div><input type="hidden" class="DPD-confirmed" value="0"/>');
-
         new parent.Ajax.Request(reloadurl, {
             method: "POST",
             asynchronous: false,
