@@ -161,16 +161,188 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </country>
+                        <heading_enabled_shipping_methods translate="label">
+                            <label>Wuunder enabled shipping methods</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>111</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </heading_enabled_shipping_methods>
+                        <wuunder_enabled_shipping_methods translate="label">
+                            <label>Wuunder is enabled for the following selected shipping methods</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
+                            <sort_order>112</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </wuunder_enabled_shipping_methods>
+                        <heading1 translate="label">
+                            <label>Mapping Wuunder filter - Shipping method</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>115</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </heading1>
+                        <enable_filtermapping translate="label">
+                            <label>Enable mapping</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>116</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </enable_filtermapping>
+                        <filterconnect1_name translate="label">
+                            <label>Filter name (1)</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect1_name>
+                        <filterconnect1_value translate="label">
+                            <label>Shipping method (1)</label>
+                            <comment></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect1_value>
+                        <filterconnect2_name translate="label">
+                            <label>Filter name (2)</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect2_name>
+                        <filterconnect2_value translate="label">
+                            <label>Shipping method (2)</label>
+                            <comment></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
+                            <sort_order>150</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect2_value>
+                        <filterconnect3_name translate="label">
+                            <label>Filter name (3)</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>160</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect3_name>
+                        <filterconnect3_value translate="label">
+                            <label>Shipping method (3)</label>
+                            <comment></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
+                            <sort_order>170</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect3_value>
+                        <filterconnect4_name translate="label">
+                            <label>Filter name (4)</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>180</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect4_name>
+                        <filterconnect4_value translate="label">
+                            <label>Shipping method (4)</label>
+                            <comment></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
+                            <sort_order>190</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect4_value>
+                        <filterconnect5_name translate="label">
+                            <label>Filter name (5)</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>200</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect5_name>
+                        <filterconnect5_value translate="label">
+                            <label>Shipping method (5)</label>
+                            <comment></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>wuunderconnector/system_config_source_carriers</source_model>
+                            <sort_order>210</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </filterconnect5_value>
+                        <heading2 translate="label">
+                            <label>Debugging</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>220</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </heading2>
                         <debug_mode translate="label">
                             <label>Enable Debugging</label>
                             <comment>If Enabled, see /var/log/wuunder.log for debug info</comment>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>120</sort_order>
+                            <sort_order>230</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </debug_mode>
+                        <heading3 translate="label">
+                            <label>DPD parcelshop</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>240</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </heading3>
+                        <dpd_url translate="label">
+                            <label>DPD base url</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>250</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </dpd_url>
+                        <dpd_user_id translate="label">
+                            <label>DPD userid</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>260</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </dpd_user_id>
+                        <dpd_password translate="label">
+                            <label>DPD password</label>
+                            <comment></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>270</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </dpd_password>
                     </fields>
                 </connect>
                 <magentoconfig translate="label" module="wuunderconnector">
@@ -279,6 +451,245 @@
                         </specificcountry>
                     </fields>
                 </wuunder>
+                <wuunderdpd translate="label">
+                    <label>Wuunder DPD Parcelshops</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>11</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </active>
+                        <name translate="label">
+                            <label>Shipping method name</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>The name of the shipping method</comment>
+                        </name>
+                        <sort_order translate="label">
+                            <label>Sort order</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>The order in which the shipping method should appear</comment>
+                        </sort_order>
+                        <default translate="label">
+                            <label>Default selected</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Automatically selects this shipping method during checkout by default</comment>
+                        </default>
+                        <ratetype translate="label">
+                            <label>Rate type</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>wuunderconnector/system_config_source_ratetypes</source_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>You can use flat rate or calculated table rates</comment>
+                        </ratetype>
+                        <flatrateprice translate="label">
+                            <label>Flat rate price</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>6</sort_order>
+                            <depends>
+                                <ratetype>0</ratetype>
+                            </depends>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Fixed fee for DPD shipments</comment>
+                        </flatrateprice>
+                        <condition_name translate="label">
+                            <label>Table rates condition</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_shipping_tablerate</source_model>
+                            <sort_order>7</sort_order>
+                            <depends>
+                                <ratetype>1</ratetype>
+                            </depends>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </condition_name>
+                        <export translate="label">
+                            <label>Export table rates file</label>
+                            <frontend_type>button</frontend_type>
+                            <frontend_model>wuunderconnector/adminhtml_system_config_form_dpd_dpdparcelshopsexport</frontend_model>
+                            <sort_order>8</sort_order>
+                            <depends>
+                                <ratetype>1</ratetype>
+                            </depends>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment>Export your table rates configuration here</comment>
+                        </export>
+                        <import_parcelshops translate="label">
+                            <label>Import table rates file</label>
+                            <frontend_type>import</frontend_type>
+                            <sort_order>9</sort_order>
+                            <backend_model>wuunderconnector/adminhtml_dpd_system_config_backend_shipping_dpdparcelshops_tablerate</backend_model>
+                            <depends>
+                                <ratetype>1</ratetype>
+                            </depends>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment>Upload your table rates configuration here. Refer to the manual for more information</comment>
+                        </import_parcelshops>
+                        <sallowspecific translate="label">
+                            <label>Ship to countries</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>10</sort_order>
+                            <frontend_class>shipping-applicable-country</frontend_class>
+                            <source_model>adminhtml/system_config_source_shipping_allspecificcountries</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment>Make DPD available in all countries or in specific</comment>
+                        </sallowspecific>
+                        <specificcountry translate="label">
+                            <label>Allowed countries</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <sort_order>11</sort_order>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <can_be_empty>1</can_be_empty>
+                            <comment>Select one or more countries where dpd should be available for</comment>
+                        </specificcountry>
+                        <google_maps_api translate="label">
+                            <label>Google Maps API</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>12</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[<a href="https://developers.google.com/maps/documentation/javascript/tutorial?hl=nl#api_key" target="_blank">How to request an API key</a>]]></comment>
+                        </google_maps_api>
+                        <google_maps_width translate="label">
+                            <label>Map width</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>13</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Width of the inline map (in px)</comment>
+                        </google_maps_width>
+                        <google_maps_height translate="label">
+                            <label>Map height</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>14</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Height of the inline map (in px)</comment>
+                        </google_maps_height>
+                        <google_maps_maxpointers translate="label">
+                            <label>Map - max num of shops</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Maximum number of Parcelshops to be put on the map</comment>
+                        </google_maps_maxpointers>
+                        <google_maps_display translate="label">
+                            <label>Map presentation</label>
+                            <frontend_type>select</frontend_type>
+                            <frontend_type>select</frontend_type>
+                            <source_model>wuunderconnector/system_config_source_display</source_model>
+                            <sort_order>16</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Show the map inline or as an overlay</comment>
+                        </google_maps_display>
+                        <google_maps_enable_list translate="label">
+                            <label>Map list</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>17</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Show the list of ParcelShops to the right of the map</comment>
+                        </google_maps_enable_list>
+                        <custom_parcelshops_import translate="label">
+                            <label>Custom ParcelShops - CSV</label>
+                            <frontend_type>import</frontend_type>
+                            <backend_model>wuunderconnector/adminhtml_dpd_system_config_backend_shipping_specialparcelshops</backend_model>
+                            <sort_order>18</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment>Contact DPD to get the CSV !</comment>
+                        </custom_parcelshops_import>
+                        <check_custom_parcelshops_import translate="label">
+                            <label></label>
+                            <frontend_type>button</frontend_type>
+                            <frontend_model>wuunderconnector/adminhtml_dpd_system_config_form_availability</frontend_model>
+                            <sort_order>19</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </check_custom_parcelshops_import>
+                        <special_parcelshop_icon translate="label">
+                            <label>Custom ParcelShops - logo</label>
+                            <frontend_type>image</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_image</backend_model>
+                            <upload_dir config="system/filesystem/media" scope_info="1">dpd</upload_dir>
+                            <base_url type="media" scope_info="1">dpd</base_url>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Upload your custom map logo (100x100 px)</comment>
+                        </special_parcelshop_icon>
+                        <google_maps_icon translate="label">
+                            <label>Custom ParcelShops – map logo</label>
+                            <frontend_type>image</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_image</backend_model>
+                            <upload_dir config="system/filesystem/media" scope_info="1">dpd</upload_dir>
+                            <base_url type="media" scope_info="1">dpd</base_url>
+                            <sort_order>21</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>Enabled
+                            <comment>Map pointer image. (57x57 px)</comment>
+                        </google_maps_icon>
+                        <custom_parcelshops_free_shipping translate="label">
+                            <label>Free shipping for custom parcel shops</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>22</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </custom_parcelshops_free_shipping>
+                    </fields>
+                </wuunderdpd>
             </groups>
         </carriers>
     </sections>

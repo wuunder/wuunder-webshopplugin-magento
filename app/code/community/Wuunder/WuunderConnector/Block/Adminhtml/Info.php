@@ -7,7 +7,8 @@ class Wuunder_WuunderConnector_Block_Adminhtml_Info
     {
         //$magentoVersion = Mage::getVersion();
         //$moduleVersion = Mage::getConfig()->getNode()->modules->Wuunder_WuunderConnector->version;
-        $logoLink = Mage::getDesign()->getSkinBaseUrl(array('_area'=>'adminhtml')).'wuunder/images/wuunder_logo.png';
+        $logoLink = Mage::getDesign()->getSkinBaseUrl(array('_area'=>'adminhtml','_package'=>'default','_theme'=>'default')).'wuunder/images/wuunder_logo.png';
+
 
         $html = '<div style="background-color:#EAF0EE; border:1px solid #CCCCCC; margin-bottom:10px; padding:20px; min-height: 100px">
         <img src="'.$logoLink.'" style="float:left; display:inline-block; padding: 0px 30px 0px 0px; width:80px;">
