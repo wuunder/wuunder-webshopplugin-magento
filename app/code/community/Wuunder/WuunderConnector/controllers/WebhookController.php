@@ -20,14 +20,9 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
 
     public function testAction()
     {
-        $order = Mage::getModel('sales/order')->load(5);
-        foreach ($order->getAllItems() as $item) {
-            $product=Mage::getModel('catalog/product')->load($item->getProductId());
-            echo $product->getShortDescription();
-        }
-//        echo "<pre>";
-//        var_dump($order->getAllItems());
-//        echo "</pre>";
+        var_dump($_REQUEST);
+        var_dump($_POST);
+        print_r(json_decode(file_get_contents('php://input'), true));
     }
 
     /*
