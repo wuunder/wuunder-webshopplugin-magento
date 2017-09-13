@@ -11,6 +11,7 @@ $installer->run("
 	  `label_url` text DEFAULT NULL,
 	  `booking_url` text DEFAULT NULL,
 	  `booking_token` text DEFAULT NULL,
+	  `label_tt_url` text DEFAULT null,
 	  PRIMARY KEY (`shipment_id`)
 	) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 ");
