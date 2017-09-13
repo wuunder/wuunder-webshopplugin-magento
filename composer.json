@@ -1,0 +1,12 @@
+{
+  "name": "wuunder/webshopplugin-magento",
+  "type": "magento-module",
+  "homepage": "https://github.com/wuunder/wuunder-webshopplugin-magento",
+  "description": "Wuunder connector for Magento",
+    "authors": [
+        {
+            "name": "Timo (Wuunder)",
+            "email": "info@wearewuunder.com"
+        }
+    ]
+}
