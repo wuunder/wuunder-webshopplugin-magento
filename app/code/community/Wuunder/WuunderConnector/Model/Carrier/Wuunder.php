@@ -16,8 +16,6 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
             return false;
         }
 
-
-
         $handling = Mage::getStoreConfig('carriers/'.$this->_code.'/handling');
         $result = Mage::getModel('shipping/rate_result');
         $show = true;
