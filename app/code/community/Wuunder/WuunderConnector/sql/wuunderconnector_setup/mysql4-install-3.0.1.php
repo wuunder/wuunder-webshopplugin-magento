@@ -9,6 +9,7 @@ $installer->run("
 	  `order_id` int(10) NOT NULL,
 	  `label_id` varchar(255) DEFAULT NULL,
 	  `label_url` text DEFAULT NULL,
+	  `label_tt_url` text DEFAULT NULL,
 	  `booking_url` text DEFAULT NULL,
 	  `booking_token` text DEFAULT NULL,
 	  PRIMARY KEY (`shipment_id`)
