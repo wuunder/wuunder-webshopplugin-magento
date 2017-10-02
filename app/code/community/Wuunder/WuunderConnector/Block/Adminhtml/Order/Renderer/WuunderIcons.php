@@ -9,7 +9,8 @@ class Wuunder_WuunderConnector_Block_Adminhtml_Order_Renderer_WuunderIcons exten
         $shipping_method = $order->getShippingMethod();
         $icons = '';
         if (in_array($shipping_method, explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods'))) ||
-            in_array("wuunder_default_all_selected", explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods')))) {
+            in_array("wuunder_default_all_selected", explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods'))) ||
+            $this->testForParcelPro($shipping_method, Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods'))) {
             if (!empty($row->getData('label_id'))) {
                 $icons = '<li class="wuunder-label-download"><a href="' . $row->getData('label_url') . '"  target="_blank" title="Print verzendlabel"></a></li>';
             } else if (!empty($row->getData('booking_url'))) {
@@ -35,5 +36,17 @@ class Wuunder_WuunderConnector_Block_Adminhtml_Order_Renderer_WuunderIcons exten
         }
 
         return $icons;
+    }
+
+    private function testForParcelPro($selected_method, $enabled_methods) {
+        if (strpos($selected_method, 'parcelpro') !== false) {
+            $enabled_methods = explode(",", $enabled_methods);
+            foreach ($enabled_methods as $enabled_method) {
+                if (strpos($enabled_method, 'parcelpro') !== false) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
