@@ -229,36 +229,25 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
         $header = substr($result, 0, $header_size);
         preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
-        $url = $matches[1];
+        if (count($matches) >= 2) {
+            $url = $matches[1];
+            $infoArray['booking_url'] = $url;
+            // Create or update wuunder_shipment
+            if (!$this->saveWuunderShipment($infoArray)) {
+                return array('error' => true, 'message' => 'Unable to create / update wuunder_shipment for order ' . $infoArray['order_id']);
+            }
+        }
 
         // Close connection
         curl_close($cc);
 
-        $infoArray['booking_url'] = $url;
-        // Create or update wuunder_shipment
-        if (!$this->saveWuunderShipment($infoArray)) {
-            return array('error' => true, 'message' => 'Unable to create / update wuunder_shipment for order ' . $infoArray['order_id']);
-        }
-
         Mage::helper('wuunderconnector')->log('API response string: ' . $result);
 
-        // Decode API result
-        $result = json_decode($result);
-
-        // Check for API errors
-        if (isset($result->error)) {
-            return $this->showWuunderAPIError($result->error);
-        }
-        if (isset($result->errors)) {
-            return $this->showWuunderAPIError($result->errors);
-        }
-
-
-        if (empty($url) || is_null($url)) {
+        if (empty($url) || is_null($url) || !isset($url)) {
             return array(
                 'error' => true,
-                'message' => 'Er ging iets fout bij het updaten van tabel wuunder_shipments',
-                'booking_url' => $url);
+                'message' => 'Er ging iets fout bij het booken van het order. Controleer de logging.',
+                'booking_url' => "");
         } else {
             return array(
                 'error' => false,
@@ -505,33 +494,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return $result;
-    }
-
-
-    public function showWuunderAPIError($errors)
-    {
-        // Log error
-        $this->log($errors);
-        $errorMessage = '';
-
-        if (is_array($errors)) {
-            if (count($errors) > 0) {
-                foreach ($errors AS $error) {
-                    $errorMessage .= 'API response error on field(s): ' . $error->field;
-                    foreach ($error->messages AS $message) {
-                        $errorMessage .= ' - ' . $message . '<br />';
-                    }
-                }
-
-                return array('error' => true, 'message' => $errorMessage);
-            }
-        } else if (is_string($errors)) {
-            // Show first 1000 characters
-            //return array('error' => true, 'message' => 'API response error: '.substr($errors,0,1000));
-            return array('error' => true, 'message' => 'API response error: ' . $errors);
-        }
-
-        return array('error' => true, 'message' => 'Unknown error! Enable Wuunder logging and please check /var/log/wuunder.log for more information');
     }
 
     /**

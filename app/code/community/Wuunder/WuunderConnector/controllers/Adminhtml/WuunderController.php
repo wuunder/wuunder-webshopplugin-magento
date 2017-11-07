@@ -69,7 +69,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 if ($result['error'] === true) {
                     Mage::getSingleton('adminhtml/session')->addError($result['message']);
                 }
-                $order = Mage::getModel('sales/order')->load($orderId);
+
                 if (strpos($result['booking_url'], 'http:') === 0 || strpos($result['booking_url'], 'https:') === 0) {
                     $booking_url = $result['booking_url'];
                 } else {
@@ -82,8 +82,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 }
                 !empty($booking_url) ? $this->_redirectUrl($booking_url) : $this->_redirect('*/sales_order/index');
             } catch (Exception $e) {
-
-                $this->_getSession()->addError(Mage::helper('wuunderconnector')->__('An error occurred while saving the data'));
+                $this->_getSession()->addError(Mage::helper('wuunderconnector')->__('An error occurred while saving the data, please check the wuunder extension logging.'));
                 Mage::logException($e);
                 $this->_redirect('*/sales_order/index');
                 return $this;
