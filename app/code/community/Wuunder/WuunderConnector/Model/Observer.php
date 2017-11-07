@@ -98,7 +98,6 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
     public function coreBlockAbstractToHtmlAfter($observer)
     {
         if ($observer->getBlock() instanceof Mage_Checkout_Block_Onepage_Shipping_Method_Available) {
-            Mage::helper('wuunderconnector')->log("I am here");
             //get HTML
             $html = $observer->getTransport()->getHtml();
             //set default if in config

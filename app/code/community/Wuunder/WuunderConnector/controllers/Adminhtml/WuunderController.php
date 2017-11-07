@@ -80,7 +80,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                         $booking_url = 'https://api.wuunder.co' . $result['booking_url'];
                     }
                 }
-                !empty($booking_url) ? $this->_redirectUrl($booking_url) : $this->_redirect('*/sales_order/index');
+                !empty($result['booking_url']) ? $this->_redirectUrl($booking_url) : $this->_redirect('*/sales_order/index');
             } catch (Exception $e) {
                 $this->_getSession()->addError(Mage::helper('wuunderconnector')->__('An error occurred while saving the data, please check the wuunder extension logging.'));
                 Mage::logException($e);
