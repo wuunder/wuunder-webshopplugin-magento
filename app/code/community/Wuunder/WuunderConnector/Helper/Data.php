@@ -208,11 +208,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         // Combine wuunder info and order data
         $wuunderData = $this->buildWuunderData($infoArray, $order);
 
-        echo "<pre>";
-        var_dump($wuunderData);
-        echo "</pre>";
-        exit;
-
         // Encode variables
         $json = json_encode($wuunderData);
         // Setup API connection

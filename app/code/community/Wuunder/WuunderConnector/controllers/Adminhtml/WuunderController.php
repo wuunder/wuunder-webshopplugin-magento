@@ -35,7 +35,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
                 $storeId = $order->getStoreId();
                 $unitConverter = floatval((!empty(Mage::getStoreConfig('wuunderconnector/magentoconfig/dimensions_units', $storeId)) ? Mage::getStoreConfig('wuunderconnector/magentoconfig/dimensions_units', $storeId) : 1));
-                echo $unitConverter;
 
                 $length = ($infoOrder['length'] == 0 ) ? "" : $infoOrder['length'] * $unitConverter;
                 $width = ($infoOrder['width'] == 0 ) ? "" : $infoOrder['width'] * $unitConverter;
@@ -81,7 +80,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                         $booking_url = 'https://api.wuunder.co' . $result['booking_url'];
                     }
                 }
-                //!empty($booking_url) ? $this->_redirectUrl($booking_url) : $this->_redirect('*/sales_order/index');
+                !empty($booking_url) ? $this->_redirectUrl($booking_url) : $this->_redirect('*/sales_order/index');
             } catch (Exception $e) {
 
                 $this->_getSession()->addError(Mage::helper('wuunderconnector')->__('An error occurred while saving the data'));

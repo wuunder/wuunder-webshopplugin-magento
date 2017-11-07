@@ -351,7 +351,6 @@ class Wuunder_Wuunderconnector_Model_Dpdwebservice extends Mage_Core_Model_Abstr
         );
 
         $result = $this->_webserviceCall($webserviceUrl, 'findParcelShopsByGeoData', $parameters);
-//        Mage::helper('wuunderconnector')->log($result);
         return $result;
 
     }
