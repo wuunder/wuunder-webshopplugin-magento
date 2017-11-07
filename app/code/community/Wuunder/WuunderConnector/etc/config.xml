@@ -192,6 +192,7 @@
                 <wuunder_enabled_shipping_methods>wuunder_default_all_selected</wuunder_enabled_shipping_methods>
             </connect>
             <magentoconfig>
+                <dimensions_units>1</dimensions_units>
             </magentoconfig>
         </wuunderconnector>
         <carriers>

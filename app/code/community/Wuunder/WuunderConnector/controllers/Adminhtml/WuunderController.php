@@ -22,42 +22,31 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
                 Mage::helper('wuunderconnector')->log('Controller: processLabelAction - Data', null, 'wuunder.log');
 
-                $messageField = 'personal_message';
-
                 $order = Mage::getModel('sales/order')->load($orderId);
                 $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
                 $infoOrder = Mage::helper('wuunderconnector')->getInfoFromOrder($orderId);
                 $shippingAdr = $order->getShippingAddress();
 
-                $defLength = 80;
-                $defWidth = 50;
-                $defHeight = 35;
-                $defWeight = 20000;
-
                 if (array_key_exists("shipment_id", $shipmentInfo)) {
-                    $length = "";
-                    $width = "";
-                    $height = "";
-                    $weight = $infoOrder['total_weight'];
-                    $reference = (isset($shipmentInfo['reference']) && $shipmentInfo['reference'] != '') ? $shipmentInfo['reference'] : $infoOrder['product_names'];
                     $phonenumber = (!empty($shipmentInfo['phone_number']) && strlen($shipmentInfo['phone_number']) >= 10) ? trim($shipmentInfo['phone_number']) : trim($shippingAdr->telephone);
                 } else {
-                    $length = "";
-                    $width = "";
-                    $height = "";
-                    $weight = $infoOrder['total_weight'];
-                    $reference = $infoOrder['product_names'];
                     $phonenumber = trim($shippingAdr->telephone);
                 }
+
+                $storeId = $order->getStoreId();
+                $unitConverter = floatval((!empty(Mage::getStoreConfig('wuunderconnector/magentoconfig/dimensions_units', $storeId)) ? Mage::getStoreConfig('wuunderconnector/magentoconfig/dimensions_units', $storeId) : 1));
+                echo $unitConverter;
+
+                $length = ($infoOrder['length'] == 0 ) ? "" : $infoOrder['length'] * $unitConverter;
+                $width = ($infoOrder['width'] == 0 ) ? "" : $infoOrder['width'] * $unitConverter;
+                $height = ($infoOrder['height'] == 0 ) ? "" : $infoOrder['height'] * $unitConverter;
+                $weight = ($infoOrder['total_weight'] == 0) ? "" : $infoOrder['total_weight'];
+
                 $shipmentDescription = "";
                 foreach ($order->getAllItems() as $item) {
                     $product = Mage::getModel('catalog/product')->load($item->getProductId());
                     $shipmentDescription .= $product->getShortDescription() . " ";
                 }
-                $length = (trim($length) == '') ? $defLength : $length;
-                $width = (trim($width) == '') ? $defWidth : $width;
-                $height = (trim($height) == '') ? $defHeight : $height;
-                $weight = (trim($weight) == '' || $weight == 0) ? $defWeight : $weight;
 
                 // Set default values
                 if ((substr($phonenumber, 0, 1) == '0') && ($shippingAdr->country_id == 'NL')) {
@@ -67,15 +56,12 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
                 $infoArray = array(
                     'order_id' => $orderId,
-                    'label_type' => $shipmentInfo['label_type'],
                     'packing_type' => array_key_exists("package_type", $shipmentInfo) ? $shipmentInfo['package_type'] : "",
                     'length' => $length,
                     'width' => $width,
                     'height' => $height,
                     'weight' => $weight,
-                    'reference' => $reference,
                     'description' => $shipmentDescription,
-                    $messageField => '',
                     'phone_number' => $phonenumber,
                 );
 
@@ -84,9 +70,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 if ($result['error'] === true) {
                     Mage::getSingleton('adminhtml/session')->addError($result['message']);
                 }
-                $booking_url = "";
                 $order = Mage::getModel('sales/order')->load($orderId);
-                $storeId = $order->getStoreId();
                 if (strpos($result['booking_url'], 'http:') === 0 || strpos($result['booking_url'], 'https:') === 0) {
                     $booking_url = $result['booking_url'];
                 } else {
@@ -97,7 +81,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                         $booking_url = 'https://api.wuunder.co' . $result['booking_url'];
                     }
                 }
-                !empty($booking_url) ? $this->_redirectUrl($booking_url) : $this->_redirect('*/sales_order/index');
+                //!empty($booking_url) ? $this->_redirectUrl($booking_url) : $this->_redirect('*/sales_order/index');
             } catch (Exception $e) {
 
                 $this->_getSession()->addError(Mage::helper('wuunderconnector')->__('An error occurred while saving the data'));
