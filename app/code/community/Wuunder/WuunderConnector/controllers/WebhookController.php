@@ -2,9 +2,13 @@
 
 class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Front_Action
 {
+
+    /*
+     * Webhook; called by wuunder api
+     */
     public function callAction()
     {
-        if (!is_null($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('order_id')) && !is_null($this->getRequest()->getParam('token')) && !empty($this->getRequest()->getParam('token'))) {
+        if (!empty($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('token'))) {
             $result = json_decode(file_get_contents('php://input'), true);
             $processDataSuccess = Mage::helper('wuunderconnector')->processDataFromApi($result['shipment'], "no_retour", $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'));
             if (!$processDataSuccess) {
@@ -16,13 +20,6 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
             Mage::helper('wuunderconnector')->log("Invalid order_id for webhook");
         }
 
-    }
-
-    public function testAction()
-    {
-        var_dump($_REQUEST);
-        var_dump($_POST);
-        print_r(json_decode(file_get_contents('php://input'), true));
     }
 
     /*

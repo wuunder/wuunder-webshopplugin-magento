@@ -9,7 +9,6 @@ app/locale/nl_NL/Wuunder_WuunderConnector.csv            app/locale/nl_NL/Wuunde
 app/design/adminhtml/default/default/layout/wuunder/wuunderconnector.xml            app/design/adminhtml/default/default/layout/wuunder/wuunderconnector.xml
 app/design/frontend/base/default/layout/wuunder_wuunderconnector.xml            app/design/frontend/base/default/layout/wuunder_wuunderconnector.xml
 app/design/frontend/base/default/template/wuunderdpd/gmapsapi.phtml            app/design/frontend/base/default/template/wuunderdpd/gmapsapi.phtml
-app/design/frontend/base/default/template/wuunderdpd/ordertracking.phtml            app/design/frontend/base/default/template/wuunderdpd/ordertracking.phtml
 app/design/frontend/base/default/template/wuunderdpd/parcelshop.phtml            app/design/frontend/base/default/template/wuunderdpd/parcelshop.phtml
 app/design/frontend/base/default/template/wuunderdpd/parcelshoplink.phtml            app/design/frontend/base/default/template/wuunderdpd/parcelshoplink.phtml
 app/design/frontend/base/default/template/wuunderdpd/parcelshopselected.phtml            app/design/frontend/base/default/template/wuunderdpd/parcelshopselected.phtml

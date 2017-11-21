@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class Wuunder_WuunderConnector_Block_Carrier_Parcelshop
  */
@@ -47,7 +48,11 @@ class Wuunder_WuunderConnector_Block_Carrier_Parcelshop extends Mage_Core_Block_
     public function getParcelShops()
     {
         $coordinates = explode(',', Mage::helper('wuunderconnector')->getGoogleMapsCenter());
-        $parcelshops = Mage::getSingleton('wuunderconnector/dpdwebservice')->getParcelShops($coordinates[1], $coordinates[0]);
+        $parcelshops = new stdClass();
+        $parcelshops->parcelShop = array();
+        if (count($coordinates) == 2 && !empty($coordinates[0]) && !empty($coordinates[1])) {
+            $parcelshops = Mage::getSingleton('wuunderconnector/dpdwebservice')->getParcelShops($coordinates[1], $coordinates[0]);
+        }
         return $parcelshops;
     }
 
@@ -66,7 +71,7 @@ class Wuunder_WuunderConnector_Block_Carrier_Parcelshop extends Mage_Core_Block_
         $this->_configArray["gmapsCenterlat"] = $center[0];
         $this->_configArray["gmapsCenterlng"] = $center[1];
         $this->_configArray["gmapsHeight"] = Mage::getStoreConfig('carriers/wuunderdpd/google_maps_height') . 'px';
-        $this->_configArray["loadingmessage"] = '<span class="message">'.$this->__('Loading DPD parcelshop map based on your address...').'</span>';
+        $this->_configArray["loadingmessage"] = '<span class="message">' . $this->__('Loading DPD parcelshop map based on your address...') . '</span>';
         $this->_configArray["gmapsWidth"] = Mage::getStoreConfig('carriers/wuunderdpd/google_maps_width') . 'px';
         $this->_configArray["gmapsIcon"] = Mage::getDesign()->getSkinUrl('images/dpd/icon_parcelshop.png');
         $this->_configArray["gmapsIconShadow"] = Mage::getDesign()->getSkinUrl('images/dpd/icon_parcelshop_shadow.png');
@@ -244,8 +249,7 @@ class Wuunder_WuunderConnector_Block_Carrier_Parcelshop extends Mage_Core_Block_
             $html .= '</tbody>
             </table>
             </div><div class="dpdclear"></div>';
-        }
-        elseif($special && $shop->getParcelshopOpeninghours() && $shop->getParcelshopOpeninghours()!=""){
+        } elseif ($special && $shop->getParcelshopOpeninghours() && $shop->getParcelshopOpeninghours() != "") {
 
             $html .= '<div class="dotted-line">
             <table>
@@ -289,12 +293,12 @@ class Wuunder_WuunderConnector_Block_Carrier_Parcelshop extends Mage_Core_Block_
      *
      * @return string
      */
-    public function getShippingAmount() {
+    public function getShippingAmount()
+    {
         $cost = $this->getQuote()->getShippingAddress()->getShippingAmount();
 
         return number_format((float)$cost, 2, '.', '');
     }
-
 
 
 }

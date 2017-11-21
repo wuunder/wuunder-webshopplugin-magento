@@ -46,16 +46,6 @@
     <wuunderconnector_ajax_invalidateparcel>
         <block type="wuunderconnector/carrier_parcelshop" name="root" template="wuunderdpd/parcelshop.phtml" output="toHtml"/>
     </wuunderconnector_ajax_invalidateparcel>
-    <shipping_tracking_ajax>
-        <reference name="content">
-            <block type="shipping/tracking_ajax" name="ordertracking" template="wuunderdpd/ordertracking.phtml" before="-"/>
-        </reference>
-    </shipping_tracking_ajax>
-    <shipping_tracking_popup>
-        <reference name="content">
-            <block type="shipping/tracking_popup" name="ordertracking" template="wuunderdpd/ordertracking.phtml" before="-"/>
-        </reference>
-    </shipping_tracking_popup>
     <onestepcheckout_index_index>
         <update handle="wuunderconnector_checkout_header"/>
     </onestepcheckout_index_index>
