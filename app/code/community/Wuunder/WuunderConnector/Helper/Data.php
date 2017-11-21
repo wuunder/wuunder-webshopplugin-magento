@@ -7,7 +7,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     const XPATH_DEBUG_MODE = 'wuunderconnector/connect/debug_mode';
     const MIN_PHP_VERSION = '5.3.0';
     public $tblPrfx;
-    const SOURCE_OBJ = array("product" => "Magento 1 extension", "version" => array("build" => "3.1.0", "plugin" => "3.0"));
+    private $sourceObj = array("product" => "Magento 1 extension", "version" => array("build" => "3.1.0", "plugin" => "3.0"));
 
     function __construct()
     {
@@ -392,7 +392,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'delivery_address' => $customerAdr,
             'pickup_address' => $webshopAdr,
             'preferred_service_level' => $shipping_key,
-            'source' => static::SOURCE_OBJ
+            'source' => $this->sourceObj
         );
     }
 
