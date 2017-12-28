@@ -101,36 +101,14 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
             //get HTML
             $html = $observer->getTransport()->getHtml();
             //set default if in config
-            $html = Mage::helper('wuunderconnector')->checkShippingDefault($html);
+//            $html = Mage::helper('wuunderconnector')->checkShippingDefault($html);
             //replace label by html
-            $html = Mage::helper('wuunderconnector')->addHTML($html);
-
+            $html = Mage::helper('wuunderconnector')->addParcelshopsHTML($html);
             //set HTML
             $observer->getTransport()->setHtml($html);
         }
     }
 
-    /**
-     * Triggered when saving a shipping method, this saves dpd data to the customer address without saving it on customer.
-     *
-     * @param $observer
-     */
-    public function checkout_controller_onepage_save_shipping_method($observer)
-    {
-        $quote = Mage::getSingleton('checkout/session')->getQuote();
-        $address = $quote->getShippingAddress();
-        if ($address->getShippingMethod() == "wuunderdpd_wuunderdpd") {
-            $address->unsetAddressId()
-                ->unsetTelephone()
-                ->setSaveInAddressBook(0)
-                ->setCompany('Via DPD ParcelShop: ' . $quote->getDpdCompany())
-                ->setStreet($quote->getDpdStreet())
-                ->setCity($quote->getDpdCity())
-                ->setPostcode($quote->getDpdZipcode())
-                ->setCountryId($quote->getDpdCountry())
-                ->save();
-        }
-    }
 
     /**
      * Calculate and set the weight on the shipping to pass it to the webservice after a standard shipment save.
@@ -143,46 +121,6 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
         if (!$shipment->hasId() && !$shipment->getTotalWeight()) {
             $weight = Mage::helper('wuunderconnector')->calculateTotalShippingWeight($shipment);
             $shipment->setTotalWeight($weight);
-        }
-    }
-
-    /**
-     * If the checkout is a Onestepcheckout and dpdselected is true, we need to copy the address on submitting
-     *
-     * @param $observer
-     */
-    public function checkout_submit_all_after($observer)
-    {
-        if (Mage::helper('wuunderconnector')->getIsOnestepCheckout()) {
-            $quote = Mage::getSingleton('checkout/session')->getQuote();
-            $address = $quote->getShippingAddress();
-            if ($address->getShippingMethod() == "wuunderdpd_wuunderdpd" && (bool)$quote->getDpdSelected()) {
-                $address->unsetAddressId()
-                    ->unsetTelephone()
-                    ->setSaveInAddressBook(0)
-                    ->setCompany('DPD ParcelShop: ' . $quote->getDpdCompany())
-                    ->setStreet($quote->getDpdStreet())
-                    ->setCity($quote->getDpdCity())
-                    ->setPostcode($quote->getDpdZipcode())
-                    ->setCountryId($quote->getDpdCountry())
-                    ->save();
-            }
-            $quote->setDpdSelected(0);
-        }
-    }
-
-    /**
-     * If Billing/Shipping address was changed, reset the DPD shipping Method.
-     *
-     * @param $observer
-     */
-    public function controller_action_predispatch_onestepcheckout_ajax_save_billing($observer)
-    {
-        if (Mage::helper('wuunderconnector')->getIsOnestepCheckout()) {
-            $quote = Mage::getSingleton('checkout/session')->getQuote();
-            if ($quote->getDpdSelected()) {
-                $quote->setDpdSelected(0);
-            }
         }
     }
 }
