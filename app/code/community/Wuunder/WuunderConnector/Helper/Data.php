@@ -489,7 +489,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     public function addParcelshopsHTML($html) {
-        return $html . "<div>PARCELSHOPS</div>";
+        return $html . "<div id='parcelShopsContainer'><iframe></iframe><button onclick='showParcelshopPicker(event, \"http://188.226.134.167/magento/wuunderconnector/parcelshop/shops\");'>PARCELSHOPS</button></div>";
     }
 
     /**

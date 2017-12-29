@@ -2,6 +2,9 @@
 <layout>
     <wuunderconnector_checkout_header>
         <reference name="head">
+            <action method="addCss">
+                <name>css/wuunder/parcelshoppicker.css</name>
+            </action>
             <action method="addJs">
                 <script>wuunder/parcelshops.js</script>
             </action>
@@ -10,4 +13,15 @@
     <checkout_onepage_index>
         <update handle="wuunderconnector_checkout_header"/>
     </checkout_onepage_index>
+    <wuunderconnector_parcelshop_shops>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/empty.phtml</template>
+            </action>
+        </reference>
+        <update handle="wuunderconnector_checkout_header"/>
+        <reference name="content">
+            <block type="wuunderconnector/parcelshops" name="wuunderparcelshops" template="wuunder/parcelshops.phtml" />
+        </reference>
+    </wuunderconnector_parcelshop_shops>
 </layout>
