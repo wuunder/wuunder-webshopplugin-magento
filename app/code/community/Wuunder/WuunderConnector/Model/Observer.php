@@ -7,13 +7,18 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
     {
         $collection = $observer->getOrderGridCollection();
         $select = $collection->getSelect();
-        $select->joinLeft(
-            array(
-                'wuunder' => $collection->getTable('wuunderconnector/shipments')
-            ),
-            'wuunder.order_id = main_table.entity_id',
-            array('label_id', 'label_url', 'label_tt_url', 'booking_url')
-        );
+        try {
+            $select->joinLeft(
+                array(
+                    'wuunder' => $collection->getTable('wuunderconnector/shipments')
+                ),
+                'wuunder.order_id = main_table.entity_id',
+                array('label_id', 'label_url', 'label_tt_url', 'booking_url')
+            );
+        } catch (Exception $e) {
+            Mage::helper('wuunderconnector')->log("Something went wrong with joining wuunder table:");
+            Mage::helper('wuunderconnector')->log($e->getMessage());
+        }
 
     }
 
