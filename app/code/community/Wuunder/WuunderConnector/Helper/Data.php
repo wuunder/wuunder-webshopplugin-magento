@@ -7,7 +7,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     const XPATH_DEBUG_MODE = 'wuunderconnector/connect/debug_mode';
     const MIN_PHP_VERSION = '5.3.0';
     public $tblPrfx;
-    private $sourceObj = array("product" => "Magento 1 extension", "version" => array("build" => "3.2.1", "plugin" => "3.0"));
+    private $sourceObj = array("product" => "Magento 1 extension", "version" => array("build" => "3.3.0", "plugin" => "3.0"));
 
     function __construct()
     {
@@ -269,6 +269,18 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
+    public function processTrackingDataFromApi($carrierCode, $trackingCode, $orderId, $bookingToken) {
+        $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
+        $sqlUpdate = "UPDATE " . $this->tblPrfx . "wuunder_shipments SET carrier_tracking_code = ?, carrier_code = ? WHERE order_id = ? AND booking_token = ?";
+        try {
+            $mageDbW->query($sqlUpdate, array($trackingCode, $carrierCode, $orderId, $bookingToken));
+            return true;
+        } catch (Mage_Core_Exception $e) {
+            $this->log('ERROR saveWuunderShipment : ' . $e);
+            return false;
+        }
+    }
+
     public function buildWuunderData($infoArray, $order)
     {
         Mage::helper('wuunderconnector')->log("Building data object for api.");
@@ -439,11 +451,32 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     public function getWuunderShipment($id)
     {
         try {
-            $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
+            $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_read');
 
             //check for a label id
-            $sqlQuery = "SELECT `label_tt_url` FROM `" . $this->tblPrfx . "wuunder_shipments` WHERE `label_id` = '" . $id . "' LIMIT 1";
-            $wuunderShipment = $mageDbW->fetchOne($sqlQuery);
+            $sql = "SELECT `label_tt_url`, `carrier_tracking_code` FROM `" . $this->tblPrfx . "wuunder_shipments` WHERE `label_id` = ? LIMIT 1";
+            $results = $mageDbW->query($sql, $id);
+            $wuunderShipment = $results->fetch();
+
+            if ($wuunderShipment) {
+                return $wuunderShipment;
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            $this->log('ERROR getWuunderShipment : ' . $e);
+            return false;
+        }
+    }
+
+    public function getWuunderShipmentByTrackingCode($trackingCode)
+    {
+        try {
+            $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_read');
+
+            //check for a label id
+            $sql = "SELECT `label_tt_url` FROM `" . $this->tblPrfx . "wuunder_shipments` WHERE `carrier_tracking_code` = ? ORDER BY order_id DESC LIMIT 1";
+            $wuunderShipment = $mageDbW->fetchOne($sql, $trackingCode);
 
             if ($wuunderShipment) {
                 return $wuunderShipment;
