@@ -61,6 +61,34 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return $debugMode;
     }
 
+    public function getAPIHost($storeId)
+    {
+        $test_mode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
+
+        if ($test_mode == 1) {
+//            $apiUrl = 'https://api-staging.wuunder.co/api/';
+            $apiUrl = 'https://api-playground.wuunder.co/api/';
+        } else {
+            $apiUrl = 'https://api.wuunder.co/api/';
+        }
+
+        return $apiUrl;
+    }
+
+    public function getAPIKey($storeId)
+    {
+        $test_mode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
+
+        if ($test_mode == 1) {
+//            $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_test', $storeId);
+            $apiKey = "z0lYsvn8BrvRD51T5B_TRYOcuNWilOiv";
+        } else {
+            $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_live', $storeId);
+        }
+
+        return $apiKey;
+    }
+
 
     public function getWuunderOptions()
     {
@@ -160,7 +188,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         );
     }
 
-    private function getProductAttribute($storeId, $productId, $attributeCode) {
+    private function getProductAttribute($storeId, $productId, $attributeCode)
+    {
         return Mage::getResourceModel('catalog/product')->getAttributeRawValue($productId, $attributeCode, $storeId);
     }
 
@@ -191,19 +220,14 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $storeId = $order->getStoreId();
 
         // Get configuration
-        $test_mode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
         $booking_token = uniqid();
         $infoArray['booking_token'] = $booking_token;
         $redirect_url = urlencode(Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id']);
         $webhook_url = urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $booking_token);
 
-        if ($test_mode == 1) {
-            $apiUrl = 'https://api-staging.wuunder.co/api/bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
-            $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_test', $storeId);
-        } else {
-            $apiUrl = 'https://api.wuunder.co/api/bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
-            $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_live', $storeId);
-        }
+
+        $apiUrl = $this->getAPIHost($storeId) . 'bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
+        $apiKey = $this->getAPIKey($storeId);
 
         // Combine wuunder info and order data
         $wuunderData = $this->buildWuunderData($infoArray, $order);
@@ -488,8 +512,65 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return $result;
     }
 
-    public function addParcelshopsHTML($html) {
-        return $html . "<div id='parcelShopsContainer'><iframe></iframe><button onclick='showParcelshopPicker(event, \"http://188.226.134.167/magento/wuunderconnector/parcelshop/shops\");'>PARCELSHOPS</button></div>";
+    public function getLatitudeAndLongitude()
+    {
+        Mage::getSingleton('core/session', array('name' => 'frontend'));
+        $address = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress();
+
+        $addressToInsert = $address->getStreet(1) . " ";
+        if ($address->getStreet(2)) {
+            $addressToInsert .= $address->getStreet(2) . " ";
+        }
+
+        $addressToInsert .= $address->getPostcode() . " " . $address->getCity() . " " . $address->getCountry();
+
+        $url = 'http://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($addressToInsert) . '&sensor=false';
+        $data = json_decode(file_get_contents($url));
+
+        if (count($data->results) < 1) {
+            $source = file_get_contents($url);
+            $data = json_decode($source);
+        }
+        if (count($data->results) > 0) {
+            $LATITUDE = $data->results[0]->geometry->location->lat;
+            $LONGITUDE = $data->results[0]->geometry->location->lng;
+            return array(
+                "lat" => $LATITUDE,
+                "long" => $LONGITUDE,
+                "error" => $url
+            );
+        }
+        return array(
+            "error" => $url
+        );
+
+    }
+
+    public function getParcelshops($lat, $long)
+    {
+        if (!empty($lat) && !empty($long)) {
+            $storeId = Mage::app()->getStore();
+            $apiUrl = $this->getAPIHost($storeId) . "parcelshops?providers[]=DPD&latitude=" . $lat . "&longitude=" . $long . "&radius=&availability_date=2018-01-08&hide_closed=true&limit=10&search_country=";
+            $apiKey = $this->getAPIKey($storeId);
+
+            $cc = curl_init($apiUrl);
+
+            curl_setopt($cc, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
+            curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($cc, CURLOPT_VERBOSE, 1);
+
+            // Execute the cURL, fetch the XML
+            $result = curl_exec($cc);
+            curl_close($cc);
+            return $result;
+        }
+
+        return false;
+    }
+
+    public function addParcelshopsHTML($html)
+    {
+        return $html . "<div id='parcelShopsContainer'><div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><button id='closeParcelshopPopup'>Sluiten</button></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><button onclick='showParcelshopPicker(event, \"http://188.226.134.167/magento/wuunderconnector/parcelshop/shops\");'>PARCELSHOPS</button></div>";
     }
 
     /**

@@ -8,6 +8,7 @@
             <action method="addJs">
                 <script>wuunder/parcelshops.js</script>
             </action>
+            <block type="core/template" name="gmapsapi" template="wuunder/gmapsapi.phtml"/>
         </reference>
     </wuunderconnector_checkout_header>
     <checkout_onepage_index>

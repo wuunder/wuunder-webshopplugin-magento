@@ -6,7 +6,7 @@
     /*right: 0;*/
 }
 
-#parcelShopsContainer iframe {
+#parcelShopsPopup {
     display: none;
     margin: auto;
     min-width: 800px;
@@ -14,5 +14,82 @@
     left: 0;
     right: 0;
     top: 0;
+    /*bottom: 0;*/
+    z-index: 9999;
+    background-color: white;
+}
+
+#parcelShopsPopupBar {
+    width: 100%;
+    height: 30px;
+}
+
+#parcelShopsMapContainer {
+    width: calc(100% - 380px);
+    float: left;
+}
+
+#parcelShopsMap {
+    height: 500px;
+}
+
+#parcelShopsList {
+    float: left;
+    width: 380px;
+    height: 500px;
+    overflow: scroll;
+}
+
+#closeParcelshopPopup {
+    float: right;
+}
+
+.parcelshopItem {
+    width: 100%;
+    min-height: 80px;
+    background: #f3f3f3;
+    padding: 5px 25px;
+    cursor: pointer;
+}
+
+.parcelshopItem:hover {
+    background-color: #e9e9e9;
+}
+
+.parcelshop-marker-icon {
+    background-image: url('../../images/wuunder/green_marker.png');
+    background-size: cover;
+    height: 30px;
+    width: 30px;
+    display: inline-block;
+    margin: 0 10px 0 0;
+    float: left;
+}
+
+.parcelshop-item-title {
+    float: left;
+    font-weight: 600;
+}
+
+.parcelshop_window_title {
+    font-weight: 600;
+}
+
+.parcelshop-item-address {
+    display: block;
+}
+
+.parcelshop-item-distance {
+    display: block;
+}
+
+#parcelShopOverlay {
+    position: absolute;
+    top: 0;
     bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(200,200,200,0.8);
 }
