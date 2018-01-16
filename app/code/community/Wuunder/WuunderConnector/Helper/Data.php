@@ -81,7 +81,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         if ($test_mode == 1) {
 //            $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_test', $storeId);
-            $apiKey = "z0lYsvn8BrvRD51T5B_TRYOcuNWilOiv";
+            $apiKey = "pN2XAviEVCRgTsRPU3xWNOp4_4npbv8L";
         } else {
             $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_live', $storeId);
         }
@@ -395,6 +395,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
+        $parcelshopId = $this->getParcelshopIdForQuote($order->getQuoteId());
+
         return array(
             'description' => $description,
             'picture' => $picture,
@@ -408,6 +410,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'delivery_address' => $customerAdr,
             'pickup_address' => $webshopAdr,
             'preferred_service_level' => $shipping_key,
+            'parcelshop_id' => $parcelshopId,
             'source' => $this->sourceObj
         );
     }
@@ -629,6 +632,25 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         } catch (Mage_Core_Exception $e) {
             $this->log('ERROR saveWuunderShipment : ' . $e);
             return false;
+        }
+    }
+
+    public function getParcelshopIdForQuote($id) {
+        try {
+            $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
+
+            //check for a label id
+            $sqlQuery = "SELECT `parcelshop_id` FROM `" . $this->tblPrfx . "wuunder_quote_data` WHERE `quote_id` = " . $id . " LIMIT 1";
+            $parcelshopId = $mageDbW->fetchOne($sqlQuery);
+
+            if ($parcelshopId) {
+                return $parcelshopId;
+            } else {
+                return null;
+            }
+        } catch (Exception $e) {
+            $this->log('ERROR getWuunderShipment : ' . $e);
+            return null;
         }
     }
 

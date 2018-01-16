@@ -106,6 +106,32 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
         }
     }
 
+    /**
+     * Triggered when saving a shipping method. Check if parcelshop delivery is selected, if parcelshop_id has been saved for quote.
+     *
+     * @param $observer
+     */
+    public function checkout_controller_onepage_save_shipping_method($observer)
+    {
+        $quote = Mage::getSingleton('checkout/session')->getQuote();
+        $address = $quote->getShippingAddress();
+        if ($address->getShippingMethod() == "wuunderparcelshop_wuunderparcelshop") {
+            $parcelshop_id = Mage::helper('wuunderconnector')->getParcelshopIdForQuote($quote->getEntityId());
+
+            $response = array();
+            $response['success'] = true;
+            if (is_null($parcelshop_id)) {
+                Mage::helper('wuunderconnector')->log("HERE2:");
+                $response['status'] = false;
+                $response['error'] = -1;
+                $result['goto_section'] = 'shipping_method';
+                $response['message'] = 'Please select a parcelshop.';
+            }
+            Mage::app()->getResponse()->setBody(Mage::helper('core')->jsonEncode($response))->sendResponse();
+            exit;
+        }
+    }
+
 
     /**
      * Calculate and set the weight on the shipping to pass it to the webservice after a standard shipment save.
