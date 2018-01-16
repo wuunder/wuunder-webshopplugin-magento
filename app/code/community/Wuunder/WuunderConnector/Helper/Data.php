@@ -7,7 +7,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     const XPATH_DEBUG_MODE = 'wuunderconnector/connect/debug_mode';
     const MIN_PHP_VERSION = '5.3.0';
     public $tblPrfx;
-    private $sourceObj = array("product" => "Magento 1 extension", "version" => array("build" => "3.2.0", "plugin" => "3.0"));
+    private $sourceObj = array("product" => "Magento 1 extension", "version" => array("build" => "3.4.0", "plugin" => "3.0"));
 
     function __construct()
     {
@@ -512,19 +512,16 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return $result;
     }
 
-    public function getLatitudeAndLongitude()
+    public function getLatitudeAndLongitude($address)
     {
         Mage::getSingleton('core/session', array('name' => 'frontend'));
-        $address = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress();
-
-        $addressToInsert = $address->getStreet(1) . " ";
-        if ($address->getStreet(2)) {
-            $addressToInsert .= $address->getStreet(2) . " ";
+        if (!is_null($address)) {
+            $addressToInsert = $address;
+        } else {
+            $addressToInsert = $this->getAddressFromQuote();
         }
 
-        $addressToInsert .= $address->getPostcode() . " " . $address->getCity() . " " . $address->getCountry();
-
-        $url = 'http://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($addressToInsert) . '&sensor=false';
+        $url = 'http://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($addressToInsert) . '&sensor=false&language=nl';
         $data = json_decode(file_get_contents($url));
 
         if (count($data->results) < 1) {
@@ -537,6 +534,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             return array(
                 "lat" => $LATITUDE,
                 "long" => $LONGITUDE,
+                "formatted_address" => $data->results[0]->formatted_address,
                 "error" => $url
             );
         }
@@ -544,6 +542,19 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             "error" => $url
         );
 
+    }
+
+    private function getAddressFromQuote() {
+        $address = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress();
+
+        $addressToInsert = $address->getStreet(1) . " ";
+        if ($address->getStreet(2)) {
+            $addressToInsert .= $address->getStreet(2) . " ";
+        }
+
+        $addressToInsert .= $address->getPostcode() . " " . $address->getCity() . " " . $address->getCountry();
+
+        return $addressToInsert;
     }
 
     public function getParcelshops($lat, $long)
@@ -570,7 +581,55 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function addParcelshopsHTML($html)
     {
-        return $html . "<div id='parcelShopsContainer'><div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><button id='closeParcelshopPopup'>Sluiten</button></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><button onclick='showParcelshopPicker(event, \"http://188.226.134.167/magento/wuunderconnector/parcelshop/shops\");'>PARCELSHOPS</button></div>";
+
+        preg_match('!<label for="(.*?)wuunderparcelshop">(.*?)<\/label>!s', $html, $matches);
+        if (isset($matches[0])) {
+//            if ($quote->getDpdSelected()) {
+                $html = str_replace($matches[0],
+                    $matches[0] . "<div id='parcelShopsContainer'><div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><table><tr><td><span id='parcelShopsTitleLogo'></span><button id='closeParcelshopPopup'>Sluiten</button></td></tr><tr><td><span id='parcelShopsSearchBarContainer'><input id='parcelShopsSearchBar' type='text'/><span id='submitParcelShopsSearchBar'>OK</span></span></td></tr></table></div><div id='parcelShopsMapLoader'><div id='parcelShopOverlayLoader'></div></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><div id='parcelShopsSelectedContainer'><div id='parcelShopsSelected'></div><button id='selectParceshop' onclick='showParcelshopPicker(event, \"http://188.226.134.167/magento/wuunderconnector/parcelshop/\");'>Kies een parcelshop</button></div></div>",
+                    $html);
+//            } else {
+//                $html = str_replace($matches[0],
+//                    $matches[0] . '<div id="dpd">' . $block->setTemplate('wuunderdpd/parcelshoplink.phtml')->toHtml() . '</div>',
+//                    $html);
+//            }
+        }
+
+        return $html;
+
+//        return $html . "<div id='parcelShopsContainer'><div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><button id='closeParcelshopPopup'>Sluiten</button></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><div id='parcelShopsSelected'></div><button id='selectParceshop' onclick='showParcelshopPicker(event, \"http://188.226.134.167/magento/wuunderconnector/parcelshop/\");'>PARCELSHOPS</button></div>";
+    }
+
+    public function setParcelshopIdForQuote($quote_id, $parcelshop_id)
+    {
+        $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
+        $sqlQuery = "SELECT `id` FROM `" . $this->tblPrfx . "wuunder_quote_data` WHERE `quote_id` = ? LIMIT 1";
+        $id = $mageDbW->fetchOne($sqlQuery, array($quote_id));
+
+        if ($id > 0) {
+            $sqlQuery = "UPDATE `" . $this->tblPrfx . "wuunder_quote_data` SET
+                        `quote_id`          = ?,
+                        `parcelshop_id`       = ?
+                    WHERE
+                        `id` = ?";
+
+            $sqlValues = array($quote_id, $parcelshop_id, $id);
+        } else {
+            $sqlQuery = "INSERT INTO `" . $this->tblPrfx . "wuunder_quote_data` SET
+                        `quote_id`          = ?,
+                        `parcelshop_id`       = ?";
+
+            $sqlValues = array($quote_id, $parcelshop_id);
+        }
+
+        try {
+            $results = $mageDbW->query($sqlQuery, $sqlValues);
+            return true;
+
+        } catch (Mage_Core_Exception $e) {
+            $this->log('ERROR saveWuunderShipment : ' . $e);
+            return false;
+        }
     }
 
     /**

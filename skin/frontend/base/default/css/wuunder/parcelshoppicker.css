@@ -10,23 +10,33 @@
     display: none;
     margin: auto;
     min-width: 800px;
-    position: absolute;
+    max-width: 1200px;
+    max-height: 700px;
+    position: fixed;
     left: 0;
     right: 0;
     top: 0;
-    /*bottom: 0;*/
+    bottom: 0;
     z-index: 9999;
     background-color: white;
+    border: 2px solid grey;
+    border-radius: 10px;
+    padding: 25px;
 }
 
 #parcelShopsPopupBar {
     width: 100%;
-    height: 30px;
+    height: 150px;
+}
+
+#parcelShopsPopupBar table {
+    width: 100%;
 }
 
 #parcelShopsMapContainer {
     width: calc(100% - 380px);
     float: left;
+    padding-left: 20px;
 }
 
 #parcelShopsMap {
@@ -38,6 +48,7 @@
     width: 380px;
     height: 500px;
     overflow: scroll;
+    padding-right: 20px;
 }
 
 #closeParcelshopPopup {
@@ -56,14 +67,27 @@
     background-color: #e9e9e9;
 }
 
-.parcelshop-marker-icon {
+.parcelshop-marker-icon, .parcelshop-marker-icon-u {
     background-image: url('../../images/wuunder/green_marker.png');
+    background-repeat: no-repeat;
     background-size: cover;
     height: 30px;
     width: 30px;
     display: inline-block;
     margin: 0 10px 0 0;
     float: left;
+}
+
+.parcelshop-marker-icon-u {
+    background-image: url('../../images/wuunder/position-sender.png');
+    height: 50px;
+    width: 30px;
+    background-size: 100%;
+}
+
+.parcelshop-item-line {
+    display: block;
+    width: 100%;
 }
 
 .parcelshop-item-title {
@@ -83,8 +107,13 @@
     display: block;
 }
 
+.parcelshop-item-details {
+    display: none;
+    margin: 10px 0 0 40px;
+}
+
 #parcelShopOverlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
@@ -92,4 +121,174 @@
     width: 100%;
     height: 100%;
     background-color: rgba(200,200,200,0.8);
+}
+
+.maps_info_window {
+    border: 2px solid #aec941;
+    border-radius: 5px;
+}
+
+#parcelShopsSelected {
+    padding-bottom: 10px;
+}
+
+#parcelShopsSelectedContainer {
+    background-color: #ececec;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.wuunder-logo-small {
+    width: 20px;
+    height: 20px;
+    background-image: url('../../images/wuunder/wuunder_logo.png');
+    background-size: cover;
+    display: inline-block;
+}
+
+#parcelShopsTitleLogo {
+    width: 60px;
+    height: 60px;
+    background-image: url('../../images/wuunder/bring-to-parcelshop.png');
+    background-size: cover;
+    display: inline-block;
+    margin: 10px;
+}
+
+#parcelShopsSearchBar {
+    border: 1px solid #858585;
+    padding-right: 50px;
+}
+
+#parcelShopsSearchBarContainer {
+    height: 50px;
+    display: inline-block;
+    line-height: 29px;
+    margin-left: 20px;
+    position: relative;
+}
+
+#parcelShopsSearchBarContainer:before {
+    content: "";
+    width: 50px;
+    height: 40px;
+    border: 1px solid #858585;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-right: none;
+    display: block;
+    float: left;
+    background-image: url('../../images/wuunder/search.png');
+    background-size: auto 60%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#submitParcelShopsSearchBar {
+    width: 50px;
+    height: 40px;
+    border: 1px solid #858585;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-left: none;
+    display: block;
+    float: right;
+    background-color: #8fd600;
+    text-align: center;
+    line-height: 40px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    position: absolute;
+    right: -5px;
+    top: 0;
+}
+
+#parcelShopsSearchBarContainer input {
+    height: 40px;
+}
+
+
+/*** popup Loader ***/
+
+#parcelShopsMapLoader {
+    height: 400px;
+    width: 100%;
+    display: none;
+}
+
+#parcelShopOverlayLoader {
+    color: #cacaca;
+    font-size: 20px;
+    margin: auto;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-indent: -9999em;
+    -webkit-animation: load4 1.3s infinite linear;
+    animation: load4 1.3s infinite linear;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+@-webkit-keyframes load4 {
+    0%,
+    100% {
+        box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+    }
+    12.5% {
+        box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+    25% {
+        box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+    37.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+    50% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+    62.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+    }
+    75% {
+        box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+    }
+    87.5% {
+        box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+    }
+}
+@keyframes load4 {
+    0%,
+    100% {
+        box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+    }
+    12.5% {
+        box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+    25% {
+        box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+    37.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+    50% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+    62.5% {
+        box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+    }
+    75% {
+        box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+    }
+    87.5% {
+        box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+    }
 }

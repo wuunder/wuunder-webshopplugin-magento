@@ -98,14 +98,11 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
     public function coreBlockAbstractToHtmlAfter($observer)
     {
         if ($observer->getBlock() instanceof Mage_Checkout_Block_Onepage_Shipping_Method_Available) {
-            //get HTML
-            $html = $observer->getTransport()->getHtml();
-            //set default if in config
-//            $html = Mage::helper('wuunderconnector')->checkShippingDefault($html);
-            //replace label by html
-            $html = Mage::helper('wuunderconnector')->addParcelshopsHTML($html);
-            //set HTML
-            $observer->getTransport()->setHtml($html);
+            if (Mage::getStoreConfig('carriers/wuunderparcelshop/active')) {
+                $html = $observer->getTransport()->getHtml();
+                $html = Mage::helper('wuunderconnector')->addParcelshopsHTML($html);
+                $observer->getTransport()->setHtml($html);
+            }
         }
     }
 

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Wuunder_WuunderConnector>
-            <version>3.2.0</version>
+            <version>3.4.0</version>
         </Wuunder_WuunderConnector>
     </modules>
     <global>
@@ -171,14 +171,14 @@
                 <sort_order>10</sort_order>
                 <sallowspecific>0</sallowspecific>
             </wuunder>
-            <wuunderdpd>
+            <wuunderparcelshop>
                 <active>0</active>
-                <model>wuundercarrier/carrier_wuunderdpd</model>
-                <title>DPD parcelshop</title>
-                <name>Wuunder DPD</name>
+                <model>wuundercarrier/carrier_wuunderparcelshop</model>
+                <title>Openhalen bij een parcelshop</title>
+                <name>Wuunder parcelshop</name>
                 <sort_order>20</sort_order>
                 <sallowspecific>0</sallowspecific>
-            </wuunderdpd>
+            </wuunderparcelshop>
         </carriers>
     </default>
 
