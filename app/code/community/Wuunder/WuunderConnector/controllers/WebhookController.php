@@ -38,7 +38,13 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
                 }
             } else if ($result['action'] === "track_and_trace_updated") {
                 Mage::helper('wuunderconnector')->log("Webhook - Track and trace for order: " . $this->getRequest()->getParam('order_id'));
-                $this->ship($this->getRequest()->getParam('order_id'), $result['carrier_code'], $result['track_and_trace_code']);
+                $processTrackingDataSuccess = Mage::helper('wuunderconnector')->processTrackingDataFromApi($result['carrier_code'], $result['track_and_trace_code'], $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'));
+                if ($processTrackingDataSuccess) {
+                    $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($this->getRequest()->getParam('order_id'));
+                    if (!empty($shipmentInfo['label_id'])) {
+                        $this->ship($this->getRequest()->getParam('order_id'), $result['carrier_code'], $result['track_and_trace_code']);
+                    }
+                }
             }
         } else {
             Mage::helper('wuunderconnector')->log("Invalid order_id for webhook");
