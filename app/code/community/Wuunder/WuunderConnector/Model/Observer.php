@@ -126,9 +126,10 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
                 $response['error'] = -1;
                 $result['goto_section'] = 'shipping_method';
                 $response['message'] = 'Please select a parcelshop.';
+
+                Mage::app()->getResponse()->setBody(Mage::helper('core')->jsonEncode($response))->sendResponse();
+                exit;
             }
-            Mage::app()->getResponse()->setBody(Mage::helper('core')->jsonEncode($response))->sendResponse();
-            exit;
         }
     }
 
