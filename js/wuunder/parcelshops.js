@@ -258,7 +258,8 @@ function openParcelshopItemDetails(parcelshopItem) {
         closeAllParcelshopItemDetails();
         if (detailsElement.style.display === "none" || detailsElement.style.display === "") {
             detailsElement.style.display = "block";
-            parcelshopItem.scrollIntoView(true);
+            // parcelshopItem.scrollIntoView(true);
+            parcelshopItem.parentNode.scrollTop = parcelshopItem.offsetTop - parcelshopItem.parentNode.offsetTop;
         } else {
             detailsElement.style.display = "none";
         }
