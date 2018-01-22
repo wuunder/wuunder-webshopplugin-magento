@@ -91,8 +91,10 @@ function toggleOverlay() {
     }
     if (overlay.style.display === "block") {
         overlay.style.display = "none";
+        window.parent.document.body.style.overflow = "auto";
     } else {
         overlay.style.display = "block";
+        window.parent.document.body.style.overflow = "hidden";
     }
 }
 
@@ -136,17 +138,9 @@ function initMap(mapCanvas, data) {
 
         addUserMarker(data);
 
-        var markerImage = {
-            url: data.image_dir + "frontend/base/default/images/wuunder/green_marker.png",
-            size: new google.maps.Size(81, 101),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(17, 34),
-            scaledSize: new google.maps.Size(25, 25)
-        };
-
         //add all markers for nearby parcelshops
         for (var i = 0; i < parcelshops.length; i++) {
-            addParcelshopMarker(parcelshops, i, markerImage);
+            addParcelshopMarker(parcelshops, i, data.image_dir);
         }
     }
 }
@@ -181,7 +175,39 @@ function addUserMarker(data) {
     window.parent.document.getElementById('parcelShopsList').appendChild(node);
 }
 
-function addParcelshopMarker(parcelshops, i, markerImage) {
+function addParcelshopMarker(parcelshops, i, image_dir) {
+    var image_file_name = "";
+    var image_class = "";
+
+    switch (parcelshops[i].carrier_name) {
+        case "DPD":
+            image_file_name = "DPD-locator.png";
+            image_class = "dpd";
+            break;
+        case "DHL":
+            image_file_name = "DHL-locator.png";
+            image_class = "dhl";
+            break;
+        case "GLS":
+            image_file_name = "GLS-locator.png";
+            image_class = "gls";
+            break;
+        case "POSTNL":
+            image_file_name = "POSTNL-locator.png";
+            image_class = "postnl";
+            break;
+        default:
+            image_file_name = "green_marker.png";
+            break;
+    }
+    var markerImage = {
+        url: image_dir + "frontend/base/default/images/wuunder/" + image_file_name,
+        size: new google.maps.Size(81, 101),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34),
+        scaledSize: new google.maps.Size(50, 50)
+    };
+
     var marker = new google.maps.Marker({
         position: {
             lat: parseFloat(parcelshops[i].latitude),
@@ -191,10 +217,16 @@ function addParcelshopMarker(parcelshops, i, markerImage) {
         map: map
     });
 
+    marker.addListener('click', function() {
+        map.setZoom(15);
+        map.setCenter(marker.getPosition());
+        openParcelshopItemDetails(window.parent.document.getElementsByClassName("parcelshopItem-" + i)[0]);
+    });
+
     var node = document.createElement("div");
-    node.className += "parcelshopItem";
+    node.className += "parcelshopItem parcelshopItem-" + i;
     node.onclick = parcelshopItemCallbackClosure(parcelshops[i].latitude, parcelshops[i].longitude);
-    var nodeInnerHTML = "<table><tr><td><span class='parcelshop-marker-icon'></span></td>" +
+    var nodeInnerHTML = "<table><tr><td><span class='parcelshop-marker-icon parcelshop-marker-icon-" + image_class + "'></span></td>" +
         "<td><span class='parcelshop-item-title parcelshop-item-line'>" + parcelshops[i].company_name + "</span>" +
         "<span class='parcelshop-item-line'>" + parcelshops[i].address.street_name + " " + parcelshops[i].address.house_number +
         "<span class='parcelshop-item-line'>" + parcelshops[i].address.zip_code + " " + parcelshops[i].address.city + "</span>" +
@@ -215,18 +247,21 @@ function parcelshopItemCallbackClosure(lat, long) {
         if (!clickedElement.classList.contains('parcelshopItem')) {
             clickedElement = closest(clickedElement, '.parcelshopItem');
         }
-
-        var detailsElement = clickedElement.getElementsByClassName('parcelshop-item-details')[0];
-        if (detailsElement !== undefined) {
-            closeAllParcelshopItemDetails();
-            if (detailsElement.style.display === "none" || detailsElement.style.display === "") {
-                detailsElement.style.display = "block";
-            } else {
-                detailsElement.style.display = "none";
-            }
-        }
-
+        openParcelshopItemDetails(clickedElement);
         map.setCenter(new google.maps.LatLng(lat, long));
+    }
+}
+
+function openParcelshopItemDetails(parcelshopItem) {
+    var detailsElement = parcelshopItem.getElementsByClassName('parcelshop-item-details')[0];
+    if (detailsElement !== undefined) {
+        closeAllParcelshopItemDetails();
+        if (detailsElement.style.display === "none" || detailsElement.style.display === "") {
+            detailsElement.style.display = "block";
+            parcelshopItem.scrollIntoView(true);
+        } else {
+            detailsElement.style.display = "none";
+        }
     }
 }
 
@@ -287,7 +322,7 @@ function clearDataView() {
 function closeAllParcelshopItemDetails() {
     var elements = window.parent.document.getElementsByClassName('parcelshop-item-details');
 
-    for(var i = 0; i < elements.length; i++) {
+    for (var i = 0; i < elements.length; i++) {
         elements[i].style.display = "none";
     }
 }
