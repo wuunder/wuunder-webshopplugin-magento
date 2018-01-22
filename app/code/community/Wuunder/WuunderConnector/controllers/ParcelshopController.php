@@ -11,9 +11,9 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
         try {
 
             $address = null;
-            Mage::helper('wuunderconnector')->log("HERE1");
-            Mage::helper('wuunderconnector')->log($this->getRequest()->isPost());
-            Mage::helper('wuunderconnector')->log(file_get_contents('php://input'));
+//            Mage::helper('wuunderconnector')->log("HERE1");
+//            Mage::helper('wuunderconnector')->log($this->getRequest()->isPost());
+//            Mage::helper('wuunderconnector')->log(file_get_contents('php://input'));
             if ($this->getRequest()->isPost()) {
                 $postData = json_decode(file_get_contents('php://input'));
                 if (isset($postData->address)) {

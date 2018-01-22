@@ -393,18 +393,29 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </price>
-                        <specificerrmsg translate="label">
-                            <label>Displayed Error Message</label>
-                            <frontend_type>textarea</frontend_type>
+                        <freefrom translate="label">
+                            <label>Free shipping from value:</label>
+                            <comment>When not set: no free shipping applied</comment>
+                            <frontend_type>text</frontend_type>
                             <sort_order>4</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <can_be_empty>1</can_be_empty>
+                        </freefrom>
+                        <sort_order translate="label">
+                            <label>Sort order</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </specificerrmsg>
+                            <comment>The order in which the shipping method should appear</comment>
+                        </sort_order>
                         <sallowspecific translate="label">
                             <label>Ship to Applicable Countries</label>
                             <frontend_type>select</frontend_type>
-                            <sort_order>90</sort_order>
+                            <sort_order>6</sort_order>
                             <frontend_class>shipping-applicable-country</frontend_class>
                             <source_model>adminhtml/system_config_source_shipping_allspecificcountries</source_model>
                             <show_in_default>1</show_in_default>
@@ -414,7 +425,7 @@
                         <specificcountry translate="label">
                             <label>Ship to Specific Countries</label>
                             <frontend_type>multiselect</frontend_type>
-                            <sort_order>91</sort_order>
+                            <sort_order>7</sort_order>
                             <source_model>adminhtml/system_config_source_country</source_model>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
