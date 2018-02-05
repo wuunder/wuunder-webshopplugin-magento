@@ -236,7 +236,7 @@ function addParcelshopMarker(parcelshops, i, image_dir) {
     for (var j = 0; j < parcelshops[i].opening_hours.length; j++) {
         nodeInnerHTML += '<tr><td>' + parcelshops[i].opening_hours[j].weekday + '</td><td>' + parcelshops[i].opening_hours[j].open_morning + ' - ' + parcelshops[i].opening_hours[j].close_morning + ' ' + parcelshops[i].opening_hours[j].open_afternoon + ' - ' + parcelshops[i].opening_hours[j].close_afternoon + '</td></tr>'
     }
-    node.innerHTML = nodeInnerHTML + "<tr><td colspan='2'><button onClick='chooseParcelshop(event, `" + parcelshops[i].wuunder_parcelshop_id + "`)'>Kies deze parcelshop</button></td></tr></table>";
+    node.innerHTML = nodeInnerHTML + "<tr><td colspan='2'><button onClick='chooseParcelshop(event, `" + parcelshops[i].id + "`)'>Kies deze parcelshop</button></td></tr></table>";
 
     window.parent.document.getElementById('parcelShopsList').appendChild(node);
 }
@@ -269,8 +269,10 @@ function openParcelshopItemDetails(parcelshopItem) {
 function chooseParcelshop(e, parcelshopId) {
     e.preventDefault();
     var parcelshops = JSON.parse(parcelshopsData.parcelshops);
+    console.log("HERE1", parcelshopId);
     for (var i = 0; i < parcelshops.length; i++) {
-        if (parcelshops[i].wuunder_parcelshop_id === parcelshopId) {
+        if (parcelshops[i].id === parcelshopId) {
+            console.log("HERE2");
             window.parent.document.getElementById("s_method_wuunderparcelshop_wuunderparcelshop").checked = true;
             var fetchUrl = baseUrl + "setshop/id/" + parcelshopId;
             fetch(fetchUrl, {credentials: "include"}).then(function (response) {
