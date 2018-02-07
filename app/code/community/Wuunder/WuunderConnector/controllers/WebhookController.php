@@ -43,6 +43,8 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
                     $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($this->getRequest()->getParam('order_id'));
                     if (!empty($shipmentInfo['label_id'])) {
                         $this->ship($this->getRequest()->getParam('order_id'), $result['carrier_code'], $result['track_and_trace_code']);
+                    } else {
+                        Mage::helper('wuunderconnector')->log("Error: No label_id set when trying to update tracking info for order: " . $this->getRequest()->getParam('order_id'));
                     }
                 }
             }
