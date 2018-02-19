@@ -89,6 +89,17 @@
     background: #f3f3f3;
     padding: 5px 25px;
     cursor: pointer;
+    margin-left: 6px;
+}
+
+.parcelshopItem.selected {
+    border: 6px #94d600;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-left-radius: 0.5em;
+    border-bottom-left-radius: 0.5em;
+    margin-left: 0;
+    padding: 5px 25px 5px 19px;
 }
 
 .parcelshopItem:hover {
@@ -99,8 +110,8 @@
     background-image: url('../../images/wuunder/green_marker.png');
     background-repeat: no-repeat;
     background-size: cover;
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
     display: inline-block;
     margin: 0 10px 0 0;
     float: left;
@@ -151,9 +162,13 @@
     display: block;
 }
 
-.parcelshop-item-details {
+.parcelshopItem .parcelshop-item-details {
     display: none;
+}
+
+.parcelshopItem.selected .parcelshop-item-details {
     margin: 10px 0 0 40px;
+    display: block;
 }
 
 #parcelShopOverlay {
@@ -196,8 +211,33 @@
     height: 60px;
     background-image: url('../../images/wuunder/bring-to-parcelshop.png');
     background-size: cover;
-    display: inline-block;
+    /*display: inline-block;*/
+    float: left;
     margin: 10px;
+}
+
+#parcelShopsTitleLogoChatbox {
+    position: relative;
+    background: #94d600;
+    border-radius: .5em;
+    border-bottom-left-radius: 0;
+    float: left;
+    padding: 10px;
+    margin-top: 28px;
+    color: white;
+}
+
+#parcelShopsTitleLogoChatbox:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 14px 23px;
+    border-color: transparent transparent #94d600 transparent;
+    margin-left: -23px;
 }
 
 #parcelShopsSearchBar {

@@ -153,7 +153,7 @@ function addUserMarker(data) {
         size: new google.maps.Size(81, 101),
         origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 35)
+        scaledSize: new google.maps.Size(35, 49)
     };
 
     var marker = new google.maps.Marker({
@@ -253,16 +253,12 @@ function parcelshopItemCallbackClosure(lat, long) {
 }
 
 function openParcelshopItemDetails(parcelshopItem) {
-    var detailsElement = parcelshopItem.getElementsByClassName('parcelshop-item-details')[0];
-    if (detailsElement !== undefined) {
+    if (parcelshopItem.classList.contains("selected")) {
+        parcelshopItem.classList.remove("selected");
+    } else {
         closeAllParcelshopItemDetails();
-        if (detailsElement.style.display === "none" || detailsElement.style.display === "") {
-            detailsElement.style.display = "block";
-            // parcelshopItem.scrollIntoView(true);
-            parcelshopItem.parentNode.scrollTop = parcelshopItem.offsetTop - parcelshopItem.parentNode.offsetTop;
-        } else {
-            detailsElement.style.display = "none";
-        }
+        parcelshopItem.className += " selected";
+        parcelshopItem.parentNode.scrollTop = parcelshopItem.offsetTop - parcelshopItem.parentNode.offsetTop;
     }
 }
 
@@ -288,7 +284,7 @@ function chooseParcelshop(e, parcelshopId) {
 
         }
     }
-    window.parent.document.getElementById('selectParceshop').innerHTML = 'Selecteer andere parcelshop';
+    window.parent.document.getElementById('selectParceshop').innerHTML = 'Selecteer een andere parcelshop';
     window.parent.document.getElementById('parcelShopsSelected').style.display = "block";
     closePopup();
     toggleOverlay();
@@ -323,10 +319,10 @@ function clearDataView() {
 }
 
 function closeAllParcelshopItemDetails() {
-    var elements = window.parent.document.getElementsByClassName('parcelshop-item-details');
+    var elements = window.parent.document.getElementsByClassName('parcelshopItem');
 
     for (var i = 0; i < elements.length; i++) {
-        elements[i].style.display = "none";
+        elements[i].classList.remove("selected");
     }
 }
 

@@ -551,7 +551,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
     }
 
-    private function getAddressFromQuote() {
+    private function getAddressFromQuote()
+    {
         $address = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress();
 
         $addressToInsert = $address->getStreet(1) . " ";
@@ -586,25 +587,53 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return false;
     }
 
+    private function getParcelshopById($id)
+    {
+        if (!empty($id)) {
+            $storeId = Mage::app()->getStore();
+            $apiUrl = $this->getAPIHost($storeId) . "parcelshops/" . $id;
+            $apiKey = $this->getAPIKey($storeId);
+
+            $cc = curl_init($apiUrl);
+
+            curl_setopt($cc, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
+            curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($cc, CURLOPT_VERBOSE, 1);
+
+            // Execute the cURL, fetch the XML
+            $result = curl_exec($cc);
+            curl_close($cc);
+            return $result;
+        }
+
+        return false;
+    }
+
     public function addParcelshopsHTML($html)
     {
 
         preg_match('!<label for="(.*?)wuunderparcelshop">(.*?)<\/label>!s', $html, $matches);
         if (isset($matches[0])) {
-//            if ($quote->getDpdSelected()) {
-                $html = str_replace($matches[0],
-                    $matches[0] . "<div id='parcelShopsContainer'><div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><table><tr><td><span id='parcelShopsTitleLogo'></span><span id='closeParcelshopPopup'></span></td></tr><tr><td><span id='parcelShopsSearchBarContainer'><input id='parcelShopsSearchBar' type='text'/><span id='submitParcelShopsSearchBar'>OK</span></span></td></tr></table></div><div id='parcelShopsMapLoader'><div id='parcelShopOverlayLoader'></div></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><div id='parcelShopsSelectedContainer'><div id='parcelShopsSelected'></div><a href='#' id='selectParceshop' onclick='showParcelshopPicker(event, \"http://188.226.134.167/magento/wuunderconnector/parcelshop/\");'>Kies een parcelshop</a></div></div>",
-                    $html);
-//            } else {
-//                $html = str_replace($matches[0],
-//                    $matches[0] . '<div id="dpd">' . $block->setTemplate('wuunderdpd/parcelshoplink.phtml')->toHtml() . '</div>',
-//                    $html);
-//            }
+            $html = str_replace($matches[0],
+                $matches[0] . "<div id='parcelShopsContainer'><div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><table><tr><td><span id='parcelShopsTitleLogo'></span><span id='parcelShopsTitleLogoChatbox'>Kies een parcelshop</span><span id='closeParcelshopPopup'></span></td></tr><tr><td><span id='parcelShopsSearchBarContainer'><input id='parcelShopsSearchBar' type='text'/><span id='submitParcelShopsSearchBar'>OK</span></span></td></tr></table></div><div id='parcelShopsMapLoader'><div id='parcelShopOverlayLoader'></div></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><div id='parcelShopsSelectedContainer'>" . $this->getCurrentSetParcelshopInfo() . "<a href='#' id='selectParceshop' onclick='showParcelshopPicker(event, \"http://188.226.134.167/magento/wuunderconnector/parcelshop/\");'>Klik hier om een ParcelShop te selecteren</a></div></div>",
+                $html);
         }
-
         return $html;
+    }
 
-//        return $html . "<div id='parcelShopsContainer'><div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><button id='closeParcelshopPopup'>Sluiten</button></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><div id='parcelShopsSelected'></div><button id='selectParceshop' onclick='showParcelshopPicker(event, \"http://188.226.134.167/magento/wuunderconnector/parcelshop/\");'>PARCELSHOPS</button></div>";
+    private function getCurrentSetParcelshopInfo()
+    {
+        $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
+        $parcelshop_id = $this->getParcelshopIdForQuote($quote_id);
+        if (is_null($parcelshop_id)) {
+            return "<div id='parcelShopsSelected'></div>";
+        } else {
+            $parcelshop_info = json_decode($this->getParcelshopById($parcelshop_id));
+            return "<div id='parcelShopsSelected'><table><tr><td><span class='wuunder-logo-small'></span></td><td></td><td></td></tr><tr><td></td><td><b>Parcelshop adres:</b></td><td></td></tr><tr><td></td><td>" .
+                "<table><tbody><tr><td>" . $parcelshop_info->company_name . "</td></tr>" .
+                "<tr><td>" . $parcelshop_info->address->street_name . " " . $parcelshop_info->address->house_number . ",</td></tr>" .
+                "<tr><td>" . $parcelshop_info->address->city . "</td><td></td></tr></tbody></table></td></tr></table></div>";
+        }
     }
 
     public function setParcelshopIdForQuote($quote_id, $parcelshop_id)
@@ -639,7 +668,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
-    public function getParcelshopIdForQuote($id) {
+    public function getParcelshopIdForQuote($id)
+    {
         try {
             $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
 

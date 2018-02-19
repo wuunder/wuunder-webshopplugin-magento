@@ -183,7 +183,7 @@
             <wuunderparcelshop>
                 <active>0</active>
                 <model>wuundercarrier/carrier_wuunderparcelshop</model>
-                <title>Openhalen bij een parcelshop</title>
+                <title>Ophalen bij een parcelshop</title>
                 <name>Wuunder parcelshop</name>
                 <sort_order>20</sort_order>
                 <sallowspecific>0</sallowspecific>
