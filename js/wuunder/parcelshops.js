@@ -138,9 +138,14 @@ function initMap(mapCanvas, data) {
 
         addUserMarker(data);
 
+        parcelshops.sort(function(a, b) {
+           return a.distance - b.distance;
+        });
+
         //add all markers for nearby parcelshops
         for (var i = 0; i < parcelshops.length; i++) {
-            addParcelshopMarker(parcelshops, i, data.image_dir);
+
+            addParcelshopToMap(parcelshops, i, data.image_dir);
         }
     }
 }
@@ -175,7 +180,7 @@ function addUserMarker(data) {
     window.parent.document.getElementById('parcelShopsList').appendChild(node);
 }
 
-function addParcelshopMarker(parcelshops, i, image_dir) {
+function addParcelshopToMap(parcelshops, i, image_dir) {
     var image_file_name = "";
     var image_class = "";
 
@@ -224,7 +229,7 @@ function addParcelshopMarker(parcelshops, i, image_dir) {
     });
 
     var node = document.createElement("div");
-    node.className += "parcelshopItem parcelshopItem-" + i;
+    node.className += "parcelshopItem parcelshopItem-" + i + (i === 0 ? " selected" : "");
     node.onclick = parcelshopItemCallbackClosure(parcelshops[i].latitude, parcelshops[i].longitude);
     var nodeInnerHTML = "<table><tr><td><span class='parcelshop-marker-icon parcelshop-marker-icon-" + image_class + "'></span></td>" +
         "<td><span class='parcelshop-item-title parcelshop-item-line'>" + parcelshops[i].company_name + "</span>" +
@@ -236,7 +241,7 @@ function addParcelshopMarker(parcelshops, i, image_dir) {
     for (var j = 0; j < parcelshops[i].opening_hours.length; j++) {
         nodeInnerHTML += '<tr><td>' + parcelshops[i].opening_hours[j].weekday + '</td><td>' + parcelshops[i].opening_hours[j].open_morning + ' - ' + parcelshops[i].opening_hours[j].close_morning + ' ' + parcelshops[i].opening_hours[j].open_afternoon + ' - ' + parcelshops[i].opening_hours[j].close_afternoon + '</td></tr>'
     }
-    node.innerHTML = nodeInnerHTML + "<tr><td colspan='2'><button onClick='chooseParcelshop(event, `" + parcelshops[i].id + "`)'>Kies deze parcelshop</button></td></tr></table>";
+    node.innerHTML = nodeInnerHTML + "<tr><td colspan='2'><button class='pick-parcelshop-btn' onClick='chooseParcelshop(event, `" + parcelshops[i].id + "`)'>Kies</button></td></tr></table>";
 
     window.parent.document.getElementById('parcelShopsList').appendChild(node);
 }

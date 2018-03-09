@@ -8,6 +8,9 @@
             <action method="addJs">
                 <script>wuunder/parcelshops.js</script>
             </action>
+            <action method="addJs">
+                <file helper="wuunderconnector/data/getOnestepCheckoutJs"/>
+            </action>
             <block type="core/template" name="gmapsapi" template="wuunder/gmapsapi.phtml"/>
         </reference>
     </wuunderconnector_checkout_header>
@@ -25,4 +28,13 @@
             <block type="wuunderconnector/parcelshops" name="wuunderparcelshops" template="wuunder/parcelshops.phtml" />
         </reference>
     </wuunderconnector_parcelshop_shops>
+    <onestepcheckout_index_index>
+        <update handle="wuunderconnector_checkout_header"/>
+    </onestepcheckout_index_index>
+    <checkout_onestep_index>
+        <depends>
+            <FME_QuickCheckout />
+        </depends>
+        <update handle="wuunderconnector_checkout_header"/>
+    </checkout_onestep_index>
 </layout>

@@ -113,22 +113,23 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
      */
     public function checkout_controller_onepage_save_shipping_method($observer)
     {
-        $quote = Mage::getSingleton('checkout/session')->getQuote();
-        $address = $quote->getShippingAddress();
-        if ($address->getShippingMethod() == "wuunderparcelshop_wuunderparcelshop") {
-            $parcelshop_id = Mage::helper('wuunderconnector')->getParcelshopIdForQuote($quote->getEntityId());
+        if (!Mage::helper('wuunderconnector')->getIsOnestepCheckout()) {
+            $quote = Mage::getSingleton('checkout/session')->getQuote();
+            $address = $quote->getShippingAddress();
+            if ($address->getShippingMethod() == "wuunderparcelshop_wuunderparcelshop") {
+                $parcelshop_id = Mage::helper('wuunderconnector')->getParcelshopIdForQuote($quote->getEntityId());
 
-            $response = array();
-            $response['success'] = true;
-            if (is_null($parcelshop_id)) {
-                Mage::helper('wuunderconnector')->log("HERE2:");
-                $response['status'] = false;
-                $response['error'] = -1;
-                $result['goto_section'] = 'shipping_method';
-                $response['message'] = 'Please select a parcelshop.';
+                $response = array();
+                $response['success'] = true;
+                if (is_null($parcelshop_id)) {
+                    $response['status'] = true;
+                    $response['error'] = -1;
+                    $result['goto_section'] = 'shipping_method';
+                    $response['message'] = 'Please select a parcelshop.';
 
-                Mage::app()->getResponse()->setBody(Mage::helper('core')->jsonEncode($response))->sendResponse();
-                exit;
+                    Mage::app()->getResponse()->setBody(Mage::helper('core')->jsonEncode($response))->sendResponse();
+                    exit;
+                }
             }
         }
     }

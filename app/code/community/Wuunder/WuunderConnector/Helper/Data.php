@@ -67,9 +67,9 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         if ($test_mode == 1) {
 //            $apiUrl = 'https://api-staging.wuunder.co/api/';
-            $apiUrl = 'https://api-playground.wuunder.co/api/';
+            $apiUrl = 'https://api-playground.wearewuunder.com/api/';
         } else {
-            $apiUrl = 'https://api.wuunder.co/api/';
+            $apiUrl = 'https://api.wearewuunder.com/api/';
         }
 
         return $apiUrl;
@@ -569,7 +569,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     {
         if (!empty($lat) && !empty($long)) {
             $storeId = Mage::app()->getStore();
-            $apiUrl = $this->getAPIHost($storeId) . "parcelshops?providers[]=DPD&latitude=" . $lat . "&longitude=" . $long . "&radius=&availability_date=2018-01-08&hide_closed=true&limit=10&search_country=";
+            $apiUrl = $this->getAPIHost($storeId) . "parcelshops?providers[]=DPD&latitude=" . $lat . "&longitude=" . $long . "&radius=&hide_closed=true&limit=10&search_country=";
             $apiKey = $this->getAPIKey($storeId);
 
             $cc = curl_init($apiUrl);
@@ -611,14 +611,20 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function addParcelshopsHTML($html)
     {
-
         preg_match('!<label for="(.*?)wuunderparcelshop">(.*?)<\/label>!s', $html, $matches);
         if (isset($matches[0])) {
             $html = str_replace($matches[0],
-                $matches[0] . "<div id='parcelShopsContainer'><div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><table><tr><td><span id='parcelShopsTitleLogo'></span><span id='parcelShopsTitleLogoChatbox'>Kies een parcelshop</span><span id='closeParcelshopPopup'></span></td></tr><tr><td><span id='parcelShopsSearchBarContainer'><input id='parcelShopsSearchBar' type='text'/><span id='submitParcelShopsSearchBar'>OK</span></span></td></tr></table></div><div id='parcelShopsMapLoader'><div id='parcelShopOverlayLoader'></div></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><div id='parcelShopsSelectedContainer'>" . $this->getCurrentSetParcelshopInfo() . "<a href='#' id='selectParceshop' onclick='showParcelshopPicker(event, \"http://188.226.134.167/magento/wuunderconnector/parcelshop/\");'>Klik hier om een ParcelShop te selecteren</a></div></div>",
+                $matches[0] . "<div id='parcelShopsContainer'><div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><table><tr><td><span id='parcelShopsTitleLogo'></span><span id='parcelShopsTitleLogoChatbox'>Kies een parcelshop</span><span id='closeParcelshopPopup'></span></td></tr><tr><td><span id='parcelShopsSearchBarContainer'><input id='parcelShopsSearchBar' type='text'/><span id='submitParcelShopsSearchBar'>OK</span></span></td></tr></table></div><div id='parcelShopsMapLoader'><div id='parcelShopOverlayLoader'></div></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><div id='parcelShopsSelectedContainer'>" . $this->getCurrentSetParcelshopInfo() . $this->getOneStepValidationField() . "<a href='#' id='selectParceshop' onclick='showParcelshopPicker(event, \"" . Mage::getUrl('',array('_secure'=>true)) . "wuunderconnector/parcelshop/\");'>Klik hier om een ParcelShop te selecteren</a></div></div>",
                 $html);
         }
         return $html;
+    }
+
+    private function getOneStepValidationField() {
+        if ($this->getIsOnestepCheckout()) {
+            return "<input id='onestepValidationField' type='text' class='validate-text required-entry'/>";
+        }
+        return '';
     }
 
     private function getCurrentSetParcelshopInfo()
@@ -723,5 +729,32 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
         return $weight;
+    }
+
+    /**
+     * Check if on Onestepcheckout page or if Onestepcheckout is the refferer
+     *
+     * @return bool
+     */
+    public function getIsOnestepCheckout()
+    {
+        if (strpos(Mage::helper("core/url")->getCurrentUrl(), 'onestep') !== false || strpos(Mage::app()->getRequest()->getHeader('referer'), 'onestepcheckout') !== false) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * Return our custom js when the check for onestepcheckout returns true.
+     *
+     * @return string
+     */
+    public function getOnestepCheckoutJs()
+    {
+        $this->log("HELLO1");
+        if ($this->getIsOnestepCheckout()) {
+            $this->log("HELLO2");
+            return 'wuunder/onestepcheckout.js';
+        }
+        return '';
     }
 }

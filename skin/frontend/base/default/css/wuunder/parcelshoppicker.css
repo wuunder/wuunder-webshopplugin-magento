@@ -1,11 +1,3 @@
-#parcelShopsContainer {
-    /*position: absolute;*/
-    /*top: 0;*/
-    /*bottom: 0;*/
-    /*left: 0;*/
-    /*right: 0;*/
-}
-
 #parcelShopsPopup {
     display: none;
     margin: auto;
@@ -30,38 +22,54 @@
 }
 
 #parcelShopsPopupBar table {
-    table-layout:fixed;
+    table-layout: fixed;
     width: 100%;
+}
+
+#parcelShopsContainer, #parcelShopsContainer * {
+    font-family: "Helvetica Neue", Verdana, Arial, sans-serif;
+    color: #636363;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+#parcelShopsMapContainer {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 @media (max-width: 849px) {
     #parcelShopsMapContainer {
         display: none !important;
     }
+
     #parcelShopsList {
         width: 100%;
         padding-bottom: 40px;
     }
 }
+
 @media (min-width: 850px) {
     #parcelShopsPopup {
         min-width: 800px;
     }
+
     #parcelShopsMapContainer {
         width: calc(100% - 380px);
         float: left;
         padding-left: 20px;
     }
+
     #parcelShopsList {
         width: 380px;
         padding-right: 20px;
     }
+
     #parcelShopsSearchBarContainer {
         margin-left: 20px;
     }
 }
-
-
 
 #parcelShopsMap {
     height: 500px;
@@ -71,6 +79,10 @@
     float: left;
     height: 500px;
     overflow: scroll;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 #closeParcelshopPopup {
@@ -100,6 +112,21 @@
     border-bottom-left-radius: 0.5em;
     margin-left: 0;
     padding: 5px 25px 5px 19px;
+    width: calc(100% + 5px);
+}
+
+.parcelshopItem .pick-parcelshop-btn {
+    width: 50px;
+    height: 40px;
+    border: 1px solid #858585;
+    border-radius: 5px;
+    display: block;
+    float: right;
+    background-color: #8fd600;
+    text-align: center;
+    line-height: 40px;
+    color: white;
+    font-size: 20px;
 }
 
 .parcelshopItem:hover {
@@ -179,7 +206,7 @@
     right: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(200,200,200,0.8);
+    background-color: rgba(200, 200, 200, 0.8);
 }
 
 .maps_info_window {
@@ -271,6 +298,12 @@
     background-repeat: no-repeat;
 }
 
+#onestepValidationField {
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
+
 #submitParcelShopsSearchBar {
     width: 50px;
     height: 40px;
@@ -291,7 +324,6 @@
 #parcelShopsSearchBarContainer input {
     height: 40px;
 }
-
 
 /*** popup Loader ***/
 
@@ -348,6 +380,7 @@
         box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
     }
 }
+
 @keyframes load4 {
     0%,
     100% {
