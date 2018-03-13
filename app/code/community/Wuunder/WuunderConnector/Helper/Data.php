@@ -616,13 +616,14 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $html = str_replace($matches[0],
                 $matches[0] . "<div id='parcelShopsContainer'><div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><table><tr><td><span id='parcelShopsTitleLogo'></span><span id='parcelShopsTitleLogoChatbox'>Kies een parcelshop</span><span id='closeParcelshopPopup'></span></td></tr><tr><td><span id='parcelShopsSearchBarContainer'><input id='parcelShopsSearchBar' type='text'/><span id='submitParcelShopsSearchBar'>OK</span></span></td></tr></table></div><div id='parcelShopsMapLoader'><div id='parcelShopOverlayLoader'></div></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><div id='parcelShopsSelectedContainer'>" . $this->getCurrentSetParcelshopInfo() . $this->getOneStepValidationField() . "<a href='#' id='selectParceshop' onclick='showParcelshopPicker(event, \"" . Mage::getUrl('',array('_secure'=>true)) . "wuunderconnector/parcelshop/\");'>Klik hier om een ParcelShop te selecteren</a></div></div>",
                 $html);
+            $html = str_replace("name=\"shipping_method\"", "name=\"shipping_method\" onclick=\"switchShippingMethod(event);\"", $html);
         }
         return $html;
     }
 
     private function getOneStepValidationField() {
         if ($this->getIsOnestepCheckout()) {
-            return "<input id='onestepValidationField' type='text' class='validate-text required-entry'/>";
+            return "";
         }
         return '';
     }
