@@ -2,16 +2,17 @@ console.log("HELLO");
 
 function switchShippingMethod(e) {
     var requiredFieldContainer = window.parent.document.getElementById("parcelShopsContainer");
-    if (requiredFieldContainer !== undefined) {
+    if (requiredFieldContainer) {
+        var input;
         if (e.target.id !== "s_method_wuunderparcelshop_wuunderparcelshop") {
             console.log("wuunder");
-            var input = window.parent.document.getElementById("onestepValidationField");
+            input = window.parent.document.getElementById("onestepValidationField");
             if (input !== undefined) {
                 input.remove();
             }
         } else {
             console.log("else");
-            var input = document.createElement('input');
+            input = document.createElement('input');
             input.id = "onestepValidationField";
             input.className += "validate-text required-entry";
             requiredFieldContainer.appendChild(input);

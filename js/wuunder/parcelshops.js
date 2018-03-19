@@ -12,11 +12,11 @@ function showParcelshopPicker(e, url) {
     window.parent.document.getElementById('parcelShopsPopup').style.display = 'block';
     toggleDataLoader();
 
-    if (parcelshopsData !== undefined) {
-        handleParcelshopsData(parcelshopsData);
-    } else {
+    // if (parcelshopsData !== undefined) {
+    //     handleParcelshopsData(parcelshopsData);
+    // } else {
         fetchParcelshops(false)
-    }
+    // }
     return false;
 }
 
@@ -286,7 +286,10 @@ function chooseParcelshop(e, parcelshopId) {
                 "<tr><td>" + parcelshop.address.street_name + " " + parcelshop.address.house_number + ",</td></tr>" +
                 "<tr><td>" + parcelshop.address.city + "</td><td></td></tr></tbody></table></td></tr></table>";
 
-
+            var oneStepCheckoutRequiredField = window.parent.document.getElementById("onestepValidationField");
+            if (oneStepCheckoutRequiredField) {
+                oneStepCheckoutRequiredField.value = parcelshop.id;
+            }
         }
     }
     window.parent.document.getElementById('selectParceshop').innerHTML = 'Selecteer een andere parcelshop';
