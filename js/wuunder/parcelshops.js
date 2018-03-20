@@ -11,12 +11,7 @@ function showParcelshopPicker(e, url) {
     toggleOverlay();
     window.parent.document.getElementById('parcelShopsPopup').style.display = 'block';
     toggleDataLoader();
-
-    // if (parcelshopsData !== undefined) {
-    //     handleParcelshopsData(parcelshopsData);
-    // } else {
-        fetchParcelshops(false)
-    // }
+    fetchParcelshops(false);
     return false;
 }
 
@@ -31,28 +26,24 @@ function fetchParcelshops(post, data) {
                 'Content-Type': 'application/json'
             })
         }).then(function (response) {
-            console.log(response);
             if (response.status === 200) {
                 return response.json();
             } else {
                 showErrorMessage();
                 return null;
             }
-
         }).then(function (json) {
             if (json !== null)
                 handleParcelshopsData(json);
         });
     } else {
         fetch(fetchUrl, {credentials: "include"}).then(function (response) {
-            console.log(response);
             if (response.status === 200) {
                 return response.json();
             } else {
                 showErrorMessage();
                 return null;
             }
-
         }).then(function (json) {
             if (json !== null)
                 handleParcelshopsData(json);
@@ -81,11 +72,17 @@ function closePopup() {
 
 function toggleOverlay() {
     var overlay;
-    if (window.parent.document.getElementById("parcelShopOverlay") === undefined || window.parent.document.getElementById("parcelShopOverlay") === null) {
+    if (!window.parent.document.getElementById("parcelShopOverlay")) {
         var node = document.createElement("div");
         node.id += "parcelShopOverlay";
         window.parent.document.getElementsByTagName("body")[0].appendChild(node);
         overlay = node;
+        overlay.onclick = function (e) {
+            e.preventDefault();
+            toggleOverlay();
+            closePopup();
+            return false;
+        };
     } else {
         overlay = window.parent.document.getElementById("parcelShopOverlay");
     }
@@ -114,12 +111,11 @@ function toggleDataLoader() {
 
 function initMap(mapCanvas, data) {
     googleMapsLoaded = true;
-    console.log(data);
     parcelshopsData = data;
     var parcelshops = JSON.parse(data.parcelshops);
 
-    console.log(parcelshops);
-    if (data.lat !== undefined && data.long !== undefined) {
+
+    if (data.lat && data.long) {
         clearDataView();
         var pos = {lat: data.lat, lng: data.long};
 
@@ -144,7 +140,6 @@ function initMap(mapCanvas, data) {
 
         //add all markers for nearby parcelshops
         for (var i = 0; i < parcelshops.length; i++) {
-
             addParcelshopToMap(parcelshops, i, data.image_dir);
         }
     }
@@ -270,7 +265,6 @@ function openParcelshopItemDetails(parcelshopItem) {
 function chooseParcelshop(e, parcelshopId) {
     e.preventDefault();
     var parcelshops = JSON.parse(parcelshopsData.parcelshops);
-    console.log("HERE1", parcelshopId);
     for (var i = 0; i < parcelshops.length; i++) {
         if (parcelshops[i].id === parcelshopId) {
             console.log("HERE2");
@@ -313,6 +307,7 @@ function bindPopupEvents() {
             return false;
         }
     };
+
     window.parent.document.getElementById("closeParcelshopPopup").onclick = function (e) {
         e.preventDefault();
         toggleOverlay();
@@ -344,7 +339,7 @@ function closest(el, selector) {
             return true;
         }
         return false;
-    })
+    });
 
     var parent;
 

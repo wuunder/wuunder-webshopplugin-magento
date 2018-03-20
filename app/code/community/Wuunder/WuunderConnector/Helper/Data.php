@@ -536,11 +536,9 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $data = json_decode($source);
         }
         if (count($data->results) > 0) {
-            $LATITUDE = $data->results[0]->geometry->location->lat;
-            $LONGITUDE = $data->results[0]->geometry->location->lng;
             return array(
-                "lat" => $LATITUDE,
-                "long" => $LONGITUDE,
+                "lat" => $data->results[0]->geometry->location->lat,
+                "long" => $data->results[0]->geometry->location->lng,
                 "formatted_address" => $data->results[0]->formatted_address,
                 "error" => $url
             );
@@ -568,20 +566,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     public function getParcelshops($lat, $long)
     {
         if (!empty($lat) && !empty($long)) {
-            $storeId = Mage::app()->getStore();
-            $apiUrl = $this->getAPIHost($storeId) . "parcelshops?providers[]=DPD&latitude=" . $lat . "&longitude=" . $long . "&radius=&hide_closed=true&limit=10&search_country=";
-            $apiKey = $this->getAPIKey($storeId);
-
-            $cc = curl_init($apiUrl);
-
-            curl_setopt($cc, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
-            curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($cc, CURLOPT_VERBOSE, 1);
-
-            // Execute the cURL, fetch the XML
-            $result = curl_exec($cc);
-            curl_close($cc);
-            return $result;
+            return $this->doParcelshopRequest("parcelshops?providers[]=DPD&latitude=" . $lat . "&longitude=" . $long . "&radius=&hide_closed=true&limit=10&search_country=");
         }
 
         return false;
@@ -590,23 +575,28 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     private function getParcelshopById($id)
     {
         if (!empty($id)) {
-            $storeId = Mage::app()->getStore();
-            $apiUrl = $this->getAPIHost($storeId) . "parcelshops/" . $id;
-            $apiKey = $this->getAPIKey($storeId);
-
-            $cc = curl_init($apiUrl);
-
-            curl_setopt($cc, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
-            curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($cc, CURLOPT_VERBOSE, 1);
-
-            // Execute the cURL, fetch the XML
-            $result = curl_exec($cc);
-            curl_close($cc);
-            return $result;
+            return $this->doParcelshopRequest("parcelshops/" . $id);
         }
 
         return false;
+    }
+
+    private function doParcelshopRequest($uriPath)
+    {
+        $storeId = Mage::app()->getStore();
+        $apiUrl = $this->getAPIHost($storeId) . $uriPath;
+        $apiKey = $this->getAPIKey($storeId);
+
+        $cc = curl_init($apiUrl);
+
+        curl_setopt($cc, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
+        curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($cc, CURLOPT_VERBOSE, 1);
+
+        // Execute the cURL, fetch the XML
+        $result = curl_exec($cc);
+        curl_close($cc);
+        return $result;
     }
 
     public function addParcelshopsHTML($html)

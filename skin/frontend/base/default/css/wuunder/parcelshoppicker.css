@@ -1,8 +1,6 @@
 #parcelShopsPopup {
     display: none;
     margin: auto;
-    max-width: 1200px;
-    max-height: 700px;
     position: fixed;
     left: 0;
     right: 0;
@@ -14,6 +12,20 @@
     border-radius: 10px;
     padding: 25px;
     overflow: hidden;
+}
+
+@media (max-width: 1300px) {
+    #parcelShopsPopup {
+        max-width: 1000px;
+        max-height: 700px;
+    }
+}
+
+@media (min-width: 1300px) {
+    #parcelShopsPopup {
+        max-width: 1200px;
+        max-height: 700px;
+    }
 }
 
 #parcelShopsPopupBar {
