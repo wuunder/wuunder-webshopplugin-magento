@@ -53,4 +53,3 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunderparcelshop extends Mage_Ship
             ->setCarrierTitle($this->getConfigData('name'));
         return $track;
     }
-}

@@ -565,8 +565,28 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getParcelshops($lat, $long)
     {
+      // Dus moet kijken of één of meerdere providers is, anders kun je het gewoon toevoegen allà: providers[]={carrier1}&providers[]={carrier2}
+      $carrier = Mage::getStoreConfig('carriers/wuunderparcelshop/carriers');
+      $carriers = explode(",", $carrier);
+      $addCarriers = "";
+      foreach ($carriers as $key => $val) {
+        if($key === 0){
+          $addCarriers .= "providers[]=".$val;
+        } else {
+          $addCarriers .= "&providers[]=".$val;
+        }
+      }
+
+      $file = "/var/www/html/log.txt";
+      $current = file_get_contents($file);
+      $current .= "Dit is parcelshops: \n\n";
+      $current .= $carrier."\n\n";
+      $current .= "Add Carriers is: \n\n";
+      $current .= $addCarriers."\n\n";
+      file_put_contents($file, $current);
+
         if (!empty($lat) && !empty($long)) {
-            return $this->doParcelshopRequest("parcelshops?providers[]=DPD&latitude=" . $lat . "&longitude=" . $long . "&radius=&hide_closed=true&limit=10&search_country=");
+            return $this->doParcelshopRequest("parcelshops?" . $addCarriers . "&latitude=" . $lat . "&longitude=" . $long . "&radius=&hide_closed=true&limit=10&search_country=");
         }
 
         return false;
