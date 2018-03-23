@@ -565,20 +565,11 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getParcelshops($lat, $long)
     {
-      $carrier = Mage::getStoreConfig('carriers/wuunderparcelshop/carriers');
-      if(!empty($carrier)){
-        $carriers = explode(",", $carrier);
-        $addCarriers = "";
-        foreach ($carriers as $key => $val) {
-          if($key === 0){
-            $addCarriers .= "providers[]=".$val;
-          } else {
-            $addCarriers .= "&providers[]=".$val;
-          }
-        }
-      } else {
-        $addCarriers = "providers[]=DPD";
+      $carrier = Mage::getStoreConfig('carriers/wuunderparcelshop/parcelshop_carriers');
+      if(empty($carrier)) {
+        return false;
       }
+      $addCarriers = "providers[]=" . implode(explode("," , $carrier), '&providers=[]');
 
         if (!empty($lat) && !empty($long)) {
             return $this->doParcelshopRequest("parcelshops?" . $addCarriers . "&latitude=" . $lat . "&longitude=" . $long . "&radius=&hide_closed=true&limit=10&search_country=");

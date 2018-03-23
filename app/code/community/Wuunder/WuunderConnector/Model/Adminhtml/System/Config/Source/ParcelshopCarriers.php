@@ -1,5 +1,5 @@
 <?php
-class Wuunder_WuunderConnector_Model_Adminhtml_System_Config_Source_Carriers
+class Wuunder_WuunderConnector_Model_Adminhtml_System_Config_Source_ParcelshopCarriers
 {
 
     public function toOptionArray()
