@@ -137,7 +137,7 @@
     background-color: #8fd600;
     text-align: center;
     line-height: 40px;
-    color: white;
+    color: white !important;
     font-size: 20px;
 }
 
@@ -327,7 +327,7 @@
     float: left;
     background-color: #8fd600;
     text-align: center;
-    line-height: 40px;
+    line-height: 40px !important;
     color: white;
     font-size: 20px;
     cursor: pointer;

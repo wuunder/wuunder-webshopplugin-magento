@@ -7,6 +7,8 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
     {
         error_reporting(E_ALL);
         ini_set('display_errors', 1);
+        $response = null;
+        $response_code = null;
 
         try {
 
@@ -16,8 +18,12 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
                 if (isset($postData->address)) {
                     $address = $postData->address;
                 }
+            } else {
+                $address = Mage::helper('wuunderconnector')->getAddressFromQuote();
             }
             $latAndLong = Mage::helper('wuunderconnector')->getLatitudeAndLongitude($address);
+
+
 
             $response = array(
                 "error" => $latAndLong["error"],
@@ -25,7 +31,8 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
                 "lat" => $latAndLong["lat"],
                 "long" => $latAndLong["long"],
                 "formatted_address" => $latAndLong["formatted_address"],
-                "parcelshops" => Mage::helper('wuunderconnector')->getParcelshops(round($latAndLong["lat"], 2), round($latAndLong["long"], 2))
+//                "parcelshops" => Mage::helper('wuunderconnector')->getParcelshops(round($latAndLong["lat"], 2), round($latAndLong["long"], 2))
+                "parcelshops" => json_encode(json_decode(Mage::helper('wuunderconnector')->getParcelshops($address))->parcelshops)
             );
             $response_code = 200;
         } catch (Exception $e) {

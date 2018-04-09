@@ -6,38 +6,36 @@ class Wuunder_WuunderConnector_Block_ParcelshopsTable extends Mage_Adminhtml_Blo
 
   public function _prepareToRender()
   {
-      $this->addColumn('carriers', array(
-          'label' => 'Carrier',
-          'renderer' => $this->_getRenderer(),
-          // 'style' => 'width:100px',
+      $this->addColumn('carrier', array(
+          'label' => Mage::helper('wuunderconnector')->__('Carrier'),
+          'renderer' => $this->_getRenderer()
       ));
-      $this->addColumn('cost', array(
-          'label' => 'Cost to ship',
+      $this->addColumn('name', array(
+          'label' => Mage::helper('wuunderconnector')->__('Name in checkout'),
           'style' => 'width:100px',
       ));
 
       $this->_addAfter = false;
-      // $this->_addButtonLabel = Mage::helper('namespace_module')->__('Add');
   }
 
   protected function _getRenderer()
   {
       if (!$this->_itemRenderer) {
           $this->_itemRenderer = $this->getLayout()->createBlock(
-              'wuunderconnector/carrierTable', '',
+              'wuunderconnector/adminhtml_config_carrierTable', '',
               array('is_render_to_js_template' => true)
           );
       }
       return $this->_itemRenderer;
   }
 
-  // protected function _prepareArrayRow(Varien_Object $row)
-  // {
-  //     $row->setData(
-  //         'option_extra_attr_' . $this->_getRenderer()
-  //             ->calcOptionHash($row->getData('carriers')),
-  //         'selected="selected"'
-  //     );
-  // }
+   protected function _prepareArrayRow(Varien_Object $row)
+   {
+       $row->setData(
+           'option_extra_attr_' . $this->_getRenderer()
+               ->calcOptionHash($row->getData('carrier')),
+           'selected="selected"'
+       );
+   }
 
 }

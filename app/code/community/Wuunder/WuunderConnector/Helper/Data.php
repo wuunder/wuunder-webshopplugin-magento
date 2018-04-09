@@ -111,18 +111,16 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getShipmentInfo($orderId)
     {
-        $mageDb = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $sql = "SELECT * FROM " . Mage::getSingleton('core/resource')->getTableName('wuunder_shipments') . " WHERE order_id = ?";
-        $results = $mageDb->query($sql, $orderId);
-        $entity = $results->fetch();
+        $shipment = Mage::getModel('wuunderconnector/wuundershipment');
+        $shipment->load(intval($orderId), 'order_id');
 
-        if ($entity) {
+        if ($shipment) {
             $returnArray = array(
-                'shipment_id' => $entity['shipment_id'],
-                'label_id' => $entity['label_id'],
-                'label_url' => $entity['label_url'],
-                'booking_url' => $entity['booking_url'],
-                'booking_token' => $entity['booking_token']
+                'shipment_id' => $shipment->getShipmentId(),
+                'label_id' => $shipment->getLabelId(),
+                'label_url' => $shipment->getLabelUrl(),
+                'booking_url' => $shipment->getBookingUrl(),
+                'booking_token' => $shipment->getBookingToken()
             );
         } else {
             $returnArray = array(
@@ -285,15 +283,17 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function processDataFromApi($wuunderApiResult, $labelType, $orderId, $booking_token)
     {
-        // we slaan iets op dus we hebben core_write nodig
-        $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $sqlUpdate = "UPDATE " . $this->tblPrfx . "wuunder_shipments SET label_id = ?, label_url = ?, label_tt_url = ? WHERE order_id = ? AND booking_token = ?";
-        try {
-            $mageDbW->query($sqlUpdate, array($wuunderApiResult['id'], $wuunderApiResult['label_url'], $wuunderApiResult['track_and_trace_url'], $orderId, $booking_token));
-            return true;
-        } catch (Mage_Core_Exception $e) {
-            $this->log('ERROR saveWuunderShipment : ' . $e);
-            return false;
+        $shipment = Mage::getModel('wuunderconnector/wuundershipment');
+        $shipment->load(intval($orderId), 'order_id');
+        if ($shipment) {
+            $validationToken = $shipment->getBookingToken();
+            if ($validationToken !== $booking_token)
+                return false;
+
+            $shipment->setLabelId($wuunderApiResult['id']);
+            $shipment->setLabelUrl($wuunderApiResult['label_url']);
+            $shipment->setLabelTtUrl($wuunderApiResult['track_and_trace_url']);
+            $shipment->save();
         }
     }
 
@@ -428,29 +428,19 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
 
         // Check if wuunder_shipment already exists
-        $sqlQuery = "SELECT `shipment_id` FROM `" . $this->tblPrfx . "wuunder_shipments` WHERE `order_id` = " . intval($infoArray['order_id']) . ' LIMIT 1';
-        $shipmentId = $mageDbW->fetchOne($sqlQuery);
+        $shipment = Mage::getModel('wuunderconnector/wuundershipment');
+        $shipment->load(intval($infoArray['order_id']), 'order_id');
 
-        if ($shipmentId > 0) {
-            $sqlQuery = "UPDATE `" . $this->tblPrfx . "wuunder_shipments` SET
-                        `order_id`          = ?,
-                        `booking_url`       = ?,
-                        `booking_token`       = ?
-                    WHERE
-                        `shipment_id`  = ?";
-
-            $sqlValues = array($infoArray['order_id'], $infoArray['booking_url'], $infoArray['booking_token'], $shipmentId);
+        if ($shipment && $shipment->getShipmentId() > 0) {
+            $shipment->setOrderId($infoArray['order_id']);
+            $shipment->setBookingUrl($infoArray['booking_url']);
+            $shipment->setBookingToken($infoArray['booking_token']);
         } else {
-            $sqlQuery = "INSERT INTO `" . $this->tblPrfx . "wuunder_shipments` SET
-                        `order_id`          = ?,
-                        `booking_url`       = ?,
-                        `booking_token`       = ?";
-
-            $sqlValues = array($infoArray['order_id'], $infoArray['booking_url'], $infoArray['booking_token']);
+            $shipment->setData(array("order_id" => $infoArray['order_id'], "booking_url" => $infoArray['booking_url'], "booking_token" => $infoArray['booking_token']));
         }
 
         try {
-            $results = $mageDbW->query($sqlQuery, $sqlValues);
+            $shipment->save();
             return true;
 
         } catch (Mage_Core_Exception $e) {
@@ -462,14 +452,12 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     public function getWuunderShipment($id)
     {
         try {
-            $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
-
             //check for a label id
-            $sqlQuery = "SELECT `label_tt_url` FROM `" . $this->tblPrfx . "wuunder_shipments` WHERE `label_id` = '" . $id . "' LIMIT 1";
-            $wuunderShipment = $mageDbW->fetchOne($sqlQuery);
+            $shipment = Mage::getModel('wuunderconnector/wuundershipment');
+            $shipment->load(intval($id), 'label_id');
 
-            if ($wuunderShipment) {
-                return $wuunderShipment;
+            if ($shipment) {
+                return $shipment;
             } else {
                 return false;
             }
@@ -549,7 +537,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
     }
 
-    private function getAddressFromQuote()
+    public function getAddressFromQuote()
     {
         $address = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress();
 
@@ -563,16 +551,24 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return $addressToInsert;
     }
 
-    public function getParcelshops($lat, $long)
+    public function getParcelshops($address)
     {
-      $carrier = Mage::getStoreConfig('carriers/wuunderparcelshop/parcelshop_carriers');
-      if(empty($carrier)) {
-        return false;
-      }
-      $addCarriers = "providers[]=" . implode(explode("," , $carrier), '&providers=[]');
+        $carrierData = Mage::getStoreConfig('carriers/wuunderparcelshop/parcelshop_carriers');
+        if (empty($carrierData)) {
+            return false;
+        }
+        $carrierData = unserialize($carrierData);
+        $carriers = array();
 
-        if (!empty($lat) && !empty($long)) {
-            return $this->doParcelshopRequest("parcelshops?" . $addCarriers . "&latitude=" . $lat . "&longitude=" . $long . "&radius=&hide_closed=true&limit=10&search_country=");
+        foreach($carrierData as $carrier) {
+            array_push($carriers, $carrier['carrier']);
+        }
+        $addCarriers = "providers[]=" . implode($carriers, '&providers=[]');
+
+        if (!empty($address)) {
+//            $this->log($this->doParcelshopRequest("parcelshops?" . $addCarriers . "&latitude=" . $lat . "&longitude=" . $long . "&radius=&hide_closed=true&limit=10&search_country="));
+//            return $this->doParcelshopRequest("parcelshops?" . $addCarriers . "&latitude=" . $lat . "&longitude=" . $long . "&radius=&hide_closed=true&limit=10&search_country=");
+            return $this->doParcelshopRequest("parcelshops_by_address?" . $addCarriers . "&address=" . urlencode($address) . "&radius=&hide_closed=true&limit=10&search_country=");
         }
 
         return false;
@@ -593,6 +589,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $apiUrl = $this->getAPIHost($storeId) . $uriPath;
         $apiKey = $this->getAPIKey($storeId);
 
+        $this->log($apiUrl);
+
         $cc = curl_init($apiUrl);
 
         curl_setopt($cc, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
@@ -610,16 +608,17 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         preg_match('!<label for="(.*?)wuunderparcelshop">(.*?)<\/label>!s', $html, $matches);
         if (isset($matches[0])) {
             $html = str_replace($matches[0],
-                $matches[0] . "<div id='parcelShopsContainer'>" . $this->getOneStepValidationField($html) . "<div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><table><tr><td><span id='parcelShopsTitleLogo'></span><span id='parcelShopsTitleLogoChatbox'>Kies een parcelshop</span><span id='closeParcelshopPopup'></span></td></tr><tr><td><span id='parcelShopsSearchBarContainer'><input id='parcelShopsSearchBar' type='text'/><span id='submitParcelShopsSearchBar'>OK</span></span></td></tr></table></div><div id='parcelShopsMapLoader'><div id='parcelShopOverlayLoader'></div></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><div id='parcelShopsSelectedContainer'>" . $this->getCurrentSetParcelshopInfo() . "<a href='#' id='selectParceshop' onclick='showParcelshopPicker(event, \"" . Mage::getUrl('', array('_secure' => true)) . "wuunderconnector/parcelshop/\");'>Klik hier om een ParcelShop te selecteren</a></div></div>",
+                $matches[0] . "<div id='parcelShopsContainer'>" . $this->getOneStepValidationField($html) . "<div id='parcelShopsPopup'><div id='parcelShopsPopupBar'><table><tr><td><span id='parcelShopsTitleLogo'></span><span id='parcelShopsTitleLogoChatbox'>Kies een parcelshop</span><span id='closeParcelshopPopup'></span></td></tr><tr><td><span id='parcelShopsSearchBarContainer'><input id='parcelShopsSearchBar' type='text'/><span id='submitParcelShopsSearchBar'>OK</span></span></td></tr></table></div><div id='parcelShopsMapLoader'><div id='parcelShopOverlayLoader'></div></div><div id='parcelShopsMapContainer'><div id='parcelShopsMap'></div></div><div id='parcelShopsList'><div></div></div></div><div id='parcelShopsSelectedContainer'>" . $this->getCurrentSetParcelshopInfo() . "<a href='#' id='selectParceshop' onclick='showParcelshopPicker(event, \"" . Mage::getUrl('', array('_secure' => true)) . "wuunderconnector/parcelshop/\");'>Klik hier om een parcelshop te selecteren</a></div></div>",
                 $html);
-            $html = str_replace("name=\"shipping_method\"", "name=\"shipping_method\" onclick=\"switchShippingMethod(event);\"", $html);
+            if ($this->getIsOnestepCheckout()) {
+                $html = str_replace("name=\"shipping_method\"", "name=\"shipping_method\" onclick=\"switchShippingMethod(event);\"", $html);
+            }
         }
         return $html;
     }
 
     private function getOneStepValidationField($html)
     {
-        $this->log("HERE1");
         if ($this->getIsOnestepCheckout() && $this->_checkIfParcelShippingIsSelected($html)) {
             $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
             $parcelshopId = $this->getParcelshopIdForQuote($quote_id);
@@ -700,6 +699,20 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
+    public function getParcelshopCarriers()
+    {
+        return array(
+            array(
+                "value" => "DPD",
+                "label" => "DPD"
+            ),
+            array(
+                "value" => "DHL_PARCEL",
+                "label" => "DHL"
+            )
+        );
+    }
+
     /**
      * Selects the radiobutton for default selected shipping method.
      *
@@ -757,9 +770,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getOnestepCheckoutJs()
     {
-        $this->log("HELLO1");
         if ($this->getIsOnestepCheckout()) {
-            $this->log("HELLO2");
             return 'wuunder/onestepcheckout.js';
         }
         return '';

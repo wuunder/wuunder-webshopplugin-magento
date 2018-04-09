@@ -9,7 +9,7 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
         $select = $collection->getSelect();
         $select->joinLeft(
             array(
-                'wuunder' => $collection->getTable('wuunderconnector/shipments')
+                'wuunder' => $collection->getTable('wuunderconnector/wuundershipment')
             ),
             'wuunder.order_id = main_table.entity_id',
             array('label_id', 'label_url', 'label_tt_url', 'booking_url')

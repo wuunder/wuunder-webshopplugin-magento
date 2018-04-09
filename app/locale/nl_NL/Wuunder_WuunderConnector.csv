@@ -36,6 +36,14 @@
 "Wuunder is enabled for the following selected shipping methods","Wuunder is geactiveerd voor de volgende geselecteerde verzendmethoden"
 "Yes","Ja"
 "Zipcode","Postcode"
+"Shipping method name","Naam verzendmethode"
+"carrier","vervoerder"
+"Name in checkout","Naam in checkout"
+"Price":"Prijs"
+"Choose Carriers","Kies vervoerder"
+"Duplicated carrier","Dubbele vervoerder"
+"Cost is not a numeric value":"Kosten is geen getal"
+"Name cannot be empty":"Naam mag niet leeg zijn"
 
 
 

@@ -19,16 +19,28 @@
         <models>
             <wuunderconnector>
                 <class>Wuunder_WuunderConnector_Model</class>
-                <resourceModel>wuunderconnector_mysql4</resourceModel>
+                <resourceModel>wuunderconnector_resource</resourceModel>
             </wuunderconnector>
-            <wuunderconnector_mysql4>
-                <class>Wuunder_WuunderConnector_Model_Mysql4</class>
+            <wuunderconnector_resource>
+                <class>Wuunder_WuunderConnector_Model_Resource</class>
                 <entities>
-                    <shipments>
+                    <wuundershipment>
                         <table>wuunder_shipments</table>
-                    </shipments>
+                    </wuundershipment>
                 </entities>
-            </wuunderconnector_mysql4>
+            </wuunderconnector_resource>
+            <!--<wuunderconnector>-->
+                <!--<class>Wuunder_WuunderConnector_Model</class>-->
+                <!--<resourceModel>wuunderconnector_mysql4</resourceModel>-->
+            <!--</wuunderconnector>-->
+            <!--<wuunderconnector_mysql4>-->
+                <!--<class>Wuunder_WuunderConnector_Model_Mysql4</class>-->
+                <!--<entities>-->
+                    <!--<shipments>-->
+                        <!--<table>wuunder_shipments</table>-->
+                    <!--</shipments>-->
+                <!--</entities>-->
+            <!--</wuunderconnector_mysql4>-->
             <wuundercarrier>
                 <class>Wuunder_WuunderConnector_Model</class>
             </wuundercarrier>
