@@ -441,6 +441,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $shipment = Mage::getModel('wuunderconnector/wuundershipment');
             $shipment->load(intval($id), 'label_id');
 
+
             if ($shipment) {
                 return $shipment;
             } else {

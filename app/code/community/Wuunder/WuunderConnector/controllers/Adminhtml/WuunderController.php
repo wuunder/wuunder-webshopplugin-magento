@@ -34,10 +34,10 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 $storeId = $order->getStoreId();
                 $unitConverter = floatval((!empty(Mage::getStoreConfig('wuunderconnector/magentoconfig/dimensions_units', $storeId)) ? Mage::getStoreConfig('wuunderconnector/magentoconfig/dimensions_units', $storeId) : 1));
 
-                $length = ($infoOrder['length'] == 0 ) ? "" : $infoOrder['length'] * $unitConverter;
-                $width = ($infoOrder['width'] == 0 ) ? "" : $infoOrder['width'] * $unitConverter;
-                $height = ($infoOrder['height'] == 0 ) ? "" : $infoOrder['height'] * $unitConverter;
-                $weight = ($infoOrder['total_weight'] == 0) ? "" : $infoOrder['total_weight'];
+                $length = ($infoOrder['length'] == 0 ) ? null : $infoOrder['length'] * $unitConverter;
+                $width = ($infoOrder['width'] == 0 ) ? null : $infoOrder['width'] * $unitConverter;
+                $height = ($infoOrder['height'] == 0 ) ? null : $infoOrder['height'] * $unitConverter;
+                $weight = ($infoOrder['total_weight'] == 0) ? null : $infoOrder['total_weight'];
 
                 $shipmentDescription = "";
                 foreach ($order->getAllItems() as $item) {

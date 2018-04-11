@@ -37,7 +37,16 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
                 }
             } else if ($result['action'] === "track_and_trace_updated") {
                 Mage::helper('wuunderconnector')->log("Webhook - Track and trace for order: " . $this->getRequest()->getParam('order_id'));
-                $this->ship($this->getRequest()->getParam('order_id'), $result['carrier_code'], $result['track_and_trace_code']);
+                $processTrackingDataSuccess = Mage::helper('wuunderconnector')->processTrackingDataFromApi($result['carrier_code'], $result['track_and_trace_code'], $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'));
+                if ($processTrackingDataSuccess) {
+                    $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($this->getRequest()->getParam('order_id'));
+                    if (!empty($shipmentInfo['label_id'])) {
+                        $this->ship($this->getRequest()->getParam('order_id'), $result['carrier_code'], $result['track_and_trace_code']);
+                        Mage::helper('wuunderconnector')->log("Making shipment for order: " . $this->getRequest()->getParam('order_id'));
+                    } else {
+                        Mage::helper('wuunderconnector')->log("Error: No label_id set when trying to update tracking info for order: " . $this->getRequest()->getParam('order_id'));
+                    }
+                }
             }
         } else {
             Mage::helper('wuunderconnector')->log("Invalid order_id for webhook");
@@ -61,6 +70,7 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
         }
 
         if ($order->canShip()) {
+            Mage::helper('wuunderconnector')->log("Can ship");
             $convertor = Mage::getModel('sales/convert_order');
             $shipment = $convertor->toShipment($order);
             foreach ($order->getAllItems() as $orderItem) {
@@ -104,6 +114,8 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
             $order->addStatusToHistory($order->getStatus(), $comment, false);
 
             $shipment->save();
+        } else {
+            Mage::helper('wuunderconnector')->log("ERROR: Can not ship");
         }
     }
 }
