@@ -32,8 +32,7 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
             $result = json_decode(file_get_contents('php://input'), true);
             if ($result['action'] === "shipment_booked") {
                 Mage::helper('wuunderconnector')->log("Webhook - Shipment for order: " . $this->getRequest()->getParam('order_id'));
-                $processDataSuccess = Mage::helper('wuunderconnector')->processDataFromApi($result['shipment'], "no_retour", $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'));
-                if (!$processDataSuccess) {
+                if (!Mage::helper('wuunderconnector')->processDataFromApi($result['shipment'], $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'))) {
                     Mage::helper('wuunderconnector')->log("Cannot update wuunder_shipment data");
                 }
             } else if ($result['action'] === "track_and_trace_updated") {
@@ -92,7 +91,7 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
             $shipment->getOrder()->setIsInProcess(true);
 
             try {
-                $transactionSave = Mage::getModel('core/resource_transaction')
+                Mage::getModel('core/resource_transaction')
                     ->addObject($shipment)
                     ->addObject($shipment->getOrder())
                     ->save();

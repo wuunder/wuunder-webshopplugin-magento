@@ -18,9 +18,7 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunderparcelshop extends Mage_Ship
             return false;
         }
 
-        $handling = Mage::getStoreConfig('carriers/' . $this->_code . '/handling');
         $result = Mage::getModel('shipping/rate_result');
-        $show = true;
         if (!empty($free_from_value) && $request->getPackageValueWithDiscount() >= floatval($free_from_value)) {
             $method = Mage::getModel('shipping/rate_result_method');
             $method->setCarrier($this->_code);

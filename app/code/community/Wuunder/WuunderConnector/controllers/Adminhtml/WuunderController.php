@@ -18,8 +18,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
         if ($orderId) {
 
             try {
-                $infoArray = array();
-
                 Mage::helper('wuunderconnector')->log('Controller: processLabelAction - Data', null, 'wuunder.log');
 
                 $order = Mage::getModel('sales/order')->load($orderId);

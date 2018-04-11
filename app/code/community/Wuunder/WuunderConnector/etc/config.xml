@@ -29,18 +29,6 @@
                     </wuundershipment>
                 </entities>
             </wuunderconnector_resource>
-            <!--<wuunderconnector>-->
-                <!--<class>Wuunder_WuunderConnector_Model</class>-->
-                <!--<resourceModel>wuunderconnector_mysql4</resourceModel>-->
-            <!--</wuunderconnector>-->
-            <!--<wuunderconnector_mysql4>-->
-                <!--<class>Wuunder_WuunderConnector_Model_Mysql4</class>-->
-                <!--<entities>-->
-                    <!--<shipments>-->
-                        <!--<table>wuunder_shipments</table>-->
-                    <!--</shipments>-->
-                <!--</entities>-->
-            <!--</wuunderconnector_mysql4>-->
             <wuundercarrier>
                 <class>Wuunder_WuunderConnector_Model</class>
             </wuundercarrier>
@@ -198,6 +186,7 @@
                 <title>Ophalen bij een parcelshop</title>
                 <name>Wuunder parcelshop</name>
                 <sort_order>20</sort_order>
+                <limit>12</limit>
                 <sallowspecific>0</sallowspecific>
             </wuunderparcelshop>
         </carriers>
