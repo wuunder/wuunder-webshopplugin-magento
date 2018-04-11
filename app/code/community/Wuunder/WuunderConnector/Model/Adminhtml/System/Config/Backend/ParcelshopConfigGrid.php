@@ -3,7 +3,6 @@
 class Wuunder_WuunderConnector_Model_Adminhtml_System_Config_Backend_ParcelshopConfigGrid extends Mage_Adminhtml_Model_System_Config_Backend_Serialized_Array {
 
     protected function _beforeSave() {
-        Mage::helper('wuunderconnector')->log($this->getValue());
         $this->checkValues($this->getValue());
         parent::_beforeSave();
     }

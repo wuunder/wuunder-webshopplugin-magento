@@ -2,12 +2,10 @@
 
 class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 {
-
     const WUUNERCONNECTOR_LOG_FILE = 'wuunder.log';
     const XPATH_DEBUG_MODE = 'wuunderconnector/connect/debug_mode';
     const MIN_PHP_VERSION = '5.3.0';
     public $tblPrfx;
-    private $sourceObj = array("product" => "Magento 1 extension", "version" => array("build" => "3.4.0", "plugin" => "3.0"));
 
     function __construct()
     {
@@ -199,14 +197,12 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         // Get configuration
         $booking_token = uniqid();
         $infoArray['booking_token'] = $booking_token;
-        $redirect_url = urlencode(Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id']);
-        $webhook_url = urlencode(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $booking_token);
 
-        $apiUrl = $this->getAPIHost($storeId) . 'bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
+        $apiUrl = $this->getAPIHost($storeId) . 'bookings';
         $apiKey = $this->getAPIKey($storeId);
 
         // Combine wuunder info and order data
-        $wuunderJsonData = json_encode($this->buildWuunderData($infoArray, $order));
+        $wuunderJsonData = json_encode($this->buildWuunderData($infoArray, $order, $booking_token));
 
         // Setup API connection
         $cc = curl_init($apiUrl);
@@ -282,7 +278,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return true;
     }
 
-    public function buildWuunderData($infoArray, $order)
+    public function buildWuunderData($infoArray, $order, $bookingToken)
     {
         Mage::helper('wuunderconnector')->log("Building data object for api.");
         $shippingAddress = $order->getShippingAddress();
@@ -359,7 +355,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $shipping_method = $order->getShippingMethod();
         $preferredServiceLevel = "";
         $shippingMethodCount = 5;
-        for($i = 1; $i <= $shippingMethodCount; $i++) {
+        for ($i = 1; $i <= $shippingMethodCount; $i++) {
             if ($shipping_method === Mage::getStoreConfig('wuunderconnector/connect/filterconnect' . $i . '_value')) {
                 $preferredServiceLevel = Mage::getStoreConfig('wuunderconnector/connect/filterconnect' . $i . '_name');
                 break;
@@ -380,6 +376,18 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         $parcelshopId = $this->getParcelshopIdForQuote($order->getQuoteId());
 
+        $sourceObj = array(
+            "product" => "Magento 1 extension",
+            "version" => array(
+                "build" => "3.4.0",
+                "plugin" => "3.0"
+            ),
+            "platform" => array(
+                "name" => "Magento",
+                "build" => Mage::getVersion()
+            )
+        );
+
         return array(
             'description' => $description,
             'picture' => $picture,
@@ -394,7 +402,9 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'pickup_address' => $webshopAdr,
             'preferred_service_level' => $preferredServiceLevel,
             'parcelshop_id' => $parcelshopId,
-            'source' => $this->sourceObj
+            'source' => $sourceObj,
+            'redirect_url' => Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id'],
+            'webhook_url' => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken
         );
     }
 
@@ -417,12 +427,11 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         try {
             $shipment->save();
-            return true;
-
         } catch (Mage_Core_Exception $e) {
             $this->log('ERROR saveWuunderShipment : ' . $e);
             return false;
         }
+        return true;
     }
 
     public function getWuunderShipment($id)
@@ -536,7 +545,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $carrierData = unserialize($carrierData);
         $carriers = array();
 
-        foreach($carrierData as $carrier) {
+        foreach ($carrierData as $carrier) {
             array_push($carriers, $carrier['carrier']);
         }
         $addCarriers = "providers[]=" . implode('&providers[]=', $carriers);
@@ -568,8 +577,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $storeId = Mage::app()->getStore();
         $apiUrl = $this->getAPIHost($storeId) . $uriPath;
         $apiKey = $this->getAPIKey($storeId);
-
-        $this->log($apiUrl);
 
         $cc = curl_init($apiUrl);
 

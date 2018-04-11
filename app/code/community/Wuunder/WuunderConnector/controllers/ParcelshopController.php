@@ -32,8 +32,6 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
             });
             $parcelShops = array_slice($parcelShops, 0 , intval(Mage::getStoreConfig('carriers/wuunderparcelshop/limit')));
 
-            Mage::helper('wuunderconnector')->log($parcelShops);
-
             $response = array(
                 "error" => "",
                 "image_dir" => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN),
