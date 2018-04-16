@@ -18,36 +18,60 @@ function showParcelshopPicker(e, url) {
 function fetchParcelshops(post, data) {
     var fetchUrl = baseUrl + "shops";
     if (post) {
-        fetch(fetchUrl, {
-            credentials: "include",
-            method: 'POST', // or 'PUT'
-            body: JSON.stringify(data),
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        }).then(function (response) {
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                showErrorMessage();
-                return null;
-            }
-        }).then(function (json) {
-            if (json !== null)
-                handleParcelshopsData(json);
-        });
+        if (self.fetch) {
+            fetch(fetchUrl, {
+                credentials: "include",
+                method: 'POST', // or 'PUT'
+                body: JSON.stringify(data),
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                })
+            }).then(function (response) {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    showErrorMessage();
+                    return null;
+                }
+            }).then(function (json) {
+                if (json !== null)
+                    handleParcelshopsData(json);
+            });
+        } else {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    handleParcelshopsData(JSON.parse(xhttp.response));
+                }
+            };
+            xhttp.open("POST", fetchUrl, true);
+            xhttp.send(JSON.stringify(data));
+        }
     } else {
-        fetch(fetchUrl, {credentials: "include"}).then(function (response) {
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                showErrorMessage();
-                return null;
-            }
-        }).then(function (json) {
-            if (json !== null)
-                handleParcelshopsData(json);
-        });
+        //Test if fetch api is supported by browser
+        if (self.fetch) {
+            fetch(fetchUrl, {credentials: "include"}).then(function (response) {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    showErrorMessage();
+                    return null;
+                }
+            }).then(function (json) {
+                if (json !== null)
+                    handleParcelshopsData(json);
+            });
+        } else {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    handleParcelshopsData(JSON.parse(xhttp.response));
+                }
+            };
+            xhttp.open("GET", fetchUrl, true);
+            xhttp.send();
+        }
+
     }
 }
 
@@ -134,8 +158,8 @@ function initMap(mapCanvas, data) {
 
         addUserMarker(data);
 
-        parcelshops.sort(function(a, b) {
-           return a.distance - b.distance;
+        parcelshops.sort(function (a, b) {
+            return a.distance - b.distance;
         });
 
         //add all markers for nearby parcelshops
@@ -217,7 +241,7 @@ function addParcelshopToMap(parcelshops, i, image_dir) {
         map: map
     });
 
-    marker.addListener('click', function() {
+    marker.addListener('click', function () {
         map.setZoom(15);
         map.setCenter(marker.getPosition());
         openParcelshopItemDetails(window.parent.document.getElementsByClassName("parcelshopItem-" + i)[0]);
@@ -270,10 +294,20 @@ function chooseParcelshop(e, parcelshopId) {
             console.log("HERE2");
             window.parent.document.getElementById("s_method_wuunderparcelshop_wuunderparcelshop").checked = true;
             var fetchUrl = baseUrl + "setshop/id/" + parcelshopId;
-            fetch(fetchUrl, {credentials: "include"}).then(function (response) {
-                console.log(response);
-
-            });
+            if (self.fetch) {
+                fetch(fetchUrl, {credentials: "include"}).then(function (response) {
+                    // console.log(response);
+                });
+            } else {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState === 4 && this.status === 200) {
+                        // Typical action to be performed when the document is ready:
+                    }
+                };
+                xhttp.open("GET", fetchUrl, true);
+                xhttp.send();
+            }
             var parcelshop = parcelshops[i];
             window.parent.document.getElementById("parcelShopsSelected").innerHTML = "<table><tr><td><span class='wuunder-logo-small'></span></td><td></td><td></td></tr><tr><td></td><td><b>Parcelshop adres:</b></td><td></td></tr><tr><td></td><td>" +
                 "<table><tbody><tr><td>" + parcelshop.company_name + "</td></tr>" +
@@ -334,7 +368,7 @@ function closest(el, selector) {
 
     // find vendor prefix
     ['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'].some(function (fn) {
-        if (typeof document.body[fn] == 'function') {
+        if (typeof document.body[fn] === 'function') {
             matchesFn = fn;
             return true;
         }
