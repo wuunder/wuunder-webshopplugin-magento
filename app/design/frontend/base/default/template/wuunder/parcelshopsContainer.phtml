@@ -1,0 +1,32 @@
+<div id='parcelShopsContainer'>
+    <?php echo $this->getOneStepCheckoutHtml(); ?>
+    <div id='parcelShopsPopup'>
+        <div id='parcelShopsPopupBar'>
+            <table>
+                <tr>
+                    <td><span id='parcelShopsTitleLogo'></span><span id='parcelShopsTitleLogoChatbox'>Kies een parcelshop</span><span
+                                id='closeParcelshopPopup'></span></td>
+                </tr>
+                <tr>
+                    <td><span id='parcelShopsSearchBarContainer'><input id='parcelShopsSearchBar' type='text'/><span
+                                    id='submitParcelShopsSearchBar'>OK</span></span></td>
+                </tr>
+            </table>
+        </div>
+        <div id='parcelShopsMapLoader'>
+            <div id='parcelShopOverlayLoader'></div>
+        </div>
+        <div id='parcelShopsMapContainer'>
+            <div id='parcelShopsMap'></div>
+        </div>
+        <div id='parcelShopsList'>
+            <div></div>
+        </div>
+    </div>
+    <div id='parcelShopsSelectedContainer'>
+        <?php echo $this->getCurrentParcelshopInfo(); ?>
+        <a href='#' id='selectParceshop'
+           onclick="showParcelshopPicker(event, '<?php echo $this->getBaseUrl(); ?>wuunderconnector/parcelshop/');">Klik
+            hier om een parcelshop te selecteren</a>
+    </div>
+</div>

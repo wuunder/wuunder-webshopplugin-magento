@@ -55,7 +55,7 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
     }
 
     /*
-     * Ship order items if order->canShip() is true, otherwise only add extra tracking info to existing shipment
+     * Ship order items if order->canShip() is true
      */
     private function ship($orderId, $carrier, $label_id)
     {
@@ -109,7 +109,7 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
                 Mage::log($e->getMessage(), Zend_Log::ERR);
             }
 
-            $shipment->sendEmail($email, ($includeComment ? $comment : ''));
+//            $shipment->sendEmail($email, ($includeComment ? $comment : ''));
             $order->setStatus('Complete');
             $order->addStatusToHistory($order->getStatus(), $comment, false);
 
