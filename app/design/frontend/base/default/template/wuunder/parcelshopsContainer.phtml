@@ -4,8 +4,16 @@
         <div id='parcelShopsPopupBar'>
             <table>
                 <tr>
-                    <td><span id='parcelShopsTitleLogo'></span><span id='parcelShopsTitleLogoChatbox'>Kies een parcelshop</span><span
-                                id='closeParcelshopPopup'></span></td>
+                    <td><span id='parcelShopsTitleLogo'></span><span id='parcelShopsTitleLogoChatbox'>Kies een parcelshop</span>
+                        <div class="carrier-filter">Filter by:
+                            <select multiple>
+                                <option selected value="DPD">DPD</option>
+                                <option selected value="DHL_PARCEL">DHL</option>
+                                <option selected value="POST_NL">PostNL</option>
+                            </select>
+                        </div>
+                        <span id='closeParcelshopPopup'></span>
+                    </td>
                 </tr>
                 <tr>
                     <td><span id='parcelShopsSearchBarContainer'><input id='parcelShopsSearchBar' type='text'/><span
@@ -26,7 +34,7 @@
     <div id='parcelShopsSelectedContainer'>
         <?php echo $this->getCurrentParcelshopInfo(); ?>
         <a href='#' id='selectParceshop'
-           onclick="showParcelshopPicker(event, '<?php echo $this->getBaseUrl(); ?>wuunderconnector/parcelshop/');">Klik
+           onclick="showParcelshopPicker(event, '<?php echo $this->getWebshopBaseUrl(); ?>wuunderconnector/parcelshop/');">Klik
             hier om een parcelshop te selecteren</a>
     </div>
 </div>

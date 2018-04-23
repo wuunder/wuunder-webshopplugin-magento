@@ -30,7 +30,7 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
             usort($parcelShops, function($a, $b){
                 return $a->distance > $b->distance;
             });
-            $parcelShops = array_slice($parcelShops, 0 , intval(Mage::getStoreConfig('carriers/wuunderparcelshop/limit')));
+//            $parcelShops = array_slice($parcelShops, 0 , intval(Mage::getStoreConfig('carriers/wuunderparcelshop/limit')));
 
             $response = array(
                 "error" => "",
@@ -38,6 +38,7 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
                 "lat" => $parcelshopData->location->lat,
                 "long" => $parcelshopData->location->lng,
                 "formatted_address" => $this->formatAddress($parcelshopData->address),
+                "limit" => intval(Mage::getStoreConfig('carriers/wuunderparcelshop/limit')),
                 "parcelshops" => json_encode($parcelShops)
             );
             $response_code = 200;

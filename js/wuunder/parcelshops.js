@@ -2,6 +2,11 @@ var parcelshopsData;
 var baseUrl;
 var googleMapsLoaded = false;
 var map;
+var carrierFilter = {
+    DPD: true,
+    DHL_PARCEL: true,
+    POST_NL: true
+};
 
 function showParcelshopPicker(e, url) {
     e.preventDefault();
@@ -11,7 +16,7 @@ function showParcelshopPicker(e, url) {
     toggleOverlay();
     window.parent.document.getElementById('parcelShopsPopup').style.display = 'block';
     toggleDataLoader();
-    fetchParcelshops(false);
+    fetchParcelshops(true, {carrierFilter: carrierFilter});
     return false;
 }
 
@@ -75,12 +80,27 @@ function fetchParcelshops(post, data) {
     }
 }
 
-function handleParcelshopsData(json) {
-    initMap(window.parent.document.getElementById('parcelShopsMap'), json);
+function handleParcelshopsData(data) {
+    initMap(window.parent.document.getElementById('parcelShopsMap'), data, JSON.parse(data.parcelshops));
     toggleDataLoader();
 
     google.maps.event.trigger(map, 'resize'); // make sure map is updated
     map.setCenter(new google.maps.LatLng(parcelshopsData.lat, parcelshopsData.long)); //go to location of given address
+}
+
+function carrierFilterChange(carrierCode) {
+    clearDataView();
+    // toggleDataLoader();
+    console.log(carrierFilter);
+    if (carrierFilter.hasOwnProperty(carrierCode)) {
+        carrierFilter[carrierCode] = !carrierFilter[carrierCode];
+        var parcelshops = JSON.parse(parcelshopsData.parcelshops);
+        parcelshops = parcelshops.filter(function(parcelshop) {
+            return carrierFilter[parcelshop['provider'].toUpperCase()];
+        });
+        initMap(window.parent.document.getElementById('parcelShopsMap'), parcelshopsData, parcelshops);
+    }
+    // toggleDataLoader();
 }
 
 function showErrorMessage() {
@@ -133,11 +153,11 @@ function toggleDataLoader() {
     }
 }
 
-function initMap(mapCanvas, data) {
+function initMap(mapCanvas, data, parcelshops) {
     googleMapsLoaded = true;
     parcelshopsData = data;
-    var parcelshops = JSON.parse(data.parcelshops);
 
+    parcelshops = parcelshops.slice(0, data.limit);
 
     if (data.lat && data.long) {
         clearDataView();
@@ -203,12 +223,12 @@ function addParcelshopToMap(parcelshops, i, image_dir) {
     var image_file_name = "";
     var image_class = "";
 
-    switch (parcelshops[i].carrier_name) {
+    switch (parcelshops[i].provider.toUpperCase()) {
         case "DPD":
             image_file_name = "DPD-locator.png";
             image_class = "dpd";
             break;
-        case "DHL":
+        case "DHL_PARCEL":
             image_file_name = "DHL-locator.png";
             image_class = "dhl";
             break;
@@ -216,7 +236,7 @@ function addParcelshopToMap(parcelshops, i, image_dir) {
             image_file_name = "GLS-locator.png";
             image_class = "gls";
             break;
-        case "POSTNL":
+        case "POST_NL":
             image_file_name = "POSTNL-locator.png";
             image_class = "postnl";
             break;

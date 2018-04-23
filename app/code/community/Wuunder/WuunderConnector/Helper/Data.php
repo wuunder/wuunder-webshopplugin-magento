@@ -624,7 +624,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 ->createBlock('core/template')
                 ->setOneStepCheckoutHtml($this->getOneStepValidationField($html))
                 ->setCurrentParcelshopInfo($this->getCurrentSetParcelshopInfo())
-                ->setBaseUrl(Mage::getUrl('', array('_secure' => Mage::app()->getStore()->isFrontUrlSecure())))
+                ->setWebshopBaseUrl(Mage::getUrl('', array('_secure' => Mage::app()->getStore()->isFrontUrlSecure())))
                 ->setTemplate('wuunder/parcelshopsContainer.phtml')
                 ->toHtml();
 
