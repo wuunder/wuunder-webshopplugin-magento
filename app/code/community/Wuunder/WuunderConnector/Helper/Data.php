@@ -573,11 +573,12 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $addCarriers = "providers[]=" . implode('&providers[]=', $carriers);
 
         $countryString = "";
-        if (Mage::getStoreConfig('carriers/wuunderparcelshop/sallowspecific')) {
-            $countries = Mage::getStoreConfig('carriers/wuunderparcelshop/specificcountry');
-            $countries = explode(",", $countries);
-            $countryString = "&search_countries[]=" . implode("&search_countries[]=", $countries);
-        }
+//        if (Mage::getStoreConfig('carriers/wuunderparcelshop/sallowspecific')) {
+//            $countries = Mage::getStoreConfig('carriers/wuunderparcelshop/specificcountry');
+//            $countries = explode(",", $countries);
+//            $countryString = "&search_countries[]=" . implode("&search_countries[]=", $countries);
+//        }
+        $countryString = "&search_countries[]=" . Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getCountry();
 
         if (!empty($address)) {
             return json_decode($this->doParcelshopRequest("parcelshops_by_address?" . $addCarriers . "&address=" . urlencode($address) . "&radius=&limit=50&hide_closed=true" . $countryString));
@@ -722,6 +723,19 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         } catch (Exception $e) {
             $this->log('ERROR getWuunderShipment : ' . $e);
             return null;
+        }
+    }
+
+    public function removeParcelshopIdForQuote($quoteId)
+    {
+        try {
+            $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
+            $sqlQuery = "DELETE FROM `" . $this->tblPrfx . "wuunder_quote_data` WHERE `quote_id` = " . $quoteId;
+            $mageDbW->query($sqlQuery);
+            return true;
+        } catch (Exception $e) {
+            $this->log('ERROR getWuunderShipment : ' . $e);
+            return false;
         }
     }
 

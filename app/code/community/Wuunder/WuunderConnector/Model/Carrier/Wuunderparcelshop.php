@@ -29,13 +29,27 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunderparcelshop extends Mage_Ship
             $method->setCost('0.00');
             $result->append($method);
         } else {
+            $countryCostData = Mage::getStoreConfig('carriers/wuunderparcelshop/country_cost_table');
+            $countryCosts = array();
+            if (!empty($countryCostData)) {
+                $countryCostData = unserialize($countryCostData);
+                foreach($countryCostData as $countryAndCost) {
+                    $countryCosts[$countryAndCost['country']] = $countryAndCost['cost'];
+                }
+            }
             $method = Mage::getModel('shipping/rate_result_method');
             $method->setCarrier($this->_code);
             $method->setMethod($this->_code);
             $method->setCarrierTitle($this->getConfigData('title'));
             $method->setMethodTitle($this->getConfigData('name'));
-            $method->setPrice($this->getConfigData('price'));
-            $method->setCost($this->getConfigData('price'));
+            $shippingCountry = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getCountry();
+            if (array_key_exists($shippingCountry, $countryCosts)) {
+                $method->setPrice($countryCosts[$shippingCountry]);
+                $method->setCost($countryCosts[$shippingCountry]);
+            } else {
+                $method->setPrice($this->getConfigData('price'));
+                $method->setCost($this->getConfigData('price'));
+            }
             $result->append($method);
         }
         return $result;
