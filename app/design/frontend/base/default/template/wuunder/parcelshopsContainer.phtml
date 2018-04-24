@@ -6,11 +6,12 @@
                 <tr>
                     <td><span id='parcelShopsTitleLogo'></span><span id='parcelShopsTitleLogoChatbox'>Kies een parcelshop</span>
                         <div class="carrier-filter">Filter by:
-                            <select multiple>
-                                <option selected value="DPD">DPD</option>
-                                <option selected value="DHL_PARCEL">DHL</option>
-                                <option selected value="POST_NL">PostNL</option>
-                            </select>
+                            <input type="checkbox" checked="checked" onchange="carrierFilterChange('DPD')">
+                            <img src="<?php echo str_replace("index.php/", "", $this->getWebshopBaseUrl()); ?>skin/frontend/base/default/images/wuunder/dpd-logo.png" />
+                            <input type="checkbox" checked="checked" onchange="carrierFilterChange('DHL_PARCEL')">
+                            <img src="<?php echo str_replace("index.php/", "", $this->getWebshopBaseUrl()); ?>skin/frontend/base/default/images/wuunder/dhl-logo.png" />
+                            <input type="checkbox" checked="checked" onchange="carrierFilterChange('POST_NL')">
+                            <img src="<?php echo str_replace("index.php/", "", $this->getWebshopBaseUrl()); ?>skin/frontend/base/default/images/wuunder/postnl-logo.png" />
                         </div>
                         <span id='closeParcelshopPopup'></span>
                     </td>
