@@ -64,6 +64,14 @@
         width: 100%;
         height: calc(100% - 150px);
     }
+
+    .parcelshopItem {
+        width: calc(100% - 6px);
+    }
+
+    .parcelshopItem.selected {
+        width: 100%;
+    }
 }
 
 @media (min-width: 850px) {
@@ -82,6 +90,14 @@
         width: 380px;
         height: 500px;
         padding-right: 20px;
+    }
+
+    .parcelshopItem {
+        width: 100%;
+    }
+
+    .parcelshopItem.selected {
+        width: calc(100% + 5px);
     }
 
     #parcelShopsSearchBarContainer {
@@ -119,7 +135,6 @@
 }
 
 .parcelshopItem {
-    width: 100%;
     min-height: 80px;
     background: #f3f3f3;
     padding: 5px 25px;
@@ -135,7 +150,6 @@
     border-bottom-left-radius: 0.5em;
     margin-left: 0;
     padding: 5px 25px 5px 19px;
-    width: calc(100% + 5px);
 }
 
 .parcelshopItem .pick-parcelshop-btn {
@@ -218,7 +232,8 @@
 
 .parcelshopItem.selected .parcelshop-item-details {
     margin: 10px 0 0 40px;
-    display: block;
+    display: table;
+    width: calc(100% - 40px);
 }
 
 #parcelShopOverlay {

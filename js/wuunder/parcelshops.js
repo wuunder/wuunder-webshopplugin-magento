@@ -278,7 +278,10 @@ function addParcelshopToMap(parcelshops, i, image_dir) {
         "<table class='parcelshop-item-details'><tr><td colspan='2'><span class='parcelshop_window_title'>Openingstijden</span></td></tr>";
 
     for (var j = 0; j < parcelshops[i].opening_hours.length; j++) {
-        nodeInnerHTML += '<tr><td>' + parcelshops[i].opening_hours[j].weekday + '</td><td>' + parcelshops[i].opening_hours[j].open_morning + ' - ' + parcelshops[i].opening_hours[j].close_morning + ' ' + parcelshops[i].opening_hours[j].open_afternoon + ' - ' + parcelshops[i].opening_hours[j].close_afternoon + '</td></tr>'
+        if (parcelshops[i].opening_hours[j].open_morning === null && parcelshops[i].opening_hours[j].close_morning === null && parcelshops[i].opening_hours[j].open_afternoon === null&& parcelshops[i].opening_hours[j].close_afternoon === null) {
+            continue;
+        }
+        nodeInnerHTML += '<tr><td>' + parcelshops[i].opening_hours[j].weekday + '</td><td>' + parcelshops[i].opening_hours[j].open_morning + ' - ' + (parcelshops[i].opening_hours[j].close_morning === null && parcelshops[i].opening_hours[j].open_afternoon === null ? "" : parcelshops[i].opening_hours[j].close_morning + ' ' + parcelshops[i].opening_hours[j].open_afternoon + ' - ') + parcelshops[i].opening_hours[j].close_afternoon + '</td></tr>'
     }
     node.innerHTML = nodeInnerHTML + "<tr><td colspan='2'><button class='pick-parcelshop-btn' onClick='chooseParcelshop(event, `" + parcelshops[i].id + "`)'>Kies</button></td></tr></table>";
 
