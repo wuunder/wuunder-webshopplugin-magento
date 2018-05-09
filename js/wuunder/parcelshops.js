@@ -8,6 +8,16 @@ var carrierFilter = {
     POST_NL: true
 };
 
+var translateMap = {
+    "Monday": "Maandag",
+    "Tuesday": "Dinsdag",
+    "Wednesday": "Woensdag",
+    "Thursday": "Donderdag",
+    "Friday": "Vrijdag",
+    "Saturday": "Zaterdag",
+    "Sunday": "Zondag"
+};
+
 function showParcelshopPicker(e, url) {
     e.preventDefault();
     baseUrl = url;
@@ -158,6 +168,7 @@ function initMap(mapCanvas, data, parcelshops) {
     parcelshopsData = data;
 
     parcelshops = parcelshops.slice(0, data.limit);
+    translateMap = data.day_names;
 
     if (data.lat && data.long) {
         clearDataView();
@@ -281,7 +292,7 @@ function addParcelshopToMap(parcelshops, i, image_dir) {
         if (parcelshops[i].opening_hours[j].open_morning === null && parcelshops[i].opening_hours[j].close_morning === null && parcelshops[i].opening_hours[j].open_afternoon === null&& parcelshops[i].opening_hours[j].close_afternoon === null) {
             continue;
         }
-        nodeInnerHTML += '<tr><td>' + parcelshops[i].opening_hours[j].weekday + '</td><td>' + parcelshops[i].opening_hours[j].open_morning + ' - ' + (parcelshops[i].opening_hours[j].close_morning === null && parcelshops[i].opening_hours[j].open_afternoon === null ? "" : parcelshops[i].opening_hours[j].close_morning + ' ' + parcelshops[i].opening_hours[j].open_afternoon + ' - ') + parcelshops[i].opening_hours[j].close_afternoon + '</td></tr>'
+        nodeInnerHTML += '<tr><td>' + translateMap[parcelshops[i].opening_hours[j].weekday] + '</td><td>' + parcelshops[i].opening_hours[j].open_morning + ' - ' + (parcelshops[i].opening_hours[j].close_morning === parcelshops[i].opening_hours[j].open_afternoon ? "" : parcelshops[i].opening_hours[j].close_morning + ' ' + parcelshops[i].opening_hours[j].open_afternoon + ' - ') + parcelshops[i].opening_hours[j].close_afternoon + '</td></tr>'
     }
     node.innerHTML = nodeInnerHTML + "<tr><td colspan='2'><button class='pick-parcelshop-btn' onClick='chooseParcelshop(event, `" + parcelshops[i].id + "`)'>Kies</button></td></tr></table>";
 

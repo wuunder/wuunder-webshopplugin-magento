@@ -39,6 +39,15 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
                 "long" => $parcelshopData->location->lng,
                 "formatted_address" => $this->formatAddress($parcelshopData->address),
                 "limit" => intval(Mage::getStoreConfig('carriers/wuunderparcelshop/limit')),
+                "day_names" => array(
+                  "Monday" => Mage::helper('wuunderconnector')->__('Monday'),
+                  "Tuesday" => Mage::helper('wuunderconnector')->__("Tuesday"),
+                  "Wednesday" => Mage::helper('wuunderconnector')->__("Wednesday"),
+                  "Thursday" => Mage::helper('wuunderconnector')->__("Thursday"),
+                  "Friday" => Mage::helper('wuunderconnector')->__("Friday"),
+                  "Saturday" => Mage::helper('wuunderconnector')->__("Saturday"),
+                  "Sunday" => Mage::helper('wuunderconnector')->__("Sunday"),
+                ),
                 "parcelshops" => json_encode($parcelShops)
             );
             $response_code = 200;
