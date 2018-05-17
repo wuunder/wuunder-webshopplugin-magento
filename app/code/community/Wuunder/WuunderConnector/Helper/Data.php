@@ -391,6 +391,11 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
+        $staticDescription = Mage::getStoreConfig('wuunderconnector/connect/order_description');
+
+        if (!empty($staticDescription))
+            $description = $staticDescription;
+
         return array(
             'description' => $description,
             'picture' => $picture,

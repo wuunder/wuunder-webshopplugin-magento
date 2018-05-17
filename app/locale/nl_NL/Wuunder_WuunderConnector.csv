@@ -36,6 +36,8 @@
 "Wuunder is enabled for the following selected shipping methods","Wuunder is geactiveerd voor de volgende geselecteerde verzendmethoden"
 "Yes","Ja"
 "Zipcode","Postcode"
+"Static order description","Vaste order beschrijving"
+"If empty, description will be dynamic, from product info","Wanneer leeg, zal de beschrijving dynamisch worden opgebouwd adhv product info"
 
 
 

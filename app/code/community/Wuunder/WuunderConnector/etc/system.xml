@@ -161,6 +161,15 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </country>
+                        <order_description translate="label">
+                            <label>Static order description</label>
+                            <comment>If empty, description will be dynamic, from product info</comment>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </order_description>
                         <heading_enabled_shipping_methods translate="label">
                             <label>Wuunder enabled shipping methods</label>
                             <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
