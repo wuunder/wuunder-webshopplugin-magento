@@ -620,12 +620,24 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         preg_match('!<label for="(.*?)wuunderparcelshop">(.*?)<\/label>!s', $html, $matches);
         if (isset($matches[0])) {
 
+            //get allowed carriers
+            $carriers = array();
+            $carrierData = Mage::getStoreConfig('carriers/wuunderparcelshop/parcelshop_carriers');
+            if (!empty($carrierData)) {
+                $carrierData = unserialize($carrierData);
+                $carriers = array();
+                foreach ($carrierData as $carrier) {
+                    array_push($carriers, $carrier['carrier']);
+                }
+            }
+
             $parcelshopHtml = Mage::app()
                 ->getLayout()
                 ->createBlock('core/template')
                 ->setOneStepCheckoutHtml($this->getOneStepValidationField($html))
                 ->setCurrentParcelshopInfo($this->getCurrentSetParcelshopInfo())
                 ->setWebshopBaseUrl(Mage::getUrl('', array('_secure' => Mage::app()->getStore()->isFrontUrlSecure())))
+                ->setAllowedCarriers($carriers)
                 ->setTemplate('wuunder/parcelshopsContainer.phtml')
                 ->toHtml();
 

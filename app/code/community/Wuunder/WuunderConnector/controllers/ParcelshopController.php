@@ -27,10 +27,9 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
 
             // Code to implement Limit client side for the time being, will be implemented in backend asap
             $parcelShops = $parcelshopData->parcelshops;
-            usort($parcelShops, function($a, $b){
+            usort($parcelShops, function ($a, $b) {
                 return $a->distance > $b->distance;
             });
-//            $parcelShops = array_slice($parcelShops, 0 , intval(Mage::getStoreConfig('carriers/wuunderparcelshop/limit')));
 
             $response = array(
                 "error" => "",
@@ -40,13 +39,13 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
                 "formatted_address" => $this->formatAddress($parcelshopData->address),
                 "limit" => intval(Mage::getStoreConfig('carriers/wuunderparcelshop/limit')),
                 "day_names" => array(
-                  "Monday" => Mage::helper('wuunderconnector')->__('Monday'),
-                  "Tuesday" => Mage::helper('wuunderconnector')->__("Tuesday"),
-                  "Wednesday" => Mage::helper('wuunderconnector')->__("Wednesday"),
-                  "Thursday" => Mage::helper('wuunderconnector')->__("Thursday"),
-                  "Friday" => Mage::helper('wuunderconnector')->__("Friday"),
-                  "Saturday" => Mage::helper('wuunderconnector')->__("Saturday"),
-                  "Sunday" => Mage::helper('wuunderconnector')->__("Sunday"),
+                    "Monday" => Mage::helper('wuunderconnector')->__('Monday'),
+                    "Tuesday" => Mage::helper('wuunderconnector')->__("Tuesday"),
+                    "Wednesday" => Mage::helper('wuunderconnector')->__("Wednesday"),
+                    "Thursday" => Mage::helper('wuunderconnector')->__("Thursday"),
+                    "Friday" => Mage::helper('wuunderconnector')->__("Friday"),
+                    "Saturday" => Mage::helper('wuunderconnector')->__("Saturday"),
+                    "Sunday" => Mage::helper('wuunderconnector')->__("Sunday"),
                 ),
                 "parcelshops" => json_encode($parcelShops)
             );
@@ -65,7 +64,8 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
         }
     }
 
-    public function setshopAction() {
+    public function setshopAction()
+    {
         $parcelshop_id = Mage::app()->getRequest()->getParam('id');
         $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
         Mage::helper('wuunderconnector')->setParcelshopIdForQuote($quote_id, $parcelshop_id);
@@ -77,8 +77,9 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
      * @param $parts
      * @return string
      */
-    private function formatAddress($parts) {
-        $parts = (array) $parts;
+    private function formatAddress($parts)
+    {
+        $parts = (array)$parts;
         $keys = array("street_name", "house_number", "city", "zip_code", "state", "alpha2");
         $formatted_parts = array();
         foreach ($keys as $key) {

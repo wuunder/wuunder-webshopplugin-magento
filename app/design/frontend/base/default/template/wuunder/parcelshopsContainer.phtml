@@ -6,12 +6,16 @@
                 <tr>
                     <td><span id='parcelShopsTitleLogo'></span><span id='parcelShopsTitleLogoChatbox'>Kies een parcelshop</span>
                         <div class="carrier-filter">Filter by:
+                            <?php if (in_array("DPD", $this->getAllowedCarriers())) { ?>
                             <input type="checkbox" checked="checked" onchange="carrierFilterChange('DPD')">
                             <img src="<?php echo str_replace("index.php/", "", $this->getWebshopBaseUrl()); ?>skin/frontend/base/default/images/wuunder/dpd-logo.png" />
+                            <?php } if (in_array("DHL_PARCEL", $this->getAllowedCarriers())) { ?>
                             <input type="checkbox" checked="checked" onchange="carrierFilterChange('DHL_PARCEL')">
                             <img src="<?php echo str_replace("index.php/", "", $this->getWebshopBaseUrl()); ?>skin/frontend/base/default/images/wuunder/dhl-logo.png" />
+                            <?php } if (in_array("POST_NL", $this->getAllowedCarriers())) { ?>
                             <input type="checkbox" checked="checked" onchange="carrierFilterChange('POST_NL')">
                             <img src="<?php echo str_replace("index.php/", "", $this->getWebshopBaseUrl()); ?>skin/frontend/base/default/images/wuunder/postnl-logo.png" />
+                            <?php } ?>
                         </div>
                         <span id='closeParcelshopPopup'></span>
                     </td>
