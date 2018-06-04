@@ -18,6 +18,21 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunderparcelshop extends Mage_Ship
             return false;
         }
 
+        $countryCostData = Mage::getStoreConfig('carriers/wuunderparcelshop/country_cost_table');
+        $countryCosts = array();
+        $countryFreeFrom = array();
+        if (!empty($countryCostData)) {
+            $countryCostData = unserialize($countryCostData);
+            foreach($countryCostData as $countryAndCost) {
+                $countryCosts[$countryAndCost['country']] = $countryAndCost['cost'];
+                $countryFreeFrom[$countryAndCost['country']] = $countryAndCost['free_from'];
+
+            }
+        }
+
+        $shippingCountry = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getCountry();
+        $free_from_value = $countryFreeFrom[$shippingCountry];
+
         $result = Mage::getModel('shipping/rate_result');
         if (!empty($free_from_value) && $request->getPackageValueWithDiscount() >= floatval($free_from_value)) {
             $method = Mage::getModel('shipping/rate_result_method');
@@ -29,20 +44,13 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunderparcelshop extends Mage_Ship
             $method->setCost('0.00');
             $result->append($method);
         } else {
-            $countryCostData = Mage::getStoreConfig('carriers/wuunderparcelshop/country_cost_table');
-            $countryCosts = array();
-            if (!empty($countryCostData)) {
-                $countryCostData = unserialize($countryCostData);
-                foreach($countryCostData as $countryAndCost) {
-                    $countryCosts[$countryAndCost['country']] = $countryAndCost['cost'];
-                }
-            }
+
             $method = Mage::getModel('shipping/rate_result_method');
             $method->setCarrier($this->_code);
             $method->setMethod($this->_code);
             $method->setCarrierTitle($this->getConfigData('title'));
             $method->setMethodTitle($this->getConfigData('name'));
-            $shippingCountry = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getCountry();
+
             if (array_key_exists($shippingCountry, $countryCosts)) {
                 $method->setPrice($countryCosts[$shippingCountry]);
                 $method->setCost($countryCosts[$shippingCountry]);

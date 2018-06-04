@@ -1,3 +1,7 @@
+#parcelShopsContainer, #parcelShopsContainer * {
+    font-size: 14px !important;
+}
+
 #parcelShopsPopup {
     display: none;
     margin: auto;
@@ -39,16 +43,6 @@
     width: 100%;
 }
 
-/*#parcelShopsContainer, #parcelShopsContainer * {*/
-    /*font-family: "Helvetica Neue", Verdana, Arial, sans-serif;*/
-    /*color: #636363;*/
-    /*font-size: 14px !important;*/
-    /*line-height: 1.5 !important;*/
-/*}*/
-
-/*#parcelShopsMapContainer * {*/
-    /*line-height: normal !important;*/
-/*}*/
 #parcelShopsMapContainer {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -108,11 +102,6 @@
 #parcelShopsMap {
     height: 500px;
     width: 100%;
-    /*position: absolute;*/
-    /*top: 0;*/
-    /*bottom: 0;*/
-    /*left: 0;*/
-    /*right: 0;*/
 }
 
 #parcelShopsList {
@@ -435,6 +424,10 @@
     -webkit-transform: translateZ(0);
     -ms-transform: translateZ(0);
     transform: translateZ(0);
+}
+
+#parcelShopsContainer input[type=text] {
+    width: 365px;
 }
 
 @-webkit-keyframes load4 {

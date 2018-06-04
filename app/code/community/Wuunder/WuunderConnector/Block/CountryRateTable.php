@@ -14,6 +14,10 @@ class Wuunder_WuunderConnector_Block_CountryRateTable extends Mage_Adminhtml_Blo
             'label' => Mage::helper('wuunderconnector')->__('Cost'),
             'style' => 'width:100px',
         ));
+        $this->addColumn('free_from', array(
+            'label' => Mage::helper('wuunderconnector')->__('Free from'),
+            'style' => 'width:100px',
+        ));
 
         $this->_addAfter = false;
     }
