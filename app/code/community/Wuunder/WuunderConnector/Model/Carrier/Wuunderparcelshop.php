@@ -23,7 +23,7 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunderparcelshop extends Mage_Ship
         $countryFreeFrom = array();
         if (!empty($countryCostData)) {
             $countryCostData = unserialize($countryCostData);
-            foreach($countryCostData as $countryAndCost) {
+            foreach ($countryCostData as $countryAndCost) {
                 $countryCosts[$countryAndCost['country']] = $countryAndCost['cost'];
                 $countryFreeFrom[$countryAndCost['country']] = $countryAndCost['free_from'];
 

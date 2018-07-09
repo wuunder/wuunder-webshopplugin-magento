@@ -91,11 +91,15 @@ function fetchParcelshops(post, data) {
 }
 
 function handleParcelshopsData(data) {
-    initMap(window.parent.document.getElementById('parcelShopsMap'), data, JSON.parse(data.parcelshops));
-    toggleDataLoader();
+    if (data.parcelshops !== null && JSON.parse(data.parcelshops) !== null) {
+        initMap(window.parent.document.getElementById('parcelShopsMap'), data, JSON.parse(data.parcelshops));
+        toggleDataLoader();
 
-    google.maps.event.trigger(map, 'resize'); // make sure map is updated
-    map.setCenter(new google.maps.LatLng(parcelshopsData.lat, parcelshopsData.long)); //go to location of given address
+        google.maps.event.trigger(map, 'resize'); // make sure map is updated
+        map.setCenter(new google.maps.LatLng(parcelshopsData.lat, parcelshopsData.long)); //go to location of given address
+    } else {
+        showErrorMessage();
+    }
 }
 
 function carrierFilterChange(carrierCode) {

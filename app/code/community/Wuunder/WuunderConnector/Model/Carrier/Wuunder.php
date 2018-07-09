@@ -17,7 +17,21 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
             return false;
         }
 
-        $free_from_value = Mage::getStoreConfig('carriers/' . $this->_code . '/freefrom');
+        $countryCostData = Mage::getStoreConfig('carriers/' . $this->_code . '/country_cost_table');
+        $countryCosts = array();
+        $countryFreeFrom = array();
+        if (!empty($countryCostData)) {
+            $countryCostData = unserialize($countryCostData);
+            foreach ($countryCostData as $countryAndCost) {
+                $countryCosts[$countryAndCost['country']] = $countryAndCost['cost'];
+                $countryFreeFrom[$countryAndCost['country']] = $countryAndCost['free_from'];
+
+            }
+        }
+
+        $shippingCountry = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getCountry();
+        $free_from_value = $countryFreeFrom[$shippingCountry];
+
         $result = Mage::getModel('shipping/rate_result');
         if (!empty($free_from_value) && $request->getPackageValueWithDiscount() >= floatval($free_from_value)) {
             $method = Mage::getModel('shipping/rate_result_method');
@@ -29,13 +43,20 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
             $method->setCost('0.00');
             $result->append($method);
         } else {
+
             $method = Mage::getModel('shipping/rate_result_method');
             $method->setCarrier($this->_code);
             $method->setMethod($this->_code);
             $method->setCarrierTitle($this->getConfigData('title'));
             $method->setMethodTitle($this->getConfigData('name'));
-            $method->setPrice($this->getConfigData('price'));
-            $method->setCost($this->getConfigData('price'));
+
+            if (array_key_exists($shippingCountry, $countryCosts)) {
+                $method->setPrice($countryCosts[$shippingCountry]);
+                $method->setCost($countryCosts[$shippingCountry]);
+            } else {
+                $method->setPrice($this->getConfigData('price'));
+                $method->setCost($this->getConfigData('price'));
+            }
             $result->append($method);
         }
         return $result;

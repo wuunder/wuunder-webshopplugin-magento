@@ -242,6 +242,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             }
         } else {
             $this->log("Something went wrong:");
+            $this->log($header);
             $this->log($result);
             return array(
                 'error' => true,
@@ -572,16 +573,10 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $addCarriers = "providers[]=" . implode('&providers[]=', $carriers);
 
-        $countryString = "";
-//        if (Mage::getStoreConfig('carriers/wuunderparcelshop/sallowspecific')) {
-//            $countries = Mage::getStoreConfig('carriers/wuunderparcelshop/specificcountry');
-//            $countries = explode(",", $countries);
-//            $countryString = "&search_countries[]=" . implode("&search_countries[]=", $countries);
-//        }
         $countryString = "&search_countries[]=" . Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getCountry();
 
         if (!empty($address)) {
-            return json_decode($this->doParcelshopRequest("parcelshops_by_address?" . $addCarriers . "&address=" . urlencode($address) . "&radius=&limit=50&hide_closed=true" . $countryString));
+            return json_decode($this->doParcelshopRequest("parcelshops_by_address?" . $addCarriers . "&address=" . urlencode($address) . "&radius=&hide_closed=true" . $countryString));
         }
 
         return false;
