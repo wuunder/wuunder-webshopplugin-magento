@@ -18,6 +18,14 @@ var translateMap = {
     "Sunday": "Zondag"
 };
 
+function switchShippingMethod(e) {
+    if (e.target.id === "s_method_wuunderparcelshop_wuunderparcelshop") {
+        window.parent.document.getElementById('parcelShopsSelectedContainer').style.display = 'block';
+    } else {
+        window.parent.document.getElementById('parcelShopsSelectedContainer').style.display = 'none';
+    }
+}
+
 function showParcelshopPicker(e, url) {
     e.preventDefault();
     baseUrl = url;
@@ -329,8 +337,7 @@ function chooseParcelshop(e, parcelshopId) {
     var parcelshops = JSON.parse(parcelshopsData.parcelshops);
     for (var i = 0; i < parcelshops.length; i++) {
         if (parcelshops[i].id === parcelshopId) {
-            console.log("HERE2");
-            window.parent.document.getElementById("s_method_wuunderparcelshop_wuunderparcelshop").checked = true;
+            // window.parent.document.getElementById("s_method_wuunderparcelshop_wuunderparcelshop").checked = true;
             var fetchUrl = baseUrl + "setshop/id/" + parcelshopId;
             if (self.fetch) {
                 fetch(fetchUrl, {credentials: "include"}).then(function (response) {

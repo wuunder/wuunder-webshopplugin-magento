@@ -1,4 +1,4 @@
-function switchShippingMethod(e) {
+function switchShippingMethodValidation(e) {
     var requiredFieldContainer = window.parent.document.getElementById("parcelShopsContainer");
     if (requiredFieldContainer) {
         var input;
