@@ -3,55 +3,22 @@
 class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller_Front_Action
 {
 
-    public function shopsAction()
+    public function addressAction()
     {
-        error_reporting(E_ALL);
-        ini_set('display_errors', 1);
-        $response = array(
-            "error" => "Something went wrong"
-        );
+//        error_reporting(E_ALL);
+//        ini_set('display_errors', 1);
+//        $response = array(
+//            "error" => "Something went wrong"
+//        );
         $response_code = 500;
 
         try {
-            $address = null;
-            if ($this->getRequest()->isPost()) {
-                $postData = json_decode(file_get_contents('php://input'));
-                if (isset($postData->address))
-                    $address = $postData->address;
-            }
-
-            if (is_null($address))
-                $address = Mage::helper('wuunderconnector')->getAddressFromQuote();
-
-            $parcelshopData = Mage::helper('wuunderconnector')->getParcelshops($address);
-
-            // Code to implement Limit client side for the time being, will be implemented in backend asap
-            $parcelShops = $parcelshopData->parcelshops;
-            usort($parcelShops, function ($a, $b) {
-                return $a->distance > $b->distance;
-            });
-
+            $address = Mage::helper('wuunderconnector')->getAddressFromQuote();
             $response = array(
-                "error" => "",
-                "image_dir" => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN),
-                "lat" => $parcelshopData->location->lat,
-                "long" => $parcelshopData->location->lng,
-                "formatted_address" => $this->formatAddress($parcelshopData->address),
-                "limit" => intval(Mage::getStoreConfig('carriers/wuunderparcelshop/limit')),
-                "day_names" => array(
-                    "Monday" => Mage::helper('wuunderconnector')->__('Monday'),
-                    "Tuesday" => Mage::helper('wuunderconnector')->__("Tuesday"),
-                    "Wednesday" => Mage::helper('wuunderconnector')->__("Wednesday"),
-                    "Thursday" => Mage::helper('wuunderconnector')->__("Thursday"),
-                    "Friday" => Mage::helper('wuunderconnector')->__("Friday"),
-                    "Saturday" => Mage::helper('wuunderconnector')->__("Saturday"),
-                    "Sunday" => Mage::helper('wuunderconnector')->__("Sunday"),
-                ),
-                "parcelshops" => json_encode($parcelShops)
+                "address" => $address
             );
             $response_code = 200;
         } catch (Exception $e) {
-            Mage::helper('wuunderconnector')->log("Something went wrong when fetching parcelshops: ");
             Mage::helper('wuunderconnector')->log($e);
         } finally {
             $this->getResponse()
