@@ -51,7 +51,6 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
         } else {
             Mage::helper('wuunderconnector')->log("Invalid order_id for webhook");
         }
-
     }
 
     /*

@@ -64,7 +64,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         if ($test_mode == 1) {
             $apiUrl = 'https://api-staging.wearewuunder.com/api/';
-//            $apiUrl = 'https://api-playground.wearewuunder.com/api/';
         } else {
             $apiUrl = 'https://api.wearewuunder.com/api/';
         }
@@ -78,7 +77,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
         if ($test_mode == 1) {
             $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_test', $storeId);
-//            $apiKey = "pN2XAviEVCRgTsRPU3xWNOp4_4npbv8L";
         } else {
             $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_live', $storeId);
         }
@@ -294,6 +292,22 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return true;
     }
 
+    public function processTrackingDataFromApi($carrierCode, $trackingCode, $orderId, $bookingToken) {
+        $shipment = Mage::getModel('wuunderconnector/wuundershipment');
+        $shipment->load(intval($orderId), 'order_id');
+        if (!$shipment) {
+            return false;
+        }
+        if ($shipment->getBookingToken() !== $bookingToken) {
+            return false;
+        }
+
+        $shipment->setCarrierTrackingCode($trackingCode);
+        $shipment->setCarrierCode($carrierCode);
+        $shipment->save();
+        return true;
+    }
+
     public function buildWuunderData($infoArray, $order, $bookingToken)
     {
         Mage::helper('wuunderconnector')->log("Building data object for api.");
@@ -391,7 +405,10 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
-        $parcelshopId = $this->getParcelshopIdForQuote($order->getQuoteId());
+        $parcelshopId = null;
+        if ($order->getShippingMethod() == 'wuunderparcelshop_wuunderparcelshop') {
+            $parcelshopId = $this->getParcelshopIdForQuote($order->getQuoteId());
+        }
 
         $sourceObj = array(
             "product" => "Magento 1 extension",
