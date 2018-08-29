@@ -65,7 +65,7 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunderparcelshop extends Mage_Ship
 
     public function getAllowedMethods()
     {
-        return array('wuunder' => $this->getConfigData('name'));
+        return array('wuunderparcelshop' => $this->getConfigData('name'));
     }
 
     public function getTrackingInfo($label_id)
