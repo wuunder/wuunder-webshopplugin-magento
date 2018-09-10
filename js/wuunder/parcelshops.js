@@ -30,7 +30,8 @@ function showParcelshopPicker(e, fetchUrl) {
 }
 
 function showModal(data) {
-    var url = 'http://128.199.52.98/parcelshoppicker/?lang=nl&address=' + encodeURI(data.address);
+    // var url = 'http://128.199.52.98/parcelshoppicker/?lang=nl&address=' + encodeURI(data.address);
+    var url = 'http://localhost:4000/parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,dhl,postnl&address=' + encodeURI(data.address);
     var iframeDiv = document.createElement('div');
     iframeDiv.innerHTML = '<iframe src="' + url + '" width="100%" height="100%">';
     iframeDiv.style.cssText = 'position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 2147483647';
@@ -60,13 +61,14 @@ function showModal(data) {
         //     return;
         // }
         var messageHandlers = {
-            'servicePointSelected': onServicePointSelected,
-            'servicePointClose': onServicePointClose
+            'servicePointPickerSelected': onServicePointSelected,
+            'servicePointPickerClose': onServicePointClose
         };
-        if (!(messageData in messageHandlers)) {
+        if (!(messageData.type in messageHandlers)) {
             alert('Invalid event type');
             return;
         }
+        console.log(messageData);
         var messageFn = messageHandlers[messageData];
         messageFn(messageData);
     }
