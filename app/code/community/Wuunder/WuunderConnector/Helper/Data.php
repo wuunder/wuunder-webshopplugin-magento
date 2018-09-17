@@ -7,6 +7,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     const MIN_PHP_VERSION = '5.3.0';
     public $tblPrfx;
 
+
     function __construct()
     {
         $this->tblPrfx = (string)Mage::getConfig()->getTablePrefix();
@@ -407,6 +408,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
+
         $parcelshopId = null;
         if ($order->getShippingMethod() == 'wuunderparcelshop_wuunderparcelshop') {
             $parcelshopId = $this->getParcelshopIdForQuote($order->getQuoteId());
@@ -423,6 +425,11 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 "build" => Mage::getVersion()
             )
         );
+
+        $staticDescription = Mage::getStoreConfig('wuunderconnector/connect/order_description');
+
+        if (!empty($staticDescription))
+            $description = $staticDescription;
 
         return array(
             'description' => $description,
