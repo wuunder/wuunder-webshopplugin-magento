@@ -294,6 +294,22 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return true;
     }
 
+    public function processTrackingDataFromApi($carrierCode, $trackingCode, $orderId, $bookingToken) {
+        $shipment = Mage::getModel('wuunderconnector/wuundershipment');
+        $shipment->load(intval($orderId), 'order_id');
+        if (!$shipment) {
+            return false;
+        }
+        if ($shipment->getBookingToken() !== $bookingToken) {
+            return false;
+        }
+
+        $shipment->setCarrierTrackingCode($trackingCode);
+        $shipment->setCarrierCode($carrierCode);
+        $shipment->save();
+        return true;
+    }
+
     public function buildWuunderData($infoArray, $order, $bookingToken)
     {
         Mage::helper('wuunderconnector')->log("Building data object for api.");
@@ -391,13 +407,16 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
-        $parcelshopId = $this->getParcelshopIdForQuote($order->getQuoteId());
+        $parcelshopId = null;
+        if ($order->getShippingMethod() == 'wuunderparcelshop_wuunderparcelshop') {
+            $parcelshopId = $this->getParcelshopIdForQuote($order->getQuoteId());
+        }
 
         $sourceObj = array(
             "product" => "Magento 1 extension",
             "version" => array(
-                "build" => "3.4.0",
-                "plugin" => "3.0"
+                "build" => "4.0.1",
+                "plugin" => "4.0"
             ),
             "platform" => array(
                 "name" => "Magento",
@@ -640,10 +659,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $html = str_replace($matches[0],
                 $matches[0] . $parcelshopHtml,
                 $html);
-            if ($this->getIsOnestepCheckout()) {
                 $html = str_replace("name=\"shipping_method\"",
-                    "name=\"shipping_method\" onclick=\"switchShippingMethod(event);\"", $html);
-            }
+                    "name=\"shipping_method\" onclick=\"switchShippingMethod(event);" . ($this->getIsOnestepCheckout() ? "switchShippingMethodValidation(event);" : "") . "\"", $html);
         }
         return $html;
     }

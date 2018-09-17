@@ -33,7 +33,18 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
         $free_from_value = $countryFreeFrom[$shippingCountry];
 
         $result = Mage::getModel('shipping/rate_result');
-        if (!empty($free_from_value) && $request->getPackageValueWithDiscount() >= floatval($free_from_value)) {
+        $session        = Mage::getSingleton('checkout/session');
+        $quote_id       = $session->getQuoteId();
+        $item_quote     = Mage::getModel('sales/quote')->load($quote_id);
+
+        $quoteItems = $item_quote->getAllItems();
+        $subtotalInclTax = 0;
+        foreach ($quoteItems as $item) {
+            $subtotalInclTax += $item->getRowTotalInclTax();
+        }
+        Mage::helper('checkout')->formatPrice($subtotalInclTax);
+
+        if (!empty($free_from_value) && $subtotalInclTax >= floatval($free_from_value)) {
             $method = Mage::getModel('shipping/rate_result_method');
             $method->setCarrier($this->_code);
             $method->setMethod($this->_code);
