@@ -14,6 +14,10 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunderparcelshop extends Mage_Ship
 
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
+        $session        = Mage::getSingleton('checkout/session');
+        $quote_id       = $session->getQuoteId();
+        $item_quote     = Mage::getModel('sales/quote')->load($quote_id);
+
         if (!Mage::getStoreConfig('carriers/' . $this->_code . '/active')) {
             return false;
         }
@@ -33,8 +37,15 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunderparcelshop extends Mage_Ship
         $shippingCountry = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getCountry();
         $free_from_value = $countryFreeFrom[$shippingCountry];
 
+        $quoteItems = $item_quote->getAllItems();
+        $subtotalInclTax = 0;
+        foreach ($quoteItems as $item) {
+            $subtotalInclTax += $item->getRowTotalInclTax();
+        }
+        Mage::helper('checkout')->formatPrice($subtotalInclTax);
+
         $result = Mage::getModel('shipping/rate_result');
-        if (!empty($free_from_value) && $request->getPackageValueWithDiscount() >= floatval($free_from_value)) {
+        if (!empty($free_from_value) && $subtotalInclTax >= floatval($free_from_value)) {
             $method = Mage::getModel('shipping/rate_result_method');
             $method->setCarrier($this->_code);
             $method->setMethod($this->_code);
