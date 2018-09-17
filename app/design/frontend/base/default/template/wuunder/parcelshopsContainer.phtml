@@ -1,10 +1,13 @@
-<div id='parcelShopsContainer'>
+<div id='localParcelShopsContainer'>
 
 </div>
 
 <div id='parcelShopsSelectedContainer'>
     <?php echo $this->getCurrentParcelshopInfo(); ?>
     <a href='#' id='selectParceshop'
-       onclick="showParcelshopPicker(event, '<?php echo $this->getWebshopBaseUrl(); ?>wuunderconnector/parcelshop/');">Klik
+       onclick="showParcelshopPicker(event);">Klik
         hier om een parcelshop te selecteren</a>
 </div>
+<script>
+    initParcelshopMethod('<?php echo $this->getWebshopBaseUrl(); ?>');
+</script>

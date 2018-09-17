@@ -36,6 +36,15 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
         $parcelshop_id = Mage::app()->getRequest()->getParam('id');
         $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
         Mage::helper('wuunderconnector')->setParcelshopIdForQuote($quote_id, $parcelshop_id);
+        $currentParcelshopInfo = Mage::helper('wuunderconnector')->getCurrentSetParcelshopInfo();
+
+        $this->getResponse()
+            ->clearHeaders()
+            ->setHeader('HTTP/1.0', '200', true)
+            ->setHeader('Content-Type', 'application/json', true)
+            ->setBody(json_encode($currentParcelshopInfo))
+            ->sendResponse();
+        exit;
     }
 
     /**

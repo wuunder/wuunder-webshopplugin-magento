@@ -63,8 +63,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $test_mode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
 
         if ($test_mode == 1) {
-            $apiUrl = 'https://api-staging.wearewuunder.com/api/';
-//            $apiUrl = 'https://api-playground.wearewuunder.com/api/';
+//            $apiUrl = 'https://api-staging.wearewuunder.com/api/';
+            $apiUrl = 'https://api-playground.wearewuunder.com/api/';
         } else {
             $apiUrl = 'https://api.wearewuunder.com/api/';
         }
@@ -77,8 +77,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $test_mode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
 
         if ($test_mode == 1) {
-            $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_test', $storeId);
-//            $apiKey = "pN2XAviEVCRgTsRPU3xWNOp4_4npbv8L";
+//            $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_test', $storeId);
+            $apiKey = "pN2XAviEVCRgTsRPU3xWNOp4_4npbv8L";
         } else {
             $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_live', $storeId);
         }
@@ -583,7 +583,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return false;
     }
 
-    private function getParcelshopById($id)
+    public function getParcelshopById($id)
     {
         if (!empty($id)) {
             return $this->doParcelshopRequest("parcelshops/" . $id);
@@ -665,7 +665,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return isset($matches[0]);
     }
 
-    private function getCurrentSetParcelshopInfo()
+    public function getCurrentSetParcelshopInfo()
     {
         $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
         $parcelshop_id = $this->getParcelshopIdForQuote($quote_id);

@@ -1,51 +1,40 @@
-function showParcelshopPicker(e, fetchUrl) {
-    if (self.fetch) {
-        fetch(fetchUrl + 'address', {
-            credentials: "include",
-            method: 'GET', // or 'PUT'
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        }).then(function (response) {
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                alert("Something went wrong!");
-                return null;
-            }
-        }).then(function (json) {
-            if (json !== null)
-                showModal(json);
-        });
-    } else {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState === 4 && this.status === 200) {
-                showModal(JSON.parse(xhttp.response));
-            }
-        };
-        xhttp.open("GET", fetchUrl + 'address', true);
-        xhttp.send();
-    }
+var baseUrl = "";
+
+function initParcelshopMethod(url) {
+    baseUrl = url;
+}
+
+function showParcelshopPicker() {
+    var fetchUrl = baseUrl + 'wuunderconnector/parcelshop/';
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            showModal(JSON.parse(xhttp.response));
+        }
+    };
+    xhttp.open("GET", fetchUrl + 'address', true);
+    xhttp.send();
 }
 
 function showModal(data) {
     // var url = 'http://128.199.52.98/parcelshoppicker/?lang=nl&address=' + encodeURI(data.address);
-    var url = 'http://api-staging.wearewuunder.com//parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,dhl,postnl&address=' + encodeURI(data.address);
+    var url = 'http://api-playground.wearewuunder.com//parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,dhl,postnl&address=' + encodeURI(data.address);
     var iframeDiv = document.createElement('div');
     iframeDiv.innerHTML = '<iframe src="' + url + '" width="100%" height="100%">';
+    iframeDiv.className = "parcelshopPickerIframe";
     iframeDiv.style.cssText = 'position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 2147483647';
     var loadingDiv = document.createElement('div');
     loadingDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 2147483646; background-color: black; opacity: 0.7';
-    document.getElementById("parcelShopsContainer").appendChild(iframeDiv);
+    document.getElementById("localParcelShopsContainer").appendChild(iframeDiv);
 
     function removeServicePointPicker() {
         removeElement(iframeDiv);
         removeElement(loadingDiv);
     }
 
-    function onServicePointSelected(event) {
-        console.log(event);
+    function onServicePointSelected(messageData) {
+        console.log(messageData);
+        setParcelshop(messageData.parcelshopId);
         removeServicePointPicker();
     }
 
@@ -68,10 +57,10 @@ function showModal(data) {
             alert('Invalid event type');
             return;
         }
-        console.log(messageData);
-        var messageFn = messageHandlers[messageData];
+        var messageFn = messageHandlers[messageData.type];
         messageFn(messageData);
     }
+
     window.addEventListener('message', onWindowMessage, false);
 }
 
@@ -81,4 +70,25 @@ function removeElement(element) {
     } else {
         element && element.parentNode && element.parentNode.removeChild(element);
     }
+}
+
+function setParcelshop(parcelshopId) {
+    var fetchUrl = baseUrl + "wuunderconnector/parcelshop/setshop/id/" + parcelshopId;
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            // Typical action to be performed when the document is ready:
+            var data = JSON.parse(xhttp.response);
+            // console.log(data);
+            // console.log(window.parent.document.getElementById("parcelShopsSelected").outerHTML);
+            window.parent.document.getElementById("parcelShopsSelected").outerHTML = data
+            // var parcelshop = parcelshops[i];
+            // window.parent.document.getElementById("parcelShopsSelected").innerHTML = "<table><tr><td><span class='wuunder-logo-small'></span></td><td></td><td></td></tr><tr><td></td><td><b>Parcelshop adres:</b></td><td></td></tr><tr><td></td><td>" +
+            //     "<table><tbody><tr><td>" + parcelshop.company_name + "</td></tr>" +
+            //     "<tr><td>" + parcelshop.address.street_name + " " + parcelshop.address.house_number + ",</td></tr>" +
+            //     "<tr><td>" + parcelshop.address.city + "</td><td></td></tr></tbody></table></td></tr></table>";
+        }
+    };
+    xhttp.open("GET", fetchUrl, true);
+    xhttp.send();
 }

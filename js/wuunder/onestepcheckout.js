@@ -1,5 +1,5 @@
 function switchShippingMethod(e) {
-    var requiredFieldContainer = window.parent.document.getElementById("parcelShopsContainer");
+    var requiredFieldContainer = window.parent.document.getElementById("localParcelShopsContainer");
     if (requiredFieldContainer) {
         var input;
         if (e.target.id !== "s_method_wuunderparcelshop_wuunderparcelshop") {
