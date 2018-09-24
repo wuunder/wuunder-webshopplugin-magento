@@ -668,7 +668,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 $matches[0] . $parcelshopHtml,
                 $html);
                 $html = str_replace("name=\"shipping_method\"",
-                    "name=\"shipping_method\" onclick=\"switchShippingMethodValidation(event);" . ($this->getIsOnestepCheckout() ? "switchShippingMethodValidation(event);" : "") . "\"", $html);
+                    "name=\"shipping_method\" onclick=\"switchShippingMethod(event);" . ($this->getIsOnestepCheckout() ? "switchShippingMethodValidation(event);" : "") . "\"", $html);
         }
         return $html;
     }

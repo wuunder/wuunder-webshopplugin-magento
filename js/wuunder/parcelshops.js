@@ -1,16 +1,22 @@
 var baseUrl = "";
 var baseUrlApi = "";
+var parcelshopInfoDiv = 'parcelShopsSelectedContainer';
+var parcelshopMethodId = 's_method_wuunderparcelshop_wuunderparcelshop';
 
 function initParcelshopMethod(url, apiUrl) {
     baseUrl = url;
     baseUrlApi = apiUrl;
+    
+    if (window.parent.document.getElementById(parcelshopMethodId).checked) {
+        window.parent.document.getElementById(parcelshopInfoDiv).style.display = 'block';
+    }
 }
 
 function switchShippingMethod(e) {
-    if (e.target.id === "s_method_wuunderparcelshop_wuunderparcelshop") {
-        window.parent.document.getElementById('parcelShopsSelectedContainer').style.display = 'block';
+    if (e.target.id === parcelshopMethodId) {
+        window.parent.document.getElementById(parcelshopInfoDiv).style.display = 'block';
     } else {
-        window.parent.document.getElementById('parcelShopsSelectedContainer').style.display = 'none';
+        window.parent.document.getElementById(parcelshopInfoDiv).style.display = 'none';
     }
 }
 
@@ -27,24 +33,21 @@ function showParcelshopPicker() {
 }
 
 function showModal(data) {
-    // var url = 'http://128.199.52.98/parcelshoppicker/?lang=nl&address=' + encodeURI(data.address);
-    // var url = 'http://api-playground.wearewuunder.com//parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,dhl,postnl&address=' + encodeURI(data.address);
     var url = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,dhl,postnl&address=' + encodeURI(data.address);
+    var iframeContainer = document.createElement('div');
+    iframeContainer.className = "parcelshopPickerIframeContainer";
     var iframeDiv = document.createElement('div');
     iframeDiv.innerHTML = '<iframe src="' + url + '" width="100%" height="100%">';
     iframeDiv.className = "parcelshopPickerIframe";
     iframeDiv.style.cssText = 'position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 2147483647';
-    var loadingDiv = document.createElement('div');
-    loadingDiv.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 2147483646; background-color: black; opacity: 0.7';
-    document.getElementById("localParcelShopsContainer").appendChild(iframeDiv);
+    iframeContainer.appendChild(iframeDiv);
+    document.getElementById("localParcelShopsContainer").appendChild(iframeContainer);
 
     function removeServicePointPicker() {
-        removeElement(iframeDiv);
-        removeElement(loadingDiv);
+        removeElement(iframeContainer);
     }
 
     function onServicePointSelected(messageData) {
-        console.log(messageData);
         setParcelshop(messageData.parcelshopId);
         removeServicePointPicker();
     }
@@ -56,10 +59,6 @@ function showModal(data) {
     function onWindowMessage(event) {
         var origin = event.origin,
             messageData = event.data;
-        // if (origin !== baseDomain) {
-        //     alert('Invalid domain');
-        //     return;
-        // }
         var messageHandlers = {
             'servicePointPickerSelected': onServicePointSelected,
             'servicePointPickerClose': onServicePointClose
