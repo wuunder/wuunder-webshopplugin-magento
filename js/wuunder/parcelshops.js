@@ -1,7 +1,17 @@
 var baseUrl = "";
+var baseUrlApi = "";
 
-function initParcelshopMethod(url) {
+function initParcelshopMethod(url, apiUrl) {
     baseUrl = url;
+    baseUrlApi = apiUrl;
+}
+
+function switchShippingMethod(e) {
+    if (e.target.id === "s_method_wuunderparcelshop_wuunderparcelshop") {
+        window.parent.document.getElementById('parcelShopsSelectedContainer').style.display = 'block';
+    } else {
+        window.parent.document.getElementById('parcelShopsSelectedContainer').style.display = 'none';
+    }
 }
 
 function showParcelshopPicker() {
@@ -18,7 +28,8 @@ function showParcelshopPicker() {
 
 function showModal(data) {
     // var url = 'http://128.199.52.98/parcelshoppicker/?lang=nl&address=' + encodeURI(data.address);
-    var url = 'http://api-playground.wearewuunder.com//parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,dhl,postnl&address=' + encodeURI(data.address);
+    // var url = 'http://api-playground.wearewuunder.com//parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,dhl,postnl&address=' + encodeURI(data.address);
+    var url = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,dhl,postnl&address=' + encodeURI(data.address);
     var iframeDiv = document.createElement('div');
     iframeDiv.innerHTML = '<iframe src="' + url + '" width="100%" height="100%">';
     iframeDiv.className = "parcelshopPickerIframe";

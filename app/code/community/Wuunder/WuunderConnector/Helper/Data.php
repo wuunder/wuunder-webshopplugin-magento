@@ -64,8 +64,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $test_mode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
 
         if ($test_mode == 1) {
-//            $apiUrl = 'https://api-staging.wearewuunder.com/api/';
-            $apiUrl = 'https://api-playground.wearewuunder.com/api/';
+            $apiUrl = 'https://api-staging.wearewuunder.com/api/';
+//            $apiUrl = 'https://api-playground.wearewuunder.com/api/';
         } else {
             $apiUrl = 'https://api.wearewuunder.com/api/';
         }
@@ -78,8 +78,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $test_mode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
 
         if ($test_mode == 1) {
-//            $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_test', $storeId);
-            $apiKey = "pN2XAviEVCRgTsRPU3xWNOp4_4npbv8L";
+            $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_test', $storeId);
+//            $apiKey = "pN2XAviEVCRgTsRPU3xWNOp4_4npbv8L";
         } else {
             $apiKey = Mage::getStoreConfig('wuunderconnector/connect/api_key_live', $storeId);
         }
@@ -659,6 +659,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 ->setOneStepCheckoutHtml($this->getOneStepValidationField($html))
                 ->setCurrentParcelshopInfo($this->getCurrentSetParcelshopInfo())
                 ->setWebshopBaseUrl(Mage::getUrl('', array('_secure' => Mage::app()->getStore()->isFrontUrlSecure())))
+                ->setApiBaseUrl(str_replace("api/", "", $this->getAPIHost(Mage::app()->getStore()->getStoreId())))
                 ->setAllowedCarriers($carriers)
                 ->setTemplate('wuunder/parcelshopsContainer.phtml')
                 ->toHtml();
@@ -667,7 +668,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 $matches[0] . $parcelshopHtml,
                 $html);
                 $html = str_replace("name=\"shipping_method\"",
-                    "name=\"shipping_method\" onclick=\"switchShippingMethod(event);" . ($this->getIsOnestepCheckout() ? "switchShippingMethodValidation(event);" : "") . "\"", $html);
+                    "name=\"shipping_method\" onclick=\"switchShippingMethodValidation(event);" . ($this->getIsOnestepCheckout() ? "switchShippingMethodValidation(event);" : "") . "\"", $html);
         }
         return $html;
     }
