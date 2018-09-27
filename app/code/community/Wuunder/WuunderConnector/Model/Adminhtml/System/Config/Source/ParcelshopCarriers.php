@@ -7,18 +7,18 @@ class Wuunder_WuunderConnector_Model_Adminhtml_System_Config_Source_ParcelshopCa
     {
         $type = array();
         $type[] = array(
-            'value' => 'DPD',
+            'value' => 'dpd',
             'label' => 'DPD',
             'selected' => 'selected'
         );
 
         $type[] = array(
-            'value' => 'DHL_PARCEL',
+            'value' => 'dhl',
             'label' => 'DHL'
         );
 
         $type[] = array(
-            'value' => 'POST_NL',
+            'value' => 'postnl',
             'label' => 'PostNL'
         );
 

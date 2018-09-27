@@ -2,10 +2,13 @@ var baseUrl = "";
 var baseUrlApi = "";
 var parcelshopInfoDiv = 'parcelShopsSelectedContainer';
 var parcelshopMethodId = 's_method_wuunderparcelshop_wuunderparcelshop';
+var carrierAvailableList = '';
 
-function initParcelshopMethod(url, apiUrl) {
+function initParcelshopMethod(url, apiUrl, carriers) {
     baseUrl = url;
     baseUrlApi = apiUrl;
+    carrierAvailableList = carriers;
+    console.log(carrierAvailableList);
     
     if (window.parent.document.getElementById(parcelshopMethodId).checked) {
         window.parent.document.getElementById(parcelshopInfoDiv).style.display = 'block';
@@ -33,7 +36,8 @@ function showParcelshopPicker() {
 }
 
 function showModal(data) {
-    var url = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,dhl,postnl&address=' + encodeURI(data.address);
+    // var url = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,dhl,postnl&address=' + encodeURI(data.address);
+    var url = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=' + carrierAvailableList + '&address=' + encodeURI(data.address);
     var iframeContainer = document.createElement('div');
     iframeContainer.className = "parcelshopPickerIframeContainer";
     var iframeDiv = document.createElement('div');

@@ -660,7 +660,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 ->setCurrentParcelshopInfo($this->getCurrentSetParcelshopInfo())
                 ->setWebshopBaseUrl(Mage::getUrl('', array('_secure' => Mage::app()->getStore()->isFrontUrlSecure())))
                 ->setApiBaseUrl(str_replace("api/", "", $this->getAPIHost(Mage::app()->getStore()->getStoreId())))
-                ->setAllowedCarriers($carriers)
+                ->setAllowedCarriers(implode(",", $carriers))
                 ->setTemplate('wuunder/parcelshopsContainer.phtml')
                 ->toHtml();
 
@@ -776,15 +776,15 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return array(
             array(
-                "value" => "DPD",
+                "value" => "dpd",
                 "label" => "DPD"
             ),
             array(
-                "value" => "DHL_PARCEL",
+                "value" => "dhl",
                 "label" => "DHL"
             ),
             array(
-                "value" => "POST_NL",
+                "value" => "postnl",
                 "label" => "PostNL"
             )
         );
