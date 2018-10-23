@@ -25,21 +25,17 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
             foreach ($countryCostData as $countryAndCost) {
                 $countryCosts[$countryAndCost['country']] = $countryAndCost['cost'];
                 $countryFreeFrom[$countryAndCost['country']] = $countryAndCost['free_from'];
-
             }
         }
-
         $shippingCountry = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getCountry();
+        if (empty($shippingCountry))
+            $shippingCountry = $request->getDestCountryId();
         $free_from_value = $countryFreeFrom[$shippingCountry];
 
         $result = Mage::getModel('shipping/rate_result');
-        $session        = Mage::getSingleton('checkout/session');
-        $quote_id       = $session->getQuoteId();
-        $item_quote     = Mage::getModel('sales/quote')->load($quote_id);
 
-        $quoteItems = $item_quote->getAllItems();
         $subtotalInclTax = 0;
-        foreach ($quoteItems as $item) {
+        foreach ($request->getAllItems() as $item) {
             $subtotalInclTax += $item->getRowTotalInclTax();
         }
         Mage::helper('checkout')->formatPrice($subtotalInclTax);
@@ -60,7 +56,6 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
             $method->setMethod($this->_code);
             $method->setCarrierTitle($this->getConfigData('title'));
             $method->setMethodTitle($this->getConfigData('name'));
-
             if (array_key_exists($shippingCountry, $countryCosts)) {
                 $method->setPrice($countryCosts[$shippingCountry]);
                 $method->setCost($countryCosts[$shippingCountry]);
