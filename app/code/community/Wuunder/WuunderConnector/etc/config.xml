@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Wuunder_WuunderConnector>
-            <version>4.0.4</version>
+            <version>4.0.5</version>
         </Wuunder_WuunderConnector>
     </modules>
     <global>
