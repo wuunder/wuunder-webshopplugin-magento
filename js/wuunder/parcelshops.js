@@ -12,6 +12,9 @@ function initParcelshopMethod(url, apiUrl, carriers) {
     
     if (window.parent.document.getElementById(parcelshopMethodId).checked) {
         window.parent.document.getElementById(parcelshopInfoDiv).style.display = 'block';
+
+        //Trigger onClick function, to trigger switchShippingMethodValidation function in onestepcheckout
+        window.parent.document.getElementById(parcelshopMethodId).click();
     }
 }
 
