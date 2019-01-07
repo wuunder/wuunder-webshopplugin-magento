@@ -542,36 +542,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return $result;
     }
 
-    public function getLatitudeAndLongitude($address)
-    {
-        Mage::getSingleton('core/session', array('name' => 'frontend'));
-        if (!is_null($address)) {
-            $addressToInsert = $address;
-        } else {
-            $addressToInsert = $this->getAddressFromQuote();
-        }
-
-        $url = 'http://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($addressToInsert) . '&sensor=false&language=nl';
-        $data = json_decode(file_get_contents($url));
-
-        if (count($data->results) < 1) {
-            $source = file_get_contents($url);
-            $data = json_decode($source);
-        }
-        if (count($data->results) > 0) {
-            return array(
-                "lat" => $data->results[0]->geometry->location->lat,
-                "long" => $data->results[0]->geometry->location->lng,
-                "formatted_address" => $data->results[0]->formatted_address,
-                "error" => $url
-            );
-        }
-        return array(
-            "error" => $url
-        );
-
-    }
-
     public function getAddressFromQuote()
     {
         $address = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress();
@@ -584,29 +554,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $addressToInsert .= $address->getPostcode() . " " . $address->getCity() . " " . $address->getCountry();
 
         return $addressToInsert;
-    }
-
-    public function getParcelshops($address)
-    {
-        $carrierData = Mage::getStoreConfig('carriers/wuunderparcelshop/parcelshop_carriers');
-        if (empty($carrierData)) {
-            return false;
-        }
-        $carrierData = unserialize($carrierData);
-        $carriers = array();
-
-        foreach ($carrierData as $carrier) {
-            array_push($carriers, $carrier['carrier']);
-        }
-        $addCarriers = "providers[]=" . implode('&providers[]=', $carriers);
-
-        $countryString = "&search_countries[]=" . Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getCountry();
-
-        if (!empty($address)) {
-            return json_decode($this->doParcelshopRequest("parcelshops_by_address?" . $addCarriers . "&address=" . urlencode($address) . "&radius=&hide_closed=true" . $countryString));
-        }
-
-        return false;
     }
 
     public function getParcelshopById($id)
@@ -790,23 +737,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         );
     }
 
-    /**
-     * Selects the radiobutton for default selected shipping method.
-     *
-     * @param $html
-     * @param $node
-     * @return mixed
-     */
-    protected function _selectNode($html, $node)
-    {
-        preg_match('(<input[^>]+id="' . $node . '"[^>]+>)s', $html, $matches);
-        if (isset($matches[0])) {
-            $checked = str_replace('/>', ' checked="checked" />', $matches[0]);
-            $html = str_replace($matches[0],
-                $checked, $html);
-        }
-        return $html;
-    }
 
     /**
      * Calculates total weight of a shipment.
