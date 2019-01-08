@@ -1,0 +1,13 @@
+<div id='localParcelShopsContainer'>
+
+</div>
+
+<div id='parcelShopsSelectedContainer'>
+    <?php echo $this->getCurrentParcelshopInfo(); ?>
+    <a href='#' id='selectParceshop'
+       onclick="showParcelshopPicker(event);">Klik
+        hier om een parcelshop te selecteren</a>
+</div>
+<script>
+    initParcelshopMethod('<?php echo $this->getWebshopBaseUrl(); ?>', '<?php echo $this->getApiBaseUrl(); ?>', '<?php echo $this->getAllowedCarriers(); ?>');
+</script>

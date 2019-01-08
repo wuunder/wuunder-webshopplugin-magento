@@ -31,32 +31,30 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
         if (!empty($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('token'))) {
             $result = json_decode(file_get_contents('php://input'), true);
             if ($result['action'] === "shipment_booked") {
-                Mage::helper('wuunderconnector')->log("Webhook - Shipment for order: " . $this->getRequest()->getParam('order_id'));
-                $processDataSuccess = Mage::helper('wuunderconnector')->processDataFromApi($result['shipment'], "no_retour", $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'));
-                if (!$processDataSuccess) {
-                    Mage::helper('wuunderconnector')->log("Cannot update wuunder_shipment data");
+                Mage::helper('wuunderconnector/data')->log("Webhook - Shipment for order: " . $this->getRequest()->getParam('order_id'));
+                if (!Mage::helper('wuunderconnector/data')->processDataFromApi($result['shipment'], $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'))) {
+                    Mage::helper('wuunderconnector/data')->log("Cannot update wuunder_shipment data");
                 }
             } else if ($result['action'] === "track_and_trace_updated") {
-                Mage::helper('wuunderconnector')->log("Webhook - Track and trace for order: " . $this->getRequest()->getParam('order_id'));
-                $processTrackingDataSuccess = Mage::helper('wuunderconnector')->processTrackingDataFromApi($result['carrier_code'], $result['track_and_trace_code'], $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'));
+                Mage::helper('wuunderconnector/data')->log("Webhook - Track and trace for order: " . $this->getRequest()->getParam('order_id'));
+                $processTrackingDataSuccess = Mage::helper('wuunderconnector/data')->processTrackingDataFromApi($result['carrier_code'], $result['track_and_trace_code'], $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'));
                 if ($processTrackingDataSuccess) {
-                    $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($this->getRequest()->getParam('order_id'));
+                    $shipmentInfo = Mage::helper('wuunderconnector/data')->getShipmentInfo($this->getRequest()->getParam('order_id'));
                     if (!empty($shipmentInfo['label_id'])) {
                         $this->ship($this->getRequest()->getParam('order_id'), $result['carrier_code'], $result['track_and_trace_code']);
-                        Mage::helper('wuunderconnector')->log("Making shipment for order: " . $this->getRequest()->getParam('order_id'));
+                        Mage::helper('wuunderconnector/data')->log("Making shipment for order: " . $this->getRequest()->getParam('order_id'));
                     } else {
-                        Mage::helper('wuunderconnector')->log("Error: No label_id set when trying to update tracking info for order: " . $this->getRequest()->getParam('order_id'));
+                        Mage::helper('wuunderconnector/data')->log("Error: No label_id set when trying to update tracking info for order: " . $this->getRequest()->getParam('order_id'));
                     }
                 }
             }
         } else {
-            Mage::helper('wuunderconnector')->log("Invalid order_id for webhook");
+            Mage::helper('wuunderconnector/data')->log("Invalid order_id for webhook");
         }
-
     }
 
     /*
-     * Ship order items if order->canShip() is true, otherwise only add extra tracking info to existing shipment
+     * Ship order items if order->canShip() is true
      */
     private function ship($orderId, $carrier, $label_id)
     {
@@ -71,7 +69,7 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
         }
 
         if ($order->canShip()) {
-            Mage::helper('wuunderconnector')->log("Can ship");
+            Mage::helper('wuunderconnector/data')->log("Can ship");
             $convertor = Mage::getModel('sales/convert_order');
             $shipment = $convertor->toShipment($order);
             foreach ($order->getAllItems() as $orderItem) {
@@ -102,7 +100,7 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
             $shipment->getOrder()->setIsInProcess(true);
 
             try {
-                $transactionSave = Mage::getModel('core/resource_transaction')
+                Mage::getModel('core/resource_transaction')
                     ->addObject($shipment)
                     ->addObject($shipment->getOrder())
                     ->save();
@@ -110,13 +108,13 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
                 Mage::log($e->getMessage(), Zend_Log::ERR);
             }
 
-            $shipment->sendEmail($email, ($includeComment ? $comment : ''));
+//            $shipment->sendEmail($email, ($includeComment ? $comment : ''));
             $order->setStatus('Complete');
             $order->addStatusToHistory($order->getStatus(), $comment, false);
 
             $shipment->save();
         } else {
-            Mage::helper('wuunderconnector')->log("ERROR: Can not ship");
+            Mage::helper('wuunderconnector/data')->log("ERROR: Can not ship");
         }
     }
 }

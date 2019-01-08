@@ -1,0 +1,16 @@
+<?php
+$order = $this->getData('order');
+$parcelshopText = $this->getData('parcelshopText');
+if(is_object($order)) {
+    $shippingMethod = $order->getShippingMethod();
+} else {
+    $shippingMethod = "";
+}
+
+if ($shippingMethod == 'wuunderparcelshop_wuunderparcelshop') {
+    $html = $parcelshopText;
+} else {
+    $html = $order->getShippingAddress();
+}
+
+echo $html;

@@ -3,30 +3,21 @@
     <wuunderconnector_checkout_header>
         <reference name="head">
             <action method="addCss">
-                <stylesheet>css/wuunderdpd/shipping.css</stylesheet>
+                <name>css/wuunder/parcelshoppicker.css</name>
             </action>
             <action method="addJs">
-                <script>wuunderdpd/shipping.js</script>
+                <script>wuunder/parcelshops.js</script>
             </action>
             <action method="addJs">
-                <script>prototype/window.js</script>
+                <file helper="wuunderconnector/data/getOnestepCheckoutJs"/>
             </action>
-            <action method="addJs">
-                <script>wuunderdpd/window/shipping.js</script>
-            </action>
-            <action method="addCss">
-                <name>css/wuunderdpd/window.css</name>
-            </action>
-            <action method="addJs">
-                <file helper="wuunderconnector/getOnestepCheckoutJs"/>
-            </action>
-            <block type="core/template" name="gmapsapi" template="wuunderdpd/gmapsapi.phtml"/>
+            <block type="core/template" name="gmapsapi" template="wuunder/gmapsapi.phtml"/>
         </reference>
     </wuunderconnector_checkout_header>
     <checkout_onepage_index>
         <update handle="wuunderconnector_checkout_header"/>
     </checkout_onepage_index>
-    <wuunderconnector_ajax_windowindex>
+    <wuunderconnector_parcelshop_shops>
         <reference name="root">
             <action method="setTemplate">
                 <template>page/empty.phtml</template>
@@ -34,19 +25,16 @@
         </reference>
         <update handle="wuunderconnector_checkout_header"/>
         <reference name="content">
-            <block type="wuunderconnector/carrier_parcelshop" name="dpd" template="wuunderdpd/parcelshop.phtml"/>
+            <block type="wuunderconnector/parcelshops" name="wuunderparcelshops" template="wuunder/parcelshops.phtml" />
         </reference>
-    </wuunderconnector_ajax_windowindex>
-    <wuunderconnector_ajax_index>
-        <block type="wuunderconnector/carrier_parcelshop" name="root" template="wuunderdpd/parcelshop.phtml" output="toHtml"/>
-    </wuunderconnector_ajax_index>
-    <wuunderconnector_ajax_saveparcel>
-        <block type="wuunderconnector/carrier_parcelshop" name="root" template="wuunderdpd/parcelshopselected.phtml" output="toHtml"/>
-    </wuunderconnector_ajax_saveparcel>
-    <wuunderconnector_ajax_invalidateparcel>
-        <block type="wuunderconnector/carrier_parcelshop" name="root" template="wuunderdpd/parcelshop.phtml" output="toHtml"/>
-    </wuunderconnector_ajax_invalidateparcel>
+    </wuunderconnector_parcelshop_shops>
     <onestepcheckout_index_index>
         <update handle="wuunderconnector_checkout_header"/>
     </onestepcheckout_index_index>
+    <checkout_onestep_index>
+        <depends>
+            <FME_QuickCheckout />
+        </depends>
+        <update handle="wuunderconnector_checkout_header"/>
+    </checkout_onestep_index>
 </layout>

@@ -1,0 +1,34 @@
+<div id='parcelShopsSelected'>
+    <table>
+        <tr>
+            <td><span class='wuunder-logo-small'></span></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><b>Parcelshop adres:</b></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><?php echo $this->getParcelshopInfo()->company_name; ?></td>
+                    </tr>
+                    <tr>
+                        <td><?php echo $this->getParcelshopInfo()->address->street_name . " " . $this->getParcelshopInfo()->address->house_number; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><?php echo $this->getParcelshopInfo()->address->city ?></td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -36,9 +36,26 @@
 "Wuunder is enabled for the following selected shipping methods","Wuunder is geactiveerd voor de volgende geselecteerde verzendmethoden"
 "Yes","Ja"
 "Zipcode","Postcode"
+"Shipping method name","Naam verzendmethode"
+"carrier","vervoerder"
+"Name in checkout","Naam in checkout"
+"Price","Prijs"
+"Choose Carriers","Kies vervoerder"
+"Duplicated carrier","Dubbele vervoerder"
+"Cost is not a numeric value","Kosten is geen getal"
+"Cost","Kosten"
+"Name cannot be empty","Naam mag niet leeg zijn"
+"Limit":"Limiet"
+"Monday","Maandag"
+"Tuesday","Dinsdag"
+"Wednesday","Woensdag"
+"Thursday","Donderdag"
+"Friday","Vrijdag"
+"Saturday","Zaterdag"
+"Sunday","Zondag"
+"Free from","Gratis vanaf"
 "Static order description","Vaste order beschrijving"
 "If empty, description will be dynamic, from product info","Wanneer leeg, zal de beschrijving dynamisch worden opgebouwd adhv product info"
-
 
 
 
