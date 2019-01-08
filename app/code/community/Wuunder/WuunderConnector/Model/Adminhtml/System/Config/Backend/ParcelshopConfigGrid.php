@@ -14,12 +14,12 @@ class Wuunder_WuunderConnector_Model_Adminhtml_System_Config_Backend_ParcelshopC
             foreach ($values as $k => $r) {
                 if ($k !== $key) {
                     if ($row['carrier'] === $r['carrier']) {
-                        Mage::throwException(Mage::helper('wuunderconnector')->__("Duplicated carrier") . ": " . $row['carrier']);
+                        Mage::throwException(Mage::helper('wuunderconnector/data')->__("Duplicated carrier") . ": " . $row['carrier']);
                     }
                 }
             }
             if (empty($row['name'])) {
-                Mage::throwException(Mage::helper('wuunderconnector')->__("name cannot be empty"));
+                Mage::throwException(Mage::helper('wuunderconnector/data')->__("name cannot be empty"));
             }
         }
     }

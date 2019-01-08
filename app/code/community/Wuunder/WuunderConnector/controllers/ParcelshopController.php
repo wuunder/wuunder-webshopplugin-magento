@@ -13,13 +13,13 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
         $response_code = 500;
 
         try {
-            $address = Mage::helper('wuunderconnector')->getAddressFromQuote();
+            $address = Mage::helper('wuunderconnector/data')->getAddressFromQuote();
             $response = array(
                 "address" => $address
             );
             $response_code = 200;
         } catch (Exception $e) {
-            Mage::helper('wuunderconnector')->log($e);
+            Mage::helper('wuunderconnector/data')->log($e);
         } finally {
             $this->getResponse()
                 ->clearHeaders()
@@ -35,8 +35,8 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
     {
         $parcelshop_id = Mage::app()->getRequest()->getParam('id');
         $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
-        Mage::helper('wuunderconnector')->setParcelshopIdForQuote($quote_id, $parcelshop_id);
-        $currentParcelshopInfo = Mage::helper('wuunderconnector')->getCurrentSetParcelshopInfo();
+        $this->setParcelshopIdForQuote($quote_id, $parcelshop_id);
+        $currentParcelshopInfo = Mage::helper('wuunderconnector/parcelshophelper')->getCurrentSetParcelshopInfo();
 
         $this->getResponse()
             ->clearHeaders()
@@ -66,4 +66,40 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
         }
         return implode(" ", $formatted_parts);
     }
+    
+    public function setParcelshopIdForQuote($quote_id, $parcelshop_id)
+    {
+        $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
+        $sqlQuery = "SELECT `id` FROM `" . $this->tblPrfx . "wuunder_quote_data` WHERE `quote_id` = ? LIMIT 1";
+        $id = $mageDbW->fetchOne($sqlQuery, array($quote_id));
+
+        if ($id > 0) {
+            $sqlQuery = "UPDATE `" . $this->tblPrfx . "wuunder_quote_data` SET
+                        `quote_id`          = ?,
+                        `parcelshop_id`       = ?
+                    WHERE
+                        `id` = ?";
+
+            $sqlValues = array($quote_id, $parcelshop_id, $id);
+        } else {
+            $sqlQuery = "INSERT INTO `" . $this->tblPrfx . "wuunder_quote_data` SET
+                        `quote_id`          = ?,
+                        `parcelshop_id`       = ?";
+
+            $sqlValues = array($quote_id, $parcelshop_id);
+        }
+
+        try {
+            $mageDbW->query($sqlQuery, $sqlValues);
+            return true;
+        } catch (Mage_Core_Exception $e) {
+            $this->log('ERROR saveWuunderShipment : ' . $e);
+            return false;
+        }
+    }
+
+
+
+
+
 }

@@ -4,7 +4,7 @@ class Wuunder_WuunderConnector_Block_Adminhtml_Config_CarrierTable extends Mage_
 {
   public function _toHtml()
   {
-       $options = Mage::helper('wuunderconnector')->getParcelshopCarriers();
+       $options = Mage::helper('wuunderconnector/parcelshophelper')->getParcelshopCarriers();
        foreach ($options as $option) {
            $this->addOption($option['value'], $option['label']);
        }

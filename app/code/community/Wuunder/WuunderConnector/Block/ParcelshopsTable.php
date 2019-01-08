@@ -7,11 +7,11 @@ class Wuunder_WuunderConnector_Block_ParcelshopsTable extends Mage_Adminhtml_Blo
   public function _prepareToRender()
   {
       $this->addColumn('carrier', array(
-          'label' => Mage::helper('wuunderconnector')->__('Carrier'),
+          'label' => Mage::helper('wuunderconnector/data')->__('Carrier'),
           'renderer' => $this->_getRenderer()
       ));
       $this->addColumn('name', array(
-          'label' => Mage::helper('wuunderconnector')->__('Name in checkout'),
+          'label' => Mage::helper('wuunderconnector/data')->__('Name in checkout'),
           'style' => 'width:100px',
       ));
 

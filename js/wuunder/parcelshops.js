@@ -55,8 +55,8 @@ function showModal(data) {
     }
 
     function onServicePointSelected(messageData) {
-        setParcelshop(messageData.parcelshopId);
         removeServicePointPicker();
+        setParcelshop(messageData.parcelshopId);
     }
 
     function onServicePointClose() {
