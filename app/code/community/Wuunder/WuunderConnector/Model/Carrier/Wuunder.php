@@ -75,7 +75,7 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunder extends Mage_Shipping_Model
 
     public function getTrackingInfo($trackingCode)
     {
-        $result = Mage::helper('wuunderconnector')->getWuunderShipmentByTrackingCode($trackingCode);
+        $result = Mage::helper('wuunderconnector/data')->getWuunderShipmentByTrackingCode($trackingCode);
         $track = Mage::getModel('shipping/tracking_result_status');
         $track->setUrl($result)
             ->setTracking($trackingCode)

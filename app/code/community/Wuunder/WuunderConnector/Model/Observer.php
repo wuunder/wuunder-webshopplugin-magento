@@ -46,7 +46,7 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
                 if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/ship') && $order->canShip() && !$order->getForcedDoShipmentWithInvoice()) {
                     $orderId = $block->getOrderId();
                     $block->removeButton('order_ship');
-                    $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
+                    $shipmentInfo = Mage::helper('wuunderconnector/data')->getShipmentInfo($orderId);
                     $storeId = $order->getStoreId();
                     $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
 
@@ -90,7 +90,7 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
                     }
                     $orderId = $shipment->getOrderId();
                     $block->removeButton('print');
-                    $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
+                    $shipmentInfo = Mage::helper('wuunderconnector/data')->getShipmentInfo($orderId);
 
                     $block->addButton('print', array(
                         'label' => Mage::helper('sales')->__('Print'),
@@ -112,7 +112,7 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
         if ($observer->getBlock() instanceof Mage_Checkout_Block_Onepage_Shipping_Method_Available) {
             if (Mage::getStoreConfig('carriers/wuunderparcelshop/active')) {
                 $html = $observer->getTransport()->getHtml();
-                $html = Mage::helper('wuunderconnector')->addParcelshopsHTML($html);
+                $html = Mage::helper('wuunderconnector/parcelshophelper')->addParcelshopsHTML($html);
                 $observer->getTransport()->setHtml($html);
             }
         }
@@ -125,11 +125,11 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
      */
     public function checkout_controller_onepage_save_shipping_method($observer)
     {
-        if (!Mage::helper('wuunderconnector')->getIsOnestepCheckout()) {
+        if (!Mage::helper('wuunderconnector/data')->getIsOnestepCheckout()) {
             $quote = Mage::getSingleton('checkout/session')->getQuote();
             $address = $quote->getShippingAddress();
             if ($address->getShippingMethod() == "wuunderparcelshop_wuunderparcelshop") {
-                $parcelshop_id = Mage::helper('wuunderconnector')->getParcelshopIdForQuote($quote->getEntityId());
+                $parcelshop_id = Mage::helper('wuunderconnector/parcelshophelper')->getParcelshopIdForQuote($quote->getEntityId());
 
                 $response = array();
                 $response['success'] = true;
@@ -151,7 +151,7 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
         $model = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress();
         if ($model->getOrigData()['country_id'] !== $model->getCountry()) {
             $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
-            Mage::helper('wuunderconnector')->removeParcelshopIdForQuote($quote_id);
+            Mage::helper('wuunderconnector/parcelshophelper')->removeParcelshopIdForQuote($quote_id);
         }
     }
 
@@ -165,7 +165,7 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
     {
         $shipment = $observer->getEvent()->getShipment();
         if (!$shipment->hasId() && !$shipment->getTotalWeight()) {
-            $weight = Mage::helper('wuunderconnector')->calculateTotalShippingWeight($shipment);
+            $weight = Mage::helper('wuunderconnector/data')->calculateTotalShippingWeight($shipment);
             $shipment->setTotalWeight($weight);
         }
     }

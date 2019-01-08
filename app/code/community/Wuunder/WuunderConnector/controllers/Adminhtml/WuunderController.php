@@ -18,11 +18,11 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
         if ($orderId) {
 
             try {
-                Mage::helper('wuunderconnector')->log('Controller: processLabelAction - Data', null, 'wuunder.log');
+                Mage::helper('wuunderconnector/data')->log('Controller: processLabelAction - Data', null, 'wuunder.log');
 
                 $order = Mage::getModel('sales/order')->load($orderId);
-                $shipmentInfo = Mage::helper('wuunderconnector')->getShipmentInfo($orderId);
-                $infoOrder = Mage::helper('wuunderconnector')->getInfoFromOrder($orderId);
+                $shipmentInfo = Mage::helper('wuunderconnector/data')->getShipmentInfo($orderId);
+                $infoOrder = Mage::helper('wuunderconnector/data')->getInfoFromOrder($orderId);
                 $shippingAdr = $order->getShippingAddress();
 
                 if (array_key_exists("shipment_id", $shipmentInfo)) {
@@ -62,7 +62,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                     'phone_number' => $phonenumber,
                 );
 
-                $result = Mage::helper('wuunderconnector')->processLabelInfo($infoArray);
+                $result = Mage::helper('wuunderconnector/data')->processLabelInfo($infoArray);
 
                 if ($result['error'] === true) {
                     Mage::getSingleton('adminhtml/session')->addError($result['message']);
@@ -80,7 +80,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 }
                 !empty($result['booking_url']) ? $this->_redirectUrl($booking_url) : $this->_redirect('*/sales_order/index');
             } catch (Exception $e) {
-                $this->_getSession()->addError(Mage::helper('wuunderconnector')->__('An error occurred while saving the data, please check the wuunder extension logging.'));
+                $this->_getSession()->addError(Mage::helper('wuunderconnector/data')->__('An error occurred while saving the data, please check the wuunder extension logging.'));
                 Mage::logException($e);
                 $this->_redirect('*/sales_order/index');
                 return $this;
