@@ -335,31 +335,30 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $lastname = $shippingLastname;
         $company = $shippingAddress->company;
 
-        $customerAdr = array(
-            'business' => $company,
-            'email_address' => ($order->getCustomerEmail() !== '' ? $order->getCustomerEmail() : $shippingAddress->email),
-            'family_name' => $lastname,
-            'given_name' => $firstname,
-            'locality' => $shippingAddress->city,
-            'phone_number' => $infoArray['phone_number'],
-            'street_name' => $streetName,
-            'house_number' => $houseNumber,
-            'zip_code' => $shippingAddress->postcode,
-            'country' => $shippingAddress->country_id
-        );
+        $customerAdr = new \Wuunder\Api\Config\AddressConfig();
 
-        $webshopAdr = array(
-            'business' => Mage::getStoreConfig('wuunderconnector/connect/company'),
-            'email_address' => Mage::getStoreConfig('wuunderconnector/connect/email'),
-            'family_name' => Mage::getStoreConfig('wuunderconnector/connect/lastname'),
-            'given_name' => Mage::getStoreConfig('wuunderconnector/connect/firstname'),
-            'locality' => Mage::getStoreConfig('wuunderconnector/connect/city'),
-            'phone_number' => Mage::getStoreConfig('wuunderconnector/connect/phone'),
-            'street_name' => Mage::getStoreConfig('wuunderconnector/connect/streetname'),
-            'house_number' => Mage::getStoreConfig('wuunderconnector/connect/housenumber'),
-            'zip_code' => Mage::getStoreConfig('wuunderconnector/connect/zipcode'),
-            'country' => Mage::getStoreConfig('wuunderconnector/connect/country')
-        );
+        $customerAdr->setEmailAddress($order->getCustomerEmail() !== '' ? $order->getCustomerEmail() : $shippingAddress->email);
+        $customerAdr->setFamilyName($lastname);
+        $customerAdr->setGivenName($firstname);
+        $customerAdr->setLocality($shippingAddress->city);
+        $customerAdr->setStreetName($streetName);
+        $customerAdr->setHouseNumber($houseNumber);
+        $customerAdr->setZipCode($shippingAddress->postcode);
+        $customerAdr->setPhoneNumber($infoArray['phone_number']);
+        $customerAdr->setCountry($shippingAddress->country_id);
+
+        $webshopAdr = new \Wuunder\Api\Config\AddressConfig();
+
+        $webshopAdr->setEmailAddress(Mage::getStoreConfig('wuunderconnector/connect/email'));
+        $webshopAdr->setFamilyName(Mage::getStoreConfig('wuunderconnector/connect/lastname'));
+        $webshopAdr->setGivenName(Mage::getStoreConfig('wuunderconnector/connect/firstname'));
+        $webshopAdr->setLocality(Mage::getStoreConfig('wuunderconnector/connect/city'));
+        $webshopAdr->setStreetName(Mage::getStoreConfig('wuunderconnector/connect/streetname'));
+        $webshopAdr->setHouseNumber(Mage::getStoreConfig('wuunderconnector/connect/housenumber'));
+        $webshopAdr->setZipCode(Mage::getStoreConfig('wuunderconnector/connect/zipcode'));
+        $webshopAdr->setPhoneNumber(Mage::getStoreConfig('wuunderconnector/connect/phone'));
+        $webshopAdr->setCountry(Mage::getStoreConfig('wuunderconnector/connect/country'));
+        $webshopAdr->setBusiness(Mage::getStoreConfig('wuunderconnector/connect/company'));
 
         $orderAmountExclVat = round(($order->getGrandTotal() - $order->getTaxAmount() - $order->getShippingAmount()) * 100);
         if ($orderAmountExclVat <= 0) {
@@ -431,24 +430,32 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         if (!empty($staticDescription))
             $description = $staticDescription;
 
-        return array(
-            'description' => $description,
-            'picture' => $picture,
-            'customer_reference' => $order->getIncrementId(),
-            'value' => $orderAmountExclVat,
-            'kind' => $infoArray['packing_type'],
-            'length' => $infoArray['length'],
-            'width' => $infoArray['width'],
-            'height' => $infoArray['height'],
-            'weight' => $infoArray['weight'],
-            'delivery_address' => $customerAdr,
-            'pickup_address' => $webshopAdr,
-            'preferred_service_level' => $preferredServiceLevel,
-            'parcelshop_id' => $parcelshopId,
-            'source' => $sourceObj,
-            'redirect_url' => Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id'],
-            'webhook_url' => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken
-        );
+        // return array(
+        //     'redirect_url' => Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id'],
+        //     'webhook_url' => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken
+        // );
+
+        $bookingConfig = new Wuunder\Api\Config\BookingConfig();
+
+        $bookingConfig->setDescription($description);
+        $bookingConfig->setPicture($picture);
+        $bookingConfig->setKind($infoArray['packing_type']);
+        $bookingConfig->setValue($orderAmountExclVat);
+        $bookingConfig->setLength($infoArray['length']);
+        $bookingConfig->setWidth($infoArray['width']);
+        $bookingConfig->setHeight($infoArray['height']);
+        $bookingConfig->setWeight(intval($infoArray['weight']));
+        $bookingConfig->setCustomerReference($order->getIncrementId());
+        $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
+        $bookingConfig->setSource($sourceObj); 
+        $bookingConfig->setDeliveryAddress($customerAdr);
+        $bookingConfig->setPickupAddress($webshopAdr);
+        if ($parcelshopId) {
+            $bookingConfig->setParcelshopId($parcelshopId);
+        }
+
+        return $bookingConfig;
+
     }
 
     /*
