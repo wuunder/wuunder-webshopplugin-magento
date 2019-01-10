@@ -1,0 +1,3 @@
+[submodule "lib/Wuunder/connector-php"]
+	path = lib/Wuunder/connector-php
+	url = https://github.com/wuunder/connector-php

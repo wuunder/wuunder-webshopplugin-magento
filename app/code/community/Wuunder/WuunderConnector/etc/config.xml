@@ -37,6 +37,15 @@
             </sourcemodel>
         </models>
         <events>
+            <controller_front_init_before>
+                <observers>
+                    <mollie_controller_front_init_before>
+                        <type>object</type>
+                        <class>Wuunder_WuunderConnector_Helper_Autoloader</class>
+                        <method>createAndRegister</method>
+                    </mollie_controller_front_init_before>
+                </observers>
+            </controller_front_init_before>
             <sales_order_grid_collection_load_before>
                 <observers>
                     <wuunderconnector>
