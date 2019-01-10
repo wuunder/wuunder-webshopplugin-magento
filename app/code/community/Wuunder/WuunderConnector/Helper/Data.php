@@ -202,55 +202,27 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $booking_token = uniqid();
         $infoArray['booking_token'] = $booking_token;
 
-        $apiUrl = $this->getAPIHost($storeId) . 'bookings';
         $apiKey = $this->getAPIKey($storeId);
 
         // Combine wuunder info and order data
-        $wuunderJsonData = json_encode($this->buildWuunderData($infoArray, $order, $booking_token));
+        $bookingConfig = $this->buildWuunderData($infoArray, $order, $booking_token);
 
         // Setup API connection
-        $cc = curl_init($apiUrl);
-        $this->log('API connection established');
-
-        curl_setopt($cc, CURLOPT_HTTPHEADER,
-            array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
-        curl_setopt($cc, CURLOPT_POST, 1);
-        curl_setopt($cc, CURLOPT_POSTFIELDS, $wuunderJsonData);
-        curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($cc, CURLOPT_VERBOSE, 1);
-        curl_setopt($cc, CURLOPT_HEADER, 1);
-
-        // Execute the cURL, fetch the XML
-        $result = curl_exec($cc);
-        $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
-        $header = substr($result, 0, $header_size);
-        preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
-
-        // Close connection
-        curl_close($cc);
-
-        if (count($matches) >= 2) {
-            $url = $matches[1];
-            $infoArray['booking_url'] = $url;
-
-            // Create or update wuunder_shipment
-            if (!$this->saveWuunderShipment($infoArray)) {
-                $this->log("Something went wrong with saving wuunder shipment booking");
-                return array(
-                    'error' => true,
-                    'message' => 'Unable to create / update wuunder_shipment for order ' . $infoArray['order_id']
-                );
+        $connector = new Wuunder\Connector($apiKey, Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId) == 1);
+        $booking = $connector->createBooking();
+        $this->log($apiKey);
+        if ($bookingConfig->validate()) {
+            $booking->setConfig($bookingConfig);
+            if ($booking->fire()) {
+                $url = $booking->getBookingResponse()->getBookingUrl();
+            } else {
+                $this->log($booking->getBookingResponse()->getError());
             }
         } else {
-            $this->log("Something went wrong:");
-            $this->log($apiUrl);
-            $this->log($header);
-            $this->log($result);
-            return array(
-                'error' => true,
-                'message' => 'Unable to create / update wuunder_shipment for order ' . $infoArray['order_id']
-            );
+            $this->log("Bookingconfig not complete");
         }
+        
+        $this->log('API connection established');
 
         Mage::helper('wuunderconnector/data')->log('API response string: ' . $result);
 
@@ -346,6 +318,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $customerAdr->setZipCode($shippingAddress->postcode);
         $customerAdr->setPhoneNumber($infoArray['phone_number']);
         $customerAdr->setCountry($shippingAddress->country_id);
+        $customerAdr->setBusiness($company);
+
 
         $webshopAdr = new \Wuunder\Api\Config\AddressConfig();
 
@@ -430,11 +404,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         if (!empty($staticDescription))
             $description = $staticDescription;
 
-        // return array(
-        //     'redirect_url' => Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id'],
-        //     'webhook_url' => Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken
-        // );
-
         $bookingConfig = new Wuunder\Api\Config\BookingConfig();
 
         $bookingConfig->setDescription($description);
@@ -453,6 +422,9 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         if ($parcelshopId) {
             $bookingConfig->setParcelshopId($parcelshopId);
         }
+        $bookingConfig->setRedirectUrl(Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id']);
+        $bookingConfig->setWebhookUrl(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken);
+
 
         return $bookingConfig;
 
