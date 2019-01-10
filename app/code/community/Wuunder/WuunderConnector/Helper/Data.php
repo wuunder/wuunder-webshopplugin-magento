@@ -210,7 +210,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         // Setup API connection
         $connector = new Wuunder\Connector($apiKey, Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId) == 1);
         $booking = $connector->createBooking();
-        $this->log($apiKey);
         if ($bookingConfig->validate()) {
             $booking->setConfig($bookingConfig);
             if ($booking->fire()) {
