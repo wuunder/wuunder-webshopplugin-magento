@@ -73,7 +73,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return $apiUrl;
     }
 
-    private function getAPIKey($storeId)
+    public function getAPIKey($storeId)
     {
         $test_mode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
 

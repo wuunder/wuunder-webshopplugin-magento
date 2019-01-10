@@ -100,18 +100,31 @@ class Wuunder_WuunderConnector_Helper_Parcelshophelper extends Mage_Core_Helper_
     {
         $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
         $parcelshop_id = $this->getParcelshopIdForQuote($quote_id);
+        $this->log($parcelshop_id);
+        
         if (is_null($parcelshop_id)) {
             return "<div id='parcelShopsSelected'></div>";
+        } else {
+            $apiKey = Mage::helper('wuunderconnector/data')->getAPIKey(Mage::app()->getStore());
+            $connector = new Wuunder\Connector($apiKey);
+            $connector->setLanguage("NL");
+            $parcelshopRequest = $connector->getParcelshopById();
+            $parcelshopConfig = new \Wuunder\Api\Config\ParcelshopConfig();
+            $parcelshopConfig->setId($id);
+    
+            if ($parcelshopConfig->validate()) {
+                $parcelshopRequest->setConfig($parcelshopConfig);
+                if ($parcelshopRequest->fire()) {
+                    $parcelshop = $parcelshopRequest->getParcelshopResponse()->getParcelshopData();
+                } else {
+                    echo 'error';
+                    var_dump($parcelshopRequest->getParcelshopResponse()->getError());
+                }
+            } else {
+                $parcelshop = "ParcelshopsConfig not complete";
+            }
+            return $parcelshop;
         }
-        
-        $parcelshop_info = json_decode($this->getParcelshopById($parcelshop_id));
-        $selectedParcelshopHtml = Mage::app()
-            ->getLayout()
-            ->createBlock('core/template')
-            ->setParcelshopInfo($parcelshop_info)
-            ->setTemplate('wuunder/selectedParcelshop.phtml')
-            ->toHtml();
-        return $selectedParcelshopHtml;
     }
 
     private function getParcelshopById($id)
