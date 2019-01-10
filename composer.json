@@ -8,5 +8,8 @@
             "name": "Wuunder",
             "email": "info@wearewuunder.com"
         }
-    ]
+    ],
+  "require": {
+    "wuunder/connector-php": ">=1.0.0"
+  }
 }
