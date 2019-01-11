@@ -28,7 +28,7 @@ class Wuunder_WuunderConnector_Helper_Parcelshophelper extends Mage_Core_Helper_
         try {
             $mageDbW->query($sqlQuery);
         } catch (Exception $e) {
-            $this->log('ERROR getWuunderShipment : ' . $e);
+            Mage::helper('wuunderconnector/data')->log('ERROR getWuunderShipment : ' . $e);
             return false;
         }
 
@@ -52,7 +52,7 @@ class Wuunder_WuunderConnector_Helper_Parcelshophelper extends Mage_Core_Helper_
         try {
             $parcelshopId = $mageDbW->fetchOne($sqlQuery);
         } catch (Exception $e) {
-            $this->log('ERROR getWuunderShipment : ' . $e);
+            Mage::helper('wuunderconnector/data')->log('ERROR getWuunderShipment : ' . $e);
             return null;
         }
 
@@ -100,57 +100,53 @@ class Wuunder_WuunderConnector_Helper_Parcelshophelper extends Mage_Core_Helper_
     {
         $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
         $parcelshop_id = $this->getParcelshopIdForQuote($quote_id);
-        $this->log($parcelshop_id);
         
         if (is_null($parcelshop_id)) {
             return "<div id='parcelShopsSelected'></div>";
-        } else {
-            $apiKey = Mage::helper('wuunderconnector/data')->getAPIKey(Mage::app()->getStore());
-            $connector = new Wuunder\Connector($apiKey);
-            $connector->setLanguage("NL");
-            $parcelshopRequest = $connector->getParcelshopById();
-            $parcelshopConfig = new \Wuunder\Api\Config\ParcelshopConfig();
-            $parcelshopConfig->setId($id);
-    
-            if ($parcelshopConfig->validate()) {
-                $parcelshopRequest->setConfig($parcelshopConfig);
-                if ($parcelshopRequest->fire()) {
-                    $parcelshop = $parcelshopRequest->getParcelshopResponse()->getParcelshopData();
-                } else {
-                    echo 'error';
-                    var_dump($parcelshopRequest->getParcelshopResponse()->getError());
-                }
-            } else {
-                $parcelshop = "ParcelshopsConfig not complete";
-            }
-            return $parcelshop;
         }
+        $parcelshop_info = json_decode($this->getParcelshopById($parcelshop_id));
+        Mage::helper('wuunderconnector/data')->log($parcelshop_info);
+        $selectedParcelshopHtml = Mage::app()
+            ->getLayout()
+            ->createBlock('core/template')
+            ->setParcelshopInfo($parcelshop_info)
+            ->setTemplate('wuunder/selectedParcelshop.phtml')
+            ->toHtml();
+        return $selectedParcelshopHtml;
     }
 
     private function getParcelshopById($id)
     {
         if (!empty($id)) {
-            return $this->doParcelshopRequest("parcelshops/" . $id);
+            return $this->doParcelshopRequest($id);
         }
 
         return false;
     }
 
-    private function doParcelshopRequest($uriPath)
+    private function doParcelshopRequest($id)
     {
-        $storeId = Mage::app()->getStore();
-        $apiUrl = Mage::helper('wuunderconnector/data')->getAPIHost($storeId) . $uriPath;
+        $apiKey = Mage::helper('wuunderconnector/data')->getAPIKey(Mage::app()->getStore());
+        $connector = new Wuunder\Connector($apiKey);
+        $connector->setLanguage("NL");
+        $parcelshopRequest = $connector->getParcelshopById();
+        $parcelshopConfig = new \Wuunder\Api\Config\ParcelshopConfig();
+        $parcelshopConfig->setId($id);
 
-        $cc = curl_init($apiUrl);
-
-        curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($cc, CURLOPT_VERBOSE, 1);
-
-        // Execute the cURL, fetch the XML
-        $result = curl_exec($cc);
-        curl_close($cc);
-        return $result;
+        if ($parcelshopConfig->validate()) {
+            $parcelshopRequest->setConfig($parcelshopConfig);
+            if ($parcelshopRequest->fire()) {
+                $parcelshop = json_encode($parcelshopRequest->getParcelshopResponse()->getParcelshopData());
+            } else {
+                echo 'error';
+                var_dump($parcelshopRequest->getParcelshopResponse()->getError());
+            }
+        } else {
+            $parcelshop = null;
+        }
+        return $parcelshop;
     }
+    
 }
 
 

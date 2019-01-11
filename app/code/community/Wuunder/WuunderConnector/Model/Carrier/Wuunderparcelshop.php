@@ -31,9 +31,12 @@ class Wuunder_WuunderConnector_Model_Carrier_Wuunderparcelshop extends Mage_Ship
         }
 
         $shippingCountry = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getCountry();
-        if (empty($shippingCountry))
+        if (empty($shippingCountry)){
             $shippingCountry = $request->getDestCountryId();
-        $free_from_value = $countryFreeFrom[$shippingCountry];
+        }
+        if (!empty($countryFreeFrom[$shippingCountry])){
+            $free_from_value = $countryFreeFrom[$shippingCountry];
+        }
 
         $subtotalInclTax = 0;
         foreach ($request->getAllItems() as $item) {
