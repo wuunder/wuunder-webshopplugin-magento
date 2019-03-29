@@ -1,4 +1,92 @@
 # Change Log
+All notable changes to this project will be documented in this file.
+Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` or `Security`.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/).
+## Pre-release
+## [4.1.0](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.1.0) - 2019-01-08
+
+### Changed
+
+- Cleanup [@Mittows](https://github.com/Mittows)
+- Refactored helper classes
+
+### Removed
+
+- Removed unused files
+
+
+## [4.0.6](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.0.6) - 2018-10-25
+
+### Added
+
+- Added trigger for onestepcheckout validation on shipping step load [@timoj](https://github.com/timoj)
+
+
+## [4.0.5-BETA](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.0.5-BETA) - 2018-10-23
+
+### Added
+
+- Added feature for calculating free shipping in backend order create form [@timoj](https://github.com/timoj)
+
+
+## [4.0.5](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.0.5) - 2018-05-17
+
+### Changed
+
+- Versioning [@timoj](https://github.com/timoj)
+
+## [4.0.4](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.0.4) - 2018-05-17
+
+### Changed
+
+- Versioning [@timoj](https://github.com/timoj)
+
+
+## [4.0.3-BETA](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.0.3) - 2018-09-28
+
+### Changed
+
+- Versioning [@timoj](https://github.com/timoj)
+
+## [4.0.2-BETA](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.0.2) - 2018-09-27
+
+### Fix
+
+- Bugfix for adding taxes in calculation of shippingcost [@timoj](https://github.com/timoj)
+
+## [4.0.1-BETA](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.0.1) - 2018-09-17
+
+### Fix
+
+- Bugfix for adding taxes in calculation of shippingcost [@timoj](https://github.com/timoj)
+
+## [4.0.0-BETA](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.0.0) - 2018-08-29
+
+TESTING VERSION
+
+### Fix
+
+- Lots of bugfixes [@timoj](https://github.com/timoj)
+
+### Added
+
+- Added parcelshoppicker [@timoj](https://github.com/timoj)
+
+### Changed
+
+- Code cleanup [@timoj](https://github.com/timoj)
+
+## Released
+
+## [3.3.2](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/3.3.2) - 2018-05-17
+
+### Added
+
+- Added static order description setting [@timoj](https://github.com/timoj)
+
+
+# Old Change Log
 
 ## [3.3.1](https://github.com/wuunder/wuunder-webshopplugin-magento/tree/3.3.1) (2018-02-14)
 [Full Changelog](https://github.com/wuunder/wuunder-webshopplugin-magento/compare/3.3.0...3.3.1)
