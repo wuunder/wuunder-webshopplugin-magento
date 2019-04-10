@@ -18,4 +18,4 @@ Deploy the files in the root of the magento installation. All files will be plac
 -   Check /magentoroot/var/log/wuunder.log for debugging
 
 ## Changelog ##
-Changelog can be found [here](https://github.com/wuunder/wuunder-webshopplugin-magento/blob/master/CHANGELOG.md).
+Changelog can be found [here](CHANGELOG.md).
