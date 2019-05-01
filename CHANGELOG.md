@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
 ## 2019-05-01
 
+### Added
+
 - Added support for bulk booking [@timoj](https://github.com/timoj)
 
 ## Pre-release
