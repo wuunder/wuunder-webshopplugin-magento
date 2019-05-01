@@ -478,6 +478,44 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
+    public function getWuunderShipmentByOrderId($id)
+    {
+        try {
+            //check for a label id
+            $shipment = Mage::getModel('wuunderconnector/wuundershipment');
+            $shipment->load(intval($id), 'order_id');
+
+
+            if ($shipment) {
+                return $shipment;
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            $this->log('ERROR getWuunderShipmentByOrderId : ' . $e);
+            return false;
+        }
+    }
+
+    public function getWuunderShipmentByTrackingCode($id)
+    {
+        try {
+            //check for a label id
+            $shipment = Mage::getModel('wuunderconnector/wuundershipment');
+            $shipment->load($id, 'carrier_tracking_code');
+
+
+            if ($shipment) {
+                return $shipment;
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            $this->log('ERROR getWuunderShipmentByOrderId : ' . $e);
+            return false;
+        }
+    }
+
     public function addressSplitter($address, $address2 = null, $address3 = null)
     {
 
