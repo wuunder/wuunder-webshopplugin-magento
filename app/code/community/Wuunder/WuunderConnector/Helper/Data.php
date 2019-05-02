@@ -73,7 +73,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return $apiUrl;
     }
 
-    private function getAPIKey($storeId)
+    public function getAPIKey($storeId)
     {
         $test_mode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
 
@@ -474,6 +474,44 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             }
         } catch (Exception $e) {
             $this->log('ERROR getWuunderShipment : ' . $e);
+            return false;
+        }
+    }
+
+    public function getWuunderShipmentByOrderId($id)
+    {
+        try {
+            //check for a label id
+            $shipment = Mage::getModel('wuunderconnector/wuundershipment');
+            $shipment->load(intval($id), 'order_id');
+
+
+            if ($shipment) {
+                return $shipment;
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            $this->log('ERROR getWuunderShipmentByOrderId : ' . $e);
+            return false;
+        }
+    }
+
+    public function getWuunderShipmentByTrackingCode($id)
+    {
+        try {
+            //check for a label id
+            $shipment = Mage::getModel('wuunderconnector/wuundershipment');
+            $shipment->load($id, 'carrier_tracking_code');
+
+
+            if ($shipment) {
+                return $shipment;
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            $this->log('ERROR getWuunderShipmentByOrderId : ' . $e);
             return false;
         }
     }

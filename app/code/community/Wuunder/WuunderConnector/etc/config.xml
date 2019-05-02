@@ -96,6 +96,15 @@
                     </wuunderconnector>
                 </observers>
             </controller_action_postdispatch_checkout_onepage_saveshipping>
+            <core_block_abstract_prepare_layout_before>
+                <observers>
+                    <wuunderconnector>
+                        <type>model</type>
+                        <class>wuunderconnector/observer</class>
+                        <method>addMassAction</method>
+                    </wuunderconnector>
+                </observers>
+            </core_block_abstract_prepare_layout_before>
         </events>
         <resources>
             <wuunderconnector_setup>

@@ -169,4 +169,22 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
             $shipment->setTotalWeight($weight);
         }
     }
+
+    /**
+     * Add mass select option in order grid for bulk booking
+     *
+     * @param $observer
+     *
+     */
+    public function addMassAction($observer)
+    {
+        $block = $observer->getEvent()->getBlock();
+        $this->_block = $block;
+        if (get_class($block) == 'Mage_Adminhtml_Block_Widget_Grid_Massaction' && $block->getRequest()->getControllerName() == 'sales_order') {
+            $block->addItem('wuunder_bulk_book', array(
+                'label' => Mage::helper('sales')->__('Wuunder Bulk Book'),
+                'url' => $block->getUrl('adminhtml/wuunder/processMultiselectedOrders'),
+            ));
+        }
+    }
 }

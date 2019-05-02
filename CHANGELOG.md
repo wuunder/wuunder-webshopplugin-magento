@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` or `Security`.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
+
+## Released
+## [4.2.0](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.2.0) - 2019-05-01
+
+### Added
+
+- Added support for bulk booking [@timoj](https://github.com/timoj)
+
 ## Pre-release
 ## [4.1.0](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.1.0) - 2019-01-08
 
