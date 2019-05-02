@@ -3,8 +3,8 @@ All notable changes to this project will be documented in this file.
 Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` or `Security`.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
-## Unreleased
-## 2019-05-01
+## Released
+## [4.2.0](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.2.0) - 2019-05-01
 
 ### Added
 
