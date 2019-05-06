@@ -5,6 +5,12 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Released
+## [4.2.1](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.2.0) - 2019-05-01
+
+### Fixed
+
+- Fixed single bookings [#19](https://github.com/wuunder/wuunder-webshopplugin-magento/pull/19)
+
 ## [4.2.0](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.2.0) - 2019-05-01
 
 ### Added
