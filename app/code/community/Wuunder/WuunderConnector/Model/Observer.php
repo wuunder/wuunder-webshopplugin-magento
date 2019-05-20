@@ -25,6 +25,12 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
                     $_SERVER['REQUEST_URI'], 2)[0]);
             Mage::app()->getResponse()->sendResponse();
             exit;
+        } else if (isset($_REQUEST['wuunder_bulk_booked'])) {
+            Mage::getSingleton('adminhtml/session')->addSuccess($_REQUEST['wuunder_bulk_booked'] . ' draft(s) met succes aangemaakt');
+            Mage::app()->getFrontController()->getResponse()->setRedirect((isset($_SERVER['HTTPS']) ? "https://" : "http://") . $_SERVER['HTTP_HOST'] . explode('?',
+                    $_SERVER['REQUEST_URI'], 2)[0]);
+            Mage::app()->getResponse()->sendResponse();
+            exit;
         }
     }
 

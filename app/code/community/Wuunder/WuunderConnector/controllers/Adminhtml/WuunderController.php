@@ -167,6 +167,8 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
         $orderResponses = json_decode($response);
 
+        $correctlyBookedCounter = 0;
+
         foreach ($orderResponses as $orderResponse) {
             if (count($orderResponse->errors)) {
                 Mage::helper('wuunderconnector/data')->log('Error Booking order ' . $orderResponse->id);
@@ -178,6 +180,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 continue;
                 // TODO maybe make new shipment?
             } else {
+                $correctlyBookedCounter++;
                 $shipment->setBookingUrl($orderResponse->url);
                 try {
                     $shipment->save();
@@ -187,7 +190,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 }
             }
         }
-        $this->_redirect('*/sales_order/index');
+        $this->_redirect('*/sales_order/index', array('_query' => array('wuunder_bulk_booked' => $correctlyBookedCounter)));
     }
 
     private function createBookingConfigForOrder($infoArray)
