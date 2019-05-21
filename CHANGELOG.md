@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Fix
 
 - Fixed error when module is disabled. Added checks in observer and data helper
+- Fixed shipment saving for single order bookings
+
 
 
 ## 2019-05-20
