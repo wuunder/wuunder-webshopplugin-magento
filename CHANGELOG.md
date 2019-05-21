@@ -5,6 +5,10 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
 ## 2019-05-21
+### Added
+
+- Added validation to some of the config fields (max length)
+
 ### Fix
 
 - Fixed error when module is disabled. Added checks in observer and data helper
