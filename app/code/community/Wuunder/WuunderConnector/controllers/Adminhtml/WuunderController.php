@@ -68,16 +68,11 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                     Mage::getSingleton('adminhtml/session')->addError($result['message']);
                 }
 
-                if (strpos($result['booking_url'], 'http:') === 0 || strpos($result['booking_url'], 'https:') === 0) {
-                    $booking_url = $result['booking_url'];
-                } else {
-                    $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
-                    if ($testMode == 1) {
-                        $booking_url = 'https://api-staging.wuunder.co' . $result['booking_url'];
-                    } else {
-                        $booking_url = 'https://api.wuunder.co' . $result['booking_url'];
-                    }
-                }
+                $booking_url = $result['booking_url'];
+
+                $infoArray['booking_url'] = $booking_url;
+                Mage::helper('wuunderconnector/data')->saveWuunderShipment($infoArray);
+
                 !empty($result['booking_url']) ? $this->_redirectUrl($booking_url) : $this->_redirect('*/sales_order/index');
             } catch (Exception $e) {
                 $this->_getSession()->addError(Mage::helper('wuunderconnector/data')->__('An error occurred while saving the data, please check the wuunder extension logging.'));
