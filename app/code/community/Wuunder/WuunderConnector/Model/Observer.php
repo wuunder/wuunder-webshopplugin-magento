@@ -5,6 +5,9 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
 
     public function salesOrderGridCollectionLoadBefore($observer)
     {
+        if (!$this->checkIfEnabled())
+            return;
+
         $collection = $observer->getOrderGridCollection();
         $select = $collection->getSelect();
         $select->joinLeft(
@@ -19,6 +22,9 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
 
     public function adminhtmlBlockHtmlBefore($observer)
     {
+        if (!$this->checkIfEnabled())
+            return;
+
         if (isset($_REQUEST['label_order'])) {
             Mage::getSingleton('adminhtml/session')->addSuccess('Label met succes aangemaakt');
             Mage::app()->getFrontController()->getResponse()->setRedirect((isset($_SERVER['HTTPS']) ? "https://" : "http://") . $_SERVER['HTTP_HOST'] . explode('?',
@@ -40,6 +46,9 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
      */
     public function adminhtmlWidgetContainerHtmlBefore($observer)
     {
+        if (!$this->checkIfEnabled())
+            return;
+
         $block = $observer->getBlock();
         $enabled_shipping_methods = explode(",",
             Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods'));
@@ -115,6 +124,9 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
      */
     public function coreBlockAbstractToHtmlAfter($observer)
     {
+        if (!$this->checkIfEnabled())
+            return;
+
         if ($observer->getBlock() instanceof Mage_Checkout_Block_Onepage_Shipping_Method_Available) {
             if (Mage::getStoreConfig('carriers/wuunderparcelshop/active')) {
                 $html = $observer->getTransport()->getHtml();
@@ -131,6 +143,9 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
      */
     public function checkout_controller_onepage_save_shipping_method($observer)
     {
+        if (!$this->checkIfEnabled())
+            return;
+
         if (!Mage::helper('wuunderconnector/data')->getIsOnestepCheckout()) {
             $quote = Mage::getSingleton('checkout/session')->getQuote();
             $address = $quote->getShippingAddress();
@@ -154,6 +169,9 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
 
     public function controller_action_postdispatch_checkout_onepage_saveshipping($observer)
     {
+        if (!$this->checkIfEnabled())
+            return;
+
         $model = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress();
         if ($model->getOrigData()['country_id'] !== $model->getCountry()) {
             $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
@@ -169,6 +187,9 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
      */
     public function sales_order_shipment_save_before($observer)
     {
+        if (!$this->checkIfEnabled())
+            return;
+
         $shipment = $observer->getEvent()->getShipment();
         if (!$shipment->hasId() && !$shipment->getTotalWeight()) {
             $weight = Mage::helper('wuunderconnector/data')->calculateTotalShippingWeight($shipment);
@@ -184,6 +205,9 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
      */
     public function addMassAction($observer)
     {
+        if (!$this->checkIfEnabled())
+            return;
+
         $block = $observer->getEvent()->getBlock();
         $this->_block = $block;
         if (get_class($block) == 'Mage_Adminhtml_Block_Widget_Grid_Massaction' && $block->getRequest()->getControllerName() == 'sales_order') {
@@ -192,5 +216,13 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
                 'url' => $block->getUrl('adminhtml/wuunder/processMultiselectedOrders'),
             ));
         }
+    }
+
+
+    private function checkIfEnabled()
+    {
+        $storeId = Mage::app()->getStore()->getStoreId();
+        $enabled = (int)Mage::getStoreConfig('wuunderconnector/connect/enabled', $storeId);
+        return $enabled ? true : false;
     }
 }
