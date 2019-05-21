@@ -43,6 +43,11 @@ function showModal(data) {
     var url = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=' + carrierAvailableList + '&address=' + encodeURI(data.address);
     var iframeContainer = document.createElement('div');
     iframeContainer.className = "parcelshopPickerIframeContainer";
+    iframeContainer.onclick = function (e) {
+        e.preventDefault();
+        removeServicePointPicker();
+        return false;
+    };
     var iframeDiv = document.createElement('div');
     iframeDiv.innerHTML = '<iframe src="' + url + '" width="100%" height="100%">';
     iframeDiv.className = "parcelshopPickerIframe";
