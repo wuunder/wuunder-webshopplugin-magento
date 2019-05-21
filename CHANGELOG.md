@@ -4,6 +4,12 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
+## 2019-05-21
+### Fix
+
+- Fixed error when module is disabled. Added checks in observer and data helper
+
+
 ## 2019-05-20
 ### Added
 
