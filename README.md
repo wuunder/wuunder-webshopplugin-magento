@@ -16,6 +16,7 @@ More info regarding the installation: https://wearewuunder.com/verzend-module-ma
 ## Install ##
 
 Deploy the files in the root of the magento installation. All files will be placed in the correct directory. The extension works with PHP 5.6 and higher. (Tested until PHP 7.0)
+After deployment, clear the magento cache.
 
 ###Dependencies
 
