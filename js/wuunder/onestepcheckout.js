@@ -1,7 +1,7 @@
 function wuunderOneStepCheckoutInit() {
     var existingInput = window.parent.document.getElementById("onestepValidationField");
 
-    if (!existingInput) {
+    if (existingInput) {
         existingInput.onchange = removeWuunderOneStepCheckoutValidationWarning;
     }
 }
@@ -32,7 +32,6 @@ function switchShippingMethodValidation(e) {
 }
 
 function removeWuunderOneStepCheckoutValidationWarning(e) {
-    console.log("H1");
 
     var requiredFieldContainer = window.parent.document.getElementById("localParcelShopsContainer");
 
