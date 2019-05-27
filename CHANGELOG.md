@@ -4,6 +4,11 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
+## 2019-05-27
+### Added
+
+- Added OneStepCheckout support for Magento 1 (OSC v5.0.1)
+
 ## 2019-05-21
 ### Added
 
