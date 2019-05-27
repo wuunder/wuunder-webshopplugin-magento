@@ -4,11 +4,16 @@ var parcelshopInfoDiv = 'parcelShopsSelectedContainer';
 var parcelshopMethodId = 's_method_wuunderparcelshop_wuunderparcelshop';
 var carrierAvailableList = '';
 
-function initParcelshopMethod(url, apiUrl, carriers) {
+var selectedParcelshopId = null;
+
+function initParcelshopMethod(url, apiUrl, carriers, parcelshopId) {
     baseUrl = url;
     baseUrlApi = apiUrl;
     carrierAvailableList = carriers;
-    console.log(carrierAvailableList);
+
+    if (parcelshopId !== undefined) {
+        selectedParcelshopId = parcelshopId;
+    }
     
     if (window.parent.document.getElementById(parcelshopMethodId).checked) {
         window.parent.document.getElementById(parcelshopInfoDiv).style.display = 'block';
@@ -16,6 +21,9 @@ function initParcelshopMethod(url, apiUrl, carriers) {
         //Trigger onClick function, to trigger switchShippingMethodValidation function in onestepcheckout
         window.parent.document.getElementById(parcelshopMethodId).click();
     }
+
+    //OneStepCheckout
+    wuunderOneStepCheckoutInit();
 }
 
 function switchShippingMethod(e) {
@@ -94,16 +102,18 @@ function setParcelshop(parcelshopId) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
+            selectedParcelshopId = parcelshopId;
+
+            // OneStepCheckout support
+            if (window.parent.document.getElementById("onestepValidationField")) {
+                window.parent.document.getElementById("onestepValidationField").value = parcelshopId;
+                window.parent.document.getElementById("onestepValidationField").onchange();
+            }
+
             // Typical action to be performed when the document is ready:
             var data = JSON.parse(xhttp.response);
-            // console.log(data);
-            // console.log(window.parent.document.getElementById("parcelShopsSelected").outerHTML);
             window.parent.document.getElementById("parcelShopsSelected").outerHTML = data
-            // var parcelshop = parcelshops[i];
-            // window.parent.document.getElementById("parcelShopsSelected").innerHTML = "<table><tr><td><span class='wuunder-logo-small'></span></td><td></td><td></td></tr><tr><td></td><td><b>Parcelshop adres:</b></td><td></td></tr><tr><td></td><td>" +
-            //     "<table><tbody><tr><td>" + parcelshop.company_name + "</td></tr>" +
-            //     "<tr><td>" + parcelshop.address.street_name + " " + parcelshop.address.house_number + ",</td></tr>" +
-            //     "<tr><td>" + parcelshop.address.city + "</td><td></td></tr></tbody></table></td></tr></table>";
+
         }
     };
     xhttp.open("GET", fetchUrl, true);

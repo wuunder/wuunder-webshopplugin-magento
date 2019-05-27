@@ -76,10 +76,14 @@ class Wuunder_WuunderConnector_Helper_Parcelshophelper extends Mage_Core_Helper_
             }
         }
 
+        $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
+        $parcelshop_id = $this->getParcelshopIdForQuote($quote_id);
+
         $parcelshopHtml = Mage::app()
             ->getLayout()
             ->createBlock('core/template')
-            ->setOneStepCheckoutHtml(Mage::helper('wuunderconnector/data')->getOneStepValidationField($html))
+            ->setParcelshopId($parcelshop_id)
+            ->setOneStepCheckoutHtml(Mage::helper('wuunderconnector/data')->getOneStepValidationField($originalHtml))
             ->setCurrentParcelshopInfo($this->getCurrentSetParcelshopInfo())
             ->setWebshopBaseUrl(Mage::getUrl('', array('_secure' => Mage::app()->getStore()->isFrontUrlSecure())))
             ->setApiBaseUrl(str_replace("api/", "", Mage::helper('wuunderconnector/data')->getAPIHost(Mage::app()->getStore()->getStoreId())))
