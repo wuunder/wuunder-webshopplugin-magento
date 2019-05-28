@@ -15,8 +15,10 @@ More info regarding the installation: https://wearewuunder.com/verzend-module-ma
 
 ## Install ##
 
-Deploy the files in the root of the magento installation. All files will be placed in the correct directory. The extension works with PHP 5.6 and higher. (Tested until PHP 7.0)
-After deployment, clear the magento cache.
+Download the latest [release](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/latest).
+Download the dependencies added zip if you are unfamiliar with composer.
+Copy the contents of the wuunder-webshopplugin-magento-xxxxxxx folder to the root of the magento installation. All files will be placed in the correct directories. The extension works with PHP 5.6 and higher. (Tested until PHP 7.1)
+Clear the magento cache afterwards.
 
 ### Dependencies
 
