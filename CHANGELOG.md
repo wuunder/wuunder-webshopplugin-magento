@@ -5,7 +5,10 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
 
+## [4.3.1](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.0) - 2019-05-29
 
+### Fixed
+- Fixed correctly saving booking token
 
 ## [4.3.0](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.0) - 2019-05-29
 
@@ -15,7 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Added validation to some of the config fields (max length)
 - Change draft icon, when order has been made to draft, but not booked yet.
 
-### Fix
+### Fixed
 
 - Fixed error when module is disabled. Added checks in observer and data helper
 - Fixed shipment saving for single order bookings
