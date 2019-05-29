@@ -196,7 +196,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
         // Get configuration
         $booking_token = uniqid();
         $infoArray['booking_token'] = $booking_token;
-
         // Combine wuunder info and order data
         $bookingConfig = Mage::helper('wuunderconnector/data')->buildWuunderData($infoArray, $order, $booking_token);
         $bookingConfig->setRedirectUrl(null); //For bulk booking the user should not be redirected(?)

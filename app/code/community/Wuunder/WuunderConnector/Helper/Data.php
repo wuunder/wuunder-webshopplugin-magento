@@ -449,6 +449,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function saveWuunderShipment($infoArray)
     {
+
         // Check if wuunder_shipment already exists
         $shipment = Mage::getModel('wuunderconnector/wuundershipment');
         $shipment->load(intval($infoArray['order_id']), 'order_id');
@@ -456,7 +457,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         if ($shipment && $shipment->getShipmentId() > 0) {
             $shipment->setOrderId($infoArray['order_id']);
             $shipment->setBookingUrl($infoArray['booking_url']);
-            $shipment->setBookingToken($infoArray['booking_token']);
+            if (!empty($infoArray['booking_token']))
+                $shipment->setBookingToken($infoArray['booking_token']);
         } else {
             $shipment->setData(array(
                 "order_id" => $infoArray['order_id'],
