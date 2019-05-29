@@ -233,8 +233,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         
         $this->log('API connection established');
 
-        Mage::helper('wuunderconnector/data')->log('API response string: ' . $result);
-
         if (empty($url)) {
             return array(
                 'error' => true,
@@ -242,6 +240,13 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
                 'booking_url' => ""
             );
         } else {
+            $infoArray['booking_url'] = $url;
+            if (!$this->saveWuunderShipment($infoArray)) {
+                return array(
+                    'error' => true,
+                    'message' => 'Unable to create / update wuunder_shipment for order ' . $infoArray['order_id']
+                );
+            }
             return array(
                 'error' => false,
                 'booking_url' => $url
@@ -399,7 +404,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $sourceObj = array(
             "product" => "Magento 1 extension",
             "version" => array(
-                "build" => "4.2.0",
+                "build" => "4.2.1",
                 "plugin" => "4.0"
             ),
             "platform" => array(
