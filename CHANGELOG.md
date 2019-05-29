@@ -3,13 +3,24 @@ All notable changes to this project will be documented in this file.
 Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` or `Security`.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
+## Unreleased
 
-## Released
-## [4.2.1](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.2.0) - 2019-05-01
 
-### Fixed
 
-- Fixed single bookings [#19](https://github.com/wuunder/wuunder-webshopplugin-magento/pull/19)
+## [4.3.0](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.0) - 2019-05-29
+
+### Added
+
+- Added OneStepCheckout support for Magento 1 (OSC v5.0.1)
+- Added validation to some of the config fields (max length)
+- Change draft icon, when order has been made to draft, but not booked yet.
+
+### Fix
+
+- Fixed error when module is disabled. Added checks in observer and data helper
+- Fixed shipment saving for single order bookings
+
+
 
 ## [4.2.0](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.2.0) - 2019-05-01
 

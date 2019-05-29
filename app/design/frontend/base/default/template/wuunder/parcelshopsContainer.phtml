@@ -1,5 +1,5 @@
 <div id='localParcelShopsContainer'>
-
+    <?php echo $this->getOneStepCheckoutHtml(); ?>
 </div>
 
 <div id='parcelShopsSelectedContainer'>
@@ -9,5 +9,5 @@
         hier om een parcelshop te selecteren</a>
 </div>
 <script>
-    initParcelshopMethod('<?php echo $this->getWebshopBaseUrl(); ?>', '<?php echo $this->getApiBaseUrl(); ?>', '<?php echo $this->getAllowedCarriers(); ?>');
+    initParcelshopMethod('<?php echo $this->getWebshopBaseUrl(); ?>', '<?php echo $this->getApiBaseUrl(); ?>', '<?php echo $this->getAllowedCarriers(); ?>', '<?php echo $this->getParcelshopId(); ?>');
 </script>

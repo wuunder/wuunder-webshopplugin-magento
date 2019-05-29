@@ -86,6 +86,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <validate>validate-length maximum-length-30</validate>
+                            <comment>Maximum length: 30</comment>
                         </company>
                         <firstname translate="label">
                             <label>Firstname</label>
@@ -94,6 +96,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <validate>validate-length maximum-length-30</validate>
+                            <comment>Maximum length: 30</comment>
                         </firstname>
                         <lastname translate="label">
                             <label>Lastname</label>
@@ -102,6 +106,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <validate>validate-length maximum-length-30</validate>
+                            <comment>Maximum length: 30</comment>
                         </lastname>
                         <email translate="label">
                             <label>E-mail</label>
@@ -127,6 +133,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <validate>validate-length maximum-length-30</validate>
+                            <comment>Maximum length: 30</comment>
                         </streetname>
                         <housenumber translate="label">
                             <label>Housenumber</label>
@@ -151,6 +159,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <validate>validate-length maximum-length-30</validate>
+                            <comment>Maximum length: 30</comment>
                         </city>
                         <country translate="label">
                             <label>Country Code</label>
@@ -160,6 +170,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <validate>validate-length maximum-length-2</validate>
                         </country>
                         <order_description translate="label">
                             <label>Static order description</label>
@@ -497,15 +508,6 @@
                             <show_in_store>1</show_in_store>
                             <comment>The order in which the shipping method should appear</comment>
                         </sort_order>
-                        <google_maps_api translate="label">
-                            <label>Google Maps API</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>12</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <comment><![CDATA[<a href="https://developers.google.com/maps/documentation/javascript/tutorial?hl=nl#api_key" target="_blank">How to request an API key</a>]]></comment>
-                        </google_maps_api>
                         <limit translate="label">
                             <label>Limit</label>
                             <frontend_type>text</frontend_type>

@@ -90,6 +90,9 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getWuunderOptions()
     {
+        if (!$this->checkIfEnabled())
+            return array();
+
         return array(
             'header' => 'Wuunder',
             'index' => 'wuunder_options',
@@ -99,6 +102,13 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             'filter' => false,
             'sortable' => false,
         );
+    }
+
+    private function checkIfEnabled()
+    {
+        $storeId = Mage::app()->getStore()->getStoreId();
+        $enabled = (int)Mage::getStoreConfig('wuunderconnector/connect/enabled', $storeId);
+        return $enabled ? true : false;
     }
 
     /**
@@ -394,7 +404,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $sourceObj = array(
             "product" => "Magento 1 extension",
             "version" => array(
-                "build" => "4.2.1",
+                "build" => "4.3.0",
                 "plugin" => "4.0"
             ),
             "platform" => array(
