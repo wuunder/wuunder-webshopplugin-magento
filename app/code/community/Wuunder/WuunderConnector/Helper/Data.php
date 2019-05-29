@@ -404,7 +404,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $sourceObj = array(
             "product" => "Magento 1 extension",
             "version" => array(
-                "build" => "4.3.0",
+                "build" => "4.3.1",
                 "plugin" => "4.0"
             ),
             "platform" => array(
