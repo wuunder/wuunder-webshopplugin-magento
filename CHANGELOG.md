@@ -4,15 +4,16 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
-## 2019-05-27
+
+
+
+## [4.3.0](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.0) - 2019-05-29
+
 ### Added
 
 - Added OneStepCheckout support for Magento 1 (OSC v5.0.1)
-
-## 2019-05-21
-### Added
-
 - Added validation to some of the config fields (max length)
+- Change draft icon, when order has been made to draft, but not booked yet.
 
 ### Fix
 
@@ -21,13 +22,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 
 
-## 2019-05-20
-### Added
-
-- Change draft icon, when order has been made to draft, but not booked yet.
-
-
-## Released
 ## [4.2.0](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.2.0) - 2019-05-01
 
 ### Added
