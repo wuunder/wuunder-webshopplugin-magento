@@ -5,7 +5,13 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
 
-## [4.3.1](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.0) - 2019-05-29
+## [4.3.2](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.2) - 2019-06-13
+
+### Added
+- Added separated filter mapping for parcelshop picker shipping method
+
+
+## [4.3.1](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.1) - 2019-05-29
 
 ### Fixed
 - Fixed correctly saving booking token

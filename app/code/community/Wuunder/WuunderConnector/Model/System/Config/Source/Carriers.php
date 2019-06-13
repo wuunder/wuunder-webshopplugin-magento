@@ -12,7 +12,9 @@ class Wuunder_WuunderConnector_Model_System_Config_Source_Carriers extends Mage_
             if(!$_title = Mage::getStoreConfig("carriers/$_code/title"))
                 $_title = $_code;
 
-            $options[] = array('value' => $_code."_".$_code, 'label' => $_title . " ($_code)");
+            if ($_code !== "wuunderparcelshop") {
+                $options[] = array('value' => $_code . "_" . $_code, 'label' => $_title . " ($_code)");
+            }
         }
 
         if(false)
@@ -34,7 +36,9 @@ class Wuunder_WuunderConnector_Model_System_Config_Source_Carriers extends Mage_
             if(!$_title = Mage::getStoreConfig("carriers/$_code/title"))
                 $_title = $_code;
 
-            $options[] = array('value' => $_code."_".$_code, 'label' => $_title . " ($_code)");
+            if ($_code !== "wuunderparcelshop") {
+                $options[] = array('value' => $_code . "_" . $_code, 'label' => $_title . " ($_code)");
+            }
         }
 
         if(false)

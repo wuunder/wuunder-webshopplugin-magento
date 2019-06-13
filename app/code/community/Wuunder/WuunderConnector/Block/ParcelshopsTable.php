@@ -14,6 +14,10 @@ class Wuunder_WuunderConnector_Block_ParcelshopsTable extends Mage_Adminhtml_Blo
           'label' => Mage::helper('wuunderconnector/data')->__('Name in checkout'),
           'style' => 'width:100px',
       ));
+      $this->addColumn('filter', array(
+          'label' => Mage::helper('wuunderconnector/data')->__('Wuunder filter'),
+          'style' => 'width:100px',
+      ));
 
       $this->_addAfter = false;
   }
