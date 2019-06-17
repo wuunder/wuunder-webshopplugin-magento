@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Wuunder_WuunderConnector>
-            <version>4.3.0</version>
+            <version>4.3.2</version>
         </Wuunder_WuunderConnector>
     </modules>
     <global>
@@ -197,6 +197,9 @@
             <magentoconfig>
                 <dimensions_units>1</dimensions_units>
             </magentoconfig>
+            <advanced>
+                <webhookenable>1</webhookenable>
+            </advanced>
         </wuunderconnector>
         <carriers>
             <wuunder>

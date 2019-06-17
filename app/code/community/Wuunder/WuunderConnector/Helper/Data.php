@@ -230,7 +230,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         } else {
             $this->log("Bookingconfig not complete");
         }
-        
+
         $this->log('API connection established');
 
         if (empty($url)) {
@@ -281,7 +281,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         return true;
     }
 
-    public function processTrackingDataFromApi($carrierCode, $trackingCode, $orderId, $bookingToken) {
+    public function processTrackingDataFromApi($carrierCode, $trackingCode, $orderId, $bookingToken)
+    {
         $shipment = Mage::getModel('wuunderconnector/wuundershipment');
         $shipment->load(intval($orderId), 'order_id');
         if (!$shipment) {
@@ -373,13 +374,66 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
+        $parcelshopId = null;
+        if ($order->getShippingMethod() == 'wuunderparcelshop_wuunderparcelshop') {
+            $parcelshopId = Mage::helper('wuunderconnector/parcelshophelper')->getParcelshopIdForQuote($order->getQuoteId());
+        }
+
         $shipping_method = $order->getShippingMethod();
         $preferredServiceLevel = "";
-        $shippingMethodCount = 5;
-        for ($i = 1; $i <= $shippingMethodCount; $i++) {
-            if ($shipping_method === Mage::getStoreConfig('wuunderconnector/connect/filterconnect' . $i . '_value')) {
-                $preferredServiceLevel = Mage::getStoreConfig('wuunderconnector/connect/filterconnect' . $i . '_name');
-                break;
+        if ($shipping_method === "wuunderparcelshop_wuunderparcelshop") {
+            $carriersFilters = array();
+            $carrierData = Mage::getStoreConfig('carriers/wuunderparcelshop/parcelshop_carriers');
+            if (!empty($carrierData)) {
+                $carrierData = unserialize($carrierData);
+                foreach ($carrierData as $carrier) {
+                    array_push($carriers, $carrier['carrier']);
+                    $carriersFilters[$carrier['carrier']] = $carrier['filter'];
+                }
+            }
+            $mapping = array(
+                'DHL_PARCEL' => 'dhl',
+                'dpd' => 'dpd',
+                'POST_NL' => 'postnl'
+            );
+
+            if (!empty($parcelshopId)) {
+                $storeId = Mage::app()->getStore()->getStoreId();
+                $connector = new Wuunder\Connector($this->getAPIKey($storeId), Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId) == 1);
+                $parcelshopDataRequest = $connector->getParcelshopById();
+                $config = new \Wuunder\Api\Config\ParcelshopConfig();
+                $config->setId($parcelshopId);
+
+                if ($config->validate()) {
+                    $parcelshopDataRequest->setConfig($config);
+
+                    if ($parcelshopDataRequest->fire()) {
+                        $response = $parcelshopDataRequest->getParcelshopResponse()->getBody();
+
+                        try {
+                            $parcelshopCarrier = json_decode($response)->provider;
+                        } catch (Exception $e) {
+                            $parcelshopCarrier = "";
+                        }
+
+                        if (array_key_exists($mapping[$parcelshopCarrier], $carriersFilters)) {
+                            $preferredServiceLevel = $carriersFilters[$mapping[$parcelshopCarrier]];
+                        }
+                    } else {
+                        Mage::helper('wuunderconnector/data')->log('ERROR saveWuunderShipment : ' . json_encode($parcelshopDataRequest->getParcelshopResponse()->getError()));
+                    }
+                } else {
+                    print("Parcelshopconfig not valid");
+                }
+            }
+
+        } else {
+            $shippingMethodCount = 5;
+            for ($i = 1; $i <= $shippingMethodCount; $i++) {
+                if ($shipping_method === Mage::getStoreConfig('wuunderconnector/connect/filterconnect' . $i . '_value')) {
+                    $preferredServiceLevel = Mage::getStoreConfig('wuunderconnector/connect/filterconnect' . $i . '_name');
+                    break;
+                }
             }
         }
 
@@ -396,15 +450,10 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
 
-        $parcelshopId = null;
-        if ($order->getShippingMethod() == 'wuunderparcelshop_wuunderparcelshop') {
-            $parcelshopId =Mage::helper('wuunderconnector/parcelshophelper')->getParcelshopIdForQuote($order->getQuoteId());
-        }
-
         $sourceObj = array(
             "product" => "Magento 1 extension",
             "version" => array(
-                "build" => "4.3.0",
+                "build" => "4.3.2",
                 "plugin" => "4.0"
             ),
             "platform" => array(
@@ -430,18 +479,21 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $bookingConfig->setWeight(intval($infoArray['weight']));
         $bookingConfig->setCustomerReference($order->getIncrementId());
         $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
-        $bookingConfig->setSource($sourceObj); 
+        $bookingConfig->setSource($sourceObj);
         $bookingConfig->setDeliveryAddress($customerAdr);
         $bookingConfig->setPickupAddress($webshopAdr);
         if ($parcelshopId) {
             $bookingConfig->setParcelshopId($parcelshopId);
         }
         $bookingConfig->setRedirectUrl(Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id']);
-        $bookingConfig->setWebhookUrl(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken);
 
+        $storeId = Mage::app()->getStore()->getStoreId();
+        $webhookEnabled = (int)Mage::getStoreConfig('wuunderconnector/connect/enabled', $storeId);
+        if ($webhookEnabled) {
+            $bookingConfig->setWebhookUrl(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken);
+        }
 
         return $bookingConfig;
-
     }
 
     /*
@@ -449,6 +501,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function saveWuunderShipment($infoArray)
     {
+
         // Check if wuunder_shipment already exists
         $shipment = Mage::getModel('wuunderconnector/wuundershipment');
         $shipment->load(intval($infoArray['order_id']), 'order_id');
@@ -456,7 +509,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         if ($shipment && $shipment->getShipmentId() > 0) {
             $shipment->setOrderId($infoArray['order_id']);
             $shipment->setBookingUrl($infoArray['booking_url']);
-            $shipment->setBookingToken($infoArray['booking_token']);
+            if (!empty($infoArray['booking_token']))
+                $shipment->setBookingToken($infoArray['booking_token']);
         } else {
             $shipment->setData(array(
                 "order_id" => $infoArray['order_id'],
@@ -596,7 +650,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return '';
     }
-
 
 
     /**
