@@ -3,6 +3,14 @@
 class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller_Front_Action
 {
 
+    public $tblPrfx;
+
+
+    function __construct()
+    {
+        $this->tblPrfx = (string)Mage::getConfig()->getTablePrefix();
+    }
+
     public function addressAction()
     {
 //        error_reporting(E_ALL);

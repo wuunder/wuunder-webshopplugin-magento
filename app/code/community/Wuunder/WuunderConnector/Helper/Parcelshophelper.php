@@ -2,7 +2,16 @@
 
 class Wuunder_WuunderConnector_Helper_Parcelshophelper extends Mage_Core_Helper_Abstract
 {
-        public function getParcelshopCarriers()
+
+    public $tblPrfx;
+
+
+    function __construct()
+    {
+        $this->tblPrfx = (string)Mage::getConfig()->getTablePrefix();
+    }
+    
+    public function getParcelshopCarriers()
     {
         return array(
             array(
@@ -104,7 +113,7 @@ class Wuunder_WuunderConnector_Helper_Parcelshophelper extends Mage_Core_Helper_
     {
         $quote_id = Mage::getSingleton('checkout/session')->getQuote()->getEntityId();
         $parcelshop_id = $this->getParcelshopIdForQuote($quote_id);
-        
+
         if (is_null($parcelshop_id)) {
             return "<div id='parcelShopsSelected'></div>";
         }
@@ -150,7 +159,7 @@ class Wuunder_WuunderConnector_Helper_Parcelshophelper extends Mage_Core_Helper_
         }
         return $parcelshop;
     }
-    
+
 }
 
 
