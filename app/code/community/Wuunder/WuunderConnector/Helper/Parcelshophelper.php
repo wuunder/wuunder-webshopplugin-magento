@@ -10,7 +10,7 @@ class Wuunder_WuunderConnector_Helper_Parcelshophelper extends Mage_Core_Helper_
     {
         $this->tblPrfx = (string)Mage::getConfig()->getTablePrefix();
     }
-    
+
     public function getParcelshopCarriers()
     {
         return array(
