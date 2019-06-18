@@ -197,9 +197,6 @@
             <magentoconfig>
                 <dimensions_units>1</dimensions_units>
             </magentoconfig>
-            <advanced>
-                <webhookenable>1</webhookenable>
-            </advanced>
         </wuunderconnector>
         <carriers>
             <wuunder>
