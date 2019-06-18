@@ -486,11 +486,14 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $bookingConfig->setParcelshopId($parcelshopId);
         }
         $bookingConfig->setRedirectUrl(Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id']);
-        $bookingConfig->setWebhookUrl(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken);
 
+        $storeId = Mage::app()->getStore()->getStoreId();
+        $webhookEnabled = (int)Mage::getStoreConfig('wuunderconnector/connect/enabled', $storeId);
+        if ($webhookEnabled) {
+            $bookingConfig->setWebhookUrl(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken);
+        }
 
         return $bookingConfig;
-
     }
 
     /*
