@@ -117,4 +117,10 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
             Mage::helper('wuunderconnector/data')->log("ERROR: Can not ship");
         }
     }
+
+    function _isWebhookEnabled() {
+        $storeId = Mage::app()->getStore()->getStoreId();
+        $enabled = (int)Mage::getStoreConfig('wuunderconnector/advanced/webhookenable', $storeId);
+        return $enabled == 1 ? true : false;
+    }
 }
