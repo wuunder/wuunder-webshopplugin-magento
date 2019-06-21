@@ -491,6 +491,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $webhookEnabled = (int)Mage::getStoreConfig('wuunderconnector/advanced/webhookenable', $storeId);
         if ($webhookEnabled == 1) {
             $bookingConfig->setWebhookUrl(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken);
+        } else {
+            $bookingConfig->setWebhookUrl(null);
         }
 
         return $bookingConfig;
