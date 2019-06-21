@@ -453,7 +453,7 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $sourceObj = array(
             "product" => "Magento 1 extension",
             "version" => array(
-                "build" => "4.3.3",
+                "build" => "4.3.4",
                 "plugin" => "4.0"
             ),
             "platform" => array(
@@ -486,8 +486,12 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $bookingConfig->setParcelshopId($parcelshopId);
         }
         $bookingConfig->setRedirectUrl(Mage::getUrl('adminhtml') . 'sales_order?label_order=' . $infoArray['order_id']);
-        $bookingConfig->setWebhookUrl(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken);
 
+        $storeId = Mage::app()->getStore()->getStoreId();
+        $webhookEnabled = (int)Mage::getStoreConfig('wuunderconnector/advanced/webhookenable', $storeId);
+        if ($webhookEnabled == 1) {
+            $bookingConfig->setWebhookUrl(Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'wuunderconnector/webhook/call/order_id/' . $infoArray['order_id'] . "/token/" . $bookingToken);
+        }
 
         return $bookingConfig;
 

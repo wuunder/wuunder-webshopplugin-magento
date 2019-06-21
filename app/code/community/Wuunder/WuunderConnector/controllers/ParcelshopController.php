@@ -1,5 +1,8 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller_Front_Action
 {
 
@@ -69,12 +72,14 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
     
     public function setParcelshopIdForQuote($quote_id, $parcelshop_id)
     {
+
+        $tblPrfx = (string)Mage::getConfig()->getTablePrefix();
         $mageDbW = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $sqlQuery = "SELECT `id` FROM `" . $this->tblPrfx . "wuunder_quote_data` WHERE `quote_id` = ? LIMIT 1";
+        $sqlQuery = "SELECT `id` FROM `" . $tblPrfx . "wuunder_quote_data` WHERE `quote_id` = ? LIMIT 1";
         $id = $mageDbW->fetchOne($sqlQuery, array($quote_id));
 
         if ($id > 0) {
-            $sqlQuery = "UPDATE `" . $this->tblPrfx . "wuunder_quote_data` SET
+            $sqlQuery = "UPDATE `" . $tblPrfx . "wuunder_quote_data` SET
                         `quote_id`          = ?,
                         `parcelshop_id`       = ?
                     WHERE
@@ -82,7 +87,7 @@ class Wuunder_WuunderConnector_ParcelshopController extends Mage_Core_Controller
 
             $sqlValues = array($quote_id, $parcelshop_id, $id);
         } else {
-            $sqlQuery = "INSERT INTO `" . $this->tblPrfx . "wuunder_quote_data` SET
+            $sqlQuery = "INSERT INTO `" . $tblPrfx . "wuunder_quote_data` SET
                         `quote_id`          = ?,
                         `parcelshop_id`       = ?";
 
