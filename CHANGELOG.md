@@ -5,6 +5,11 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
 
+##  [4.3.4](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.4) - 2019-06-21
+
+### Fixed
+- Fixed config for webhook configuration
+
 ##  [4.3.3](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.3) - 2019-06-18
 
 ### Added 
@@ -33,7 +38,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Fixed error when module is disabled. Added checks in observer and data helper
 - Fixed shipment saving for single order bookings
-
 
 
 ## [4.2.0](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.2.0) - 2019-05-01
