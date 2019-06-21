@@ -5,6 +5,11 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
 
+##  [4.3.3](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.3) - 2019-06-18
+
+### Added 
+- Added config to enable/disable webhook functionality (default= enabled)
+
 ## [4.3.2](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.2) - 2019-06-13
 
 ### Added

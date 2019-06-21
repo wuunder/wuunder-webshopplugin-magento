@@ -28,10 +28,6 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
      */
     public function callAction()
     {
-        if (!$this->_isWebhookEnabled()) {
-            return;
-        }
-
         if (!empty($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('token'))) {
             $result = json_decode(file_get_contents('php://input'), true);
             if ($result['action'] === "shipment_booked") {
@@ -125,6 +121,6 @@ class Wuunder_WuunderConnector_WebhookController extends Mage_Core_Controller_Fr
     function _isWebhookEnabled() {
         $storeId = Mage::app()->getStore()->getStoreId();
         $enabled = (int)Mage::getStoreConfig('wuunderconnector/advanced/webhookenable', $storeId);
-        return $enabled ? true : false;
+        return $enabled == 1 ? true : false;
     }
 }
