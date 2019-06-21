@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Fixed
 - Fixed config for webhook configuration
+- Fixed bookingconfig
 
 ##  [4.3.3](https://github.com/wuunder/wuunder-webshopplugin-magento/releases/tag/4.3.3) - 2019-06-18
 
