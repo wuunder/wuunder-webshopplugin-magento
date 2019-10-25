@@ -72,9 +72,9 @@ class Wuunder_WuunderConnector_Model_Observer extends Varien_Event_Observer
                             $booking_url = $shipmentInfo['booking_url'];
                         } else {
                             if ($testMode == 1) {
-                                $booking_url = 'https://api-staging.wuunder.co' . $shipmentInfo['booking_url'];
+                                $booking_url = 'https://api-staging.wearewuunder.com' . $shipmentInfo['booking_url'];
                             } else {
-                                $booking_url = 'https://api.wuunder.co' . $shipmentInfo['booking_url'];
+                                $booking_url = 'https://api.wearewuunder.com' . $shipmentInfo['booking_url'];
                             }
                         }
                         $linkurl = (!is_null($shipmentInfo['booking_url']) && !empty($shipmentInfo['booking_url']) ? $booking_url : Mage::helper('adminhtml')->getUrl('adminhtml/wuunder/processLabel',
