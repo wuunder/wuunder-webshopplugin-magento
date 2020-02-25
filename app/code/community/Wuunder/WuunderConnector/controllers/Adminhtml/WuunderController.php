@@ -42,7 +42,7 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 $shipmentDescription = "";
                 foreach ($order->getAllItems() as $item) {
                     $product = Mage::getModel('catalog/product')->load($item->getProductId());
-                    $shipmentDescription .= $product->getShortDescription() . " ";
+                    $shipmentDescription .= "- " . intval($item->getData('qty_ordered')) . "x " . $product->getName() . "\r\n";
                 }
 
                 // Set default values
@@ -110,13 +110,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
 
             $weight = ($infoOrder['total_weight'] == 0) ? null : $infoOrder['total_weight'];
 
-            $shipmentDescription = "";
-            foreach ($order->getAllItems() as $item) {
-                $product = Mage::getModel('catalog/product')->load($item->getProductId());
-                $shipmentDescription .= $product->getShortDescription() . " ";
-            }
-
-
             if (array_key_exists("shipment_id", $shipmentInfo)) {
                 $phonenumber = (!empty($shipmentInfo['phone_number']) && strlen($shipmentInfo['phone_number']) >= 10) ? trim($shipmentInfo['phone_number']) : trim($shippingAdr->telephone);
             } else {
@@ -136,7 +129,6 @@ class Wuunder_WuunderConnector_Adminhtml_WuunderController extends Mage_Adminhtm
                 'width' => null,
                 'height' => null,
                 'weight' => $weight,
-                'description' => $shipmentDescription,
                 'phone_number' => $phonenumber,
             );
 

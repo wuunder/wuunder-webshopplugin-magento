@@ -309,14 +309,6 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
             $shippingLastname = $shippingAddress->middlename . ' ' . $shippingLastname;
         }
 
-        // Get full address, strip enters/newlines etc
-        $addressLine = trim(preg_replace('/\s+/', ' ', $shippingAddress->street));
-
-        // Split address in 3 parts
-        $addressParts = $this->addressSplitter($addressLine);
-        $streetName = $addressParts['streetName'];
-        $houseNumber = $addressParts['houseNumber'] . $addressParts['houseNumberSuffix'];
-
         // Fix DPD parcelshop first- and lastname override fix
         $firstname = $shippingAddress->firstname;
         $lastname = $shippingLastname;
@@ -328,8 +320,8 @@ class Wuunder_WuunderConnector_Helper_Data extends Mage_Core_Helper_Abstract
         $customerAdr->setFamilyName($lastname);
         $customerAdr->setGivenName($firstname);
         $customerAdr->setLocality($shippingAddress->city);
-        $customerAdr->setStreetName($streetName);
-        $customerAdr->setHouseNumber($houseNumber);
+        $customerAdr->setStreetName($shippingAddress->getStreet(1));
+        $customerAdr->setAddress2($shippingAddress->getStreet(2));
         $customerAdr->setZipCode($shippingAddress->postcode);
         $customerAdr->setPhoneNumber($infoArray['phone_number']);
         $customerAdr->setCountry($shippingAddress->country_id);
